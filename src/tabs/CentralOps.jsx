@@ -84,7 +84,7 @@ export default function CentralOps() {
         <h1>Operational Command Center</h1>
         <p>Portfolio-level visibility across all markets · SLA health · Bottleneck identification · Resource signals</p>
         <div className="meta">
-          DATASET: {kpis.total_providers} PROVIDERS · {activeState === 'all' ? 'TX · CA · FL' : activeState} · {activeQuarter} 2025
+          DATASET: {kpis.total_providers} PROVIDERS
         </div>
       </div>
 
