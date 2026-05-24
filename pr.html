@@ -1,0 +1,1738 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Everbright Health — Onboarding Intelligence</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=Instrument+Serif:ital@0;1&family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;1,9..40,300&display=swap');
+
+:root {
+  --bg: #F5F3EF;
+  --surface: #FFFFFF;
+  --surface2: #EDEBE6;
+  --border: #D8D4CC;
+  --border2: #C5C0B5;
+  --text: #1A1915;
+  --text2: #5C5A54;
+  --text3: #8C8A84;
+  --accent: #1E6B4A;
+  --accent-light: #E8F3EE;
+  --amber: #B45309;
+  --amber-light: #FEF3C7;
+  --red: #991B1B;
+  --red-light: #FEE2E2;
+  --blue: #1D4ED8;
+  --blue-light: #DBEAFE;
+  --gold: #92400E;
+  --gold-light: #FDE68A;
+  --radius: 10px;
+  --radius-sm: 6px;
+  --shadow: 0 1px 3px rgba(0,0,0,0.06), 0 1px 2px rgba(0,0,0,0.04);
+}
+
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body { font-family: 'DM Sans', sans-serif; background: var(--bg); color: var(--text); font-size: 14px; min-height: 100vh; }
+
+/* NAV */
+.nav { background: var(--text); padding: 0 28px; display: flex; align-items: center; gap: 0; position: sticky; top: 0; z-index: 100; border-bottom: 1px solid #333; }
+.nav-brand { display: flex; align-items: center; gap: 10px; padding: 14px 0; margin-right: 32px; }
+.nav-brand .logo { width: 28px; height: 28px; background: linear-gradient(135deg, #1E6B4A, #34D399); border-radius: 8px; display: flex; align-items: center; justify-content: center; }
+.nav-brand .logo-inner { width: 14px; height: 14px; background: white; border-radius: 50%; }
+.nav-brand span { font-family: 'Instrument Serif', serif; font-size: 17px; color: #F5F3EF; letter-spacing: 0.01em; }
+.nav-brand small { font-size: 10px; color: #666; font-family: 'DM Mono', monospace; letter-spacing: 0.05em; display: block; margin-top: -2px; }
+.tab-nav { display: flex; gap: 0; flex: 1; }
+.tab-btn { padding: 16px 20px; font-size: 13px; font-weight: 500; color: #888; background: none; border: none; cursor: pointer; border-bottom: 2px solid transparent; transition: all 0.15s; white-space: nowrap; font-family: 'DM Sans', sans-serif; letter-spacing: 0.01em; }
+.tab-btn:hover { color: #ccc; }
+.tab-btn.active { color: #F5F3EF; border-bottom-color: #34D399; }
+.nav-right { margin-left: auto; display: flex; align-items: center; gap: 8px; }
+.nav-badge { font-family: 'DM Mono', monospace; font-size: 10px; background: #991B1B22; color: #f87171; border: 1px solid #991B1B44; padding: 3px 8px; border-radius: 99px; }
+
+/* LAYOUT */
+.page { display: none; padding: 24px 28px 48px; max-width: 1400px; }
+.page.active { display: block; }
+
+/* PAGE HEADERS */
+.page-header { margin-bottom: 24px; }
+.page-header h1 { font-family: 'Instrument Serif', serif; font-size: 26px; font-weight: 400; color: var(--text); letter-spacing: -0.02em; }
+.page-header p { font-size: 13px; color: var(--text3); margin-top: 4px; }
+.page-header .meta { font-family: 'DM Mono', monospace; font-size: 10px; color: var(--text3); margin-top: 8px; letter-spacing: 0.05em; }
+
+/* KPI STRIP */
+.kpi-strip { display: grid; grid-template-columns: repeat(5, 1fr); gap: 12px; margin-bottom: 20px; }
+.kpi-card { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); padding: 16px 18px; position: relative; overflow: hidden; }
+.kpi-card::before { content: ''; position: absolute; top: 0; left: 0; right: 0; height: 3px; }
+.kpi-card.green::before { background: #1E6B4A; }
+.kpi-card.amber::before { background: #B45309; }
+.kpi-card.red::before { background: #991B1B; }
+.kpi-card.blue::before { background: #1D4ED8; }
+.kpi-card.neutral::before { background: var(--border2); }
+.kpi-label { font-size: 11px; color: var(--text3); font-weight: 500; letter-spacing: 0.04em; text-transform: uppercase; margin-bottom: 8px; }
+.kpi-value { font-family: 'Instrument Serif', serif; font-size: 32px; line-height: 1; color: var(--text); }
+.kpi-value span { font-size: 15px; font-family: 'DM Sans', sans-serif; color: var(--text3); }
+.kpi-sub { font-size: 11px; color: var(--text3); margin-top: 6px; }
+.kpi-badge { display: inline-block; padding: 2px 7px; border-radius: 99px; font-size: 10px; font-weight: 600; margin-top: 6px; }
+.kpi-badge.bad { background: var(--red-light); color: var(--red); }
+.kpi-badge.warn { background: var(--amber-light); color: var(--amber); }
+.kpi-badge.good { background: var(--accent-light); color: var(--accent); }
+
+/* GRID LAYOUTS */
+.grid-3 { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; margin-bottom: 16px; }
+.grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-bottom: 16px; }
+.grid-2-1 { display: grid; grid-template-columns: 2fr 1fr; gap: 16px; margin-bottom: 16px; }
+.grid-1-2 { display: grid; grid-template-columns: 1fr 2fr; gap: 16px; margin-bottom: 16px; }
+
+/* CARDS */
+.card { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); padding: 20px; }
+.card-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 16px; }
+.card-title { font-size: 13px; font-weight: 600; color: var(--text); letter-spacing: 0.01em; }
+.card-sub { font-size: 11px; color: var(--text3); margin-top: 2px; }
+.card-tag { font-family: 'DM Mono', monospace; font-size: 10px; color: var(--text3); background: var(--surface2); padding: 2px 7px; border-radius: 4px; }
+
+/* CHARTS */
+.chart-wrap { position: relative; }
+
+/* MARKET CARDS */
+.market-cards { display: grid; grid-template-columns: repeat(3,1fr); gap: 12px; }
+.mkt-card { border: 1px solid var(--border); border-radius: var(--radius); padding: 16px; background: var(--surface); }
+.mkt-card .mkt-name { font-size: 11px; font-weight: 600; color: var(--text3); text-transform: uppercase; letter-spacing: 0.06em; margin-bottom: 10px; display: flex; align-items: center; gap: 6px; }
+.mkt-dot { width: 8px; height: 8px; border-radius: 50%; }
+.mkt-breach-num { font-family: 'Instrument Serif', serif; font-size: 28px; line-height: 1; }
+.mkt-breach-lbl { font-size: 11px; color: var(--text3); margin-bottom: 12px; }
+.mkt-stat-row { display: flex; justify-content: space-between; font-size: 12px; color: var(--text2); padding: 4px 0; border-bottom: 1px solid var(--bg); }
+.mkt-stat-row:last-child { border-bottom: none; }
+.mkt-stat-val { font-weight: 500; color: var(--text); }
+
+/* HORIZONTAL BARS */
+.hbar-wrap { display: flex; flex-direction: column; gap: 10px; }
+.hbar-row { display: flex; align-items: center; gap: 10px; }
+.hbar-label { font-size: 12px; color: var(--text2); width: 110px; flex-shrink: 0; line-height: 1.3; }
+.hbar-track { flex: 1; height: 8px; background: var(--surface2); border-radius: 99px; overflow: hidden; }
+.hbar-fill { height: 100%; border-radius: 99px; transition: width 0.8s cubic-bezier(.4,0,.2,1); }
+.hbar-val { font-size: 12px; font-weight: 500; width: 36px; text-align: right; }
+
+/* INSIGHTS PANEL */
+.insights-panel { background: var(--text); border-radius: var(--radius); padding: 20px; color: white; }
+.insights-panel h3 { font-family: 'Instrument Serif', serif; font-size: 16px; font-weight: 400; color: #F5F3EF; margin-bottom: 14px; display: flex; align-items: center; gap: 8px; }
+.insight-item { display: flex; gap: 12px; padding: 10px 0; border-bottom: 1px solid #333; align-items: flex-start; }
+.insight-item:last-child { border-bottom: none; }
+.insight-dot { width: 6px; height: 6px; border-radius: 50%; margin-top: 6px; flex-shrink: 0; }
+.insight-text { font-size: 12.5px; color: #CCC; line-height: 1.6; }
+.insight-text strong { color: white; }
+
+/* STEP FUNNEL */
+.funnel-wrap { display: flex; flex-direction: column; gap: 8px; }
+.funnel-row { display: flex; align-items: center; gap: 12px; }
+.funnel-label { font-size: 12px; color: var(--text2); width: 110px; flex-shrink: 0; font-weight: 500; }
+.funnel-track { flex: 1; height: 28px; background: var(--surface2); border-radius: 5px; overflow: hidden; position: relative; }
+.funnel-fill { height: 100%; display: flex; align-items: center; padding-left: 10px; font-size: 11px; font-weight: 600; color: white; letter-spacing: 0.02em; border-radius: 5px; }
+.funnel-breach { position: absolute; right: 8px; top: 50%; transform: translateY(-50%); font-size: 10px; font-family: 'DM Mono', monospace; }
+.funnel-days { font-size: 12px; color: var(--text3); width: 48px; text-align: right; font-family: 'DM Mono', monospace; }
+
+/* TABLE */
+.tbl-wrap { overflow-x: auto; }
+table.data-tbl { width: 100%; border-collapse: collapse; font-size: 12.5px; }
+table.data-tbl th { padding: 8px 12px; text-align: left; font-size: 11px; font-weight: 600; color: var(--text3); text-transform: uppercase; letter-spacing: 0.05em; background: var(--surface2); border-bottom: 1px solid var(--border); white-space: nowrap; }
+table.data-tbl td { padding: 9px 12px; border-bottom: 1px solid var(--bg); vertical-align: middle; }
+table.data-tbl tr:hover td { background: #FAFAF8; }
+table.data-tbl tr.breach-row td { background: #FFF5F5; }
+table.data-tbl tr.breach-row:hover td { background: #FFF0F0; }
+
+/* BADGES */
+.badge { display: inline-flex; align-items: center; gap: 4px; padding: 3px 8px; border-radius: 99px; font-size: 11px; font-weight: 600; white-space: nowrap; }
+.badge.breached { background: var(--red-light); color: var(--red); }
+.badge.high-risk { background: var(--amber-light); color: var(--amber); }
+.badge.medium-risk { background: #FEF9C3; color: #713F12; }
+.badge.on-track { background: var(--accent-light); color: var(--accent); }
+.badge.info { background: var(--blue-light); color: var(--blue); }
+.badge-dot { width: 5px; height: 5px; border-radius: 50%; background: currentColor; }
+
+/* RISK METER */
+.risk-meters { display: flex; flex-direction: column; gap: 8px; }
+.risk-meter-row { display: flex; align-items: center; gap: 10px; padding: 10px 12px; border-radius: var(--radius-sm); border: 1px solid var(--border); background: var(--surface); }
+.risk-meter-score { width: 28px; height: 28px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 13px; font-weight: 700; flex-shrink: 0; }
+.risk-meter-info { flex: 1; }
+.risk-meter-label { font-size: 12px; font-weight: 500; color: var(--text); }
+.risk-meter-sub { font-size: 11px; color: var(--text3); }
+.risk-meter-stat { text-align: right; }
+.risk-meter-pct { font-family: 'DM Mono', monospace; font-size: 13px; font-weight: 500; }
+.risk-meter-count { font-size: 11px; color: var(--text3); }
+
+/* FILTERS */
+.filters { display: flex; gap: 8px; margin-bottom: 16px; flex-wrap: wrap; align-items: center; }
+.filter-label { font-size: 12px; color: var(--text3); font-weight: 500; }
+.filter-btn { padding: 5px 12px; border: 1px solid var(--border); border-radius: 99px; font-size: 12px; background: var(--surface); color: var(--text2); cursor: pointer; transition: all 0.15s; font-family: 'DM Sans', sans-serif; }
+.filter-btn:hover { border-color: var(--border2); color: var(--text); }
+.filter-btn.active { background: var(--text); color: white; border-color: var(--text); }
+.search-box { padding: 5px 12px; border: 1px solid var(--border); border-radius: 99px; font-size: 12px; background: var(--surface); color: var(--text); font-family: 'DM Sans', sans-serif; outline: none; width: 180px; }
+.search-box:focus { border-color: var(--border2); }
+.filter-spacer { flex: 1; }
+
+/* ACTION COL */
+.action-tag { font-size: 11px; color: var(--blue); background: var(--blue-light); padding: 2px 7px; border-radius: 4px; font-weight: 500; }
+
+/* STEP PROGRESS */
+.step-progress { display: flex; gap: 2px; }
+.step-seg { height: 6px; flex: 1; border-radius: 2px; }
+
+/* SECTION LABEL */
+.section-label { font-size: 10px; font-weight: 600; color: var(--text3); text-transform: uppercase; letter-spacing: 0.08em; margin-bottom: 12px; margin-top: 4px; display: flex; align-items: center; gap: 8px; }
+.section-label::after { content: ''; flex: 1; height: 1px; background: var(--border); }
+
+/* ALERT CARD */
+.alert-card { border-radius: var(--radius-sm); padding: 12px 14px; margin-bottom: 8px; border: 1px solid; display: flex; align-items: flex-start; gap: 10px; }
+.alert-card.red { background: var(--red-light); border-color: #FECACA; }
+.alert-card.amber { background: var(--amber-light); border-color: #FDE68A; }
+.alert-card.blue { background: var(--blue-light); border-color: #BFDBFE; }
+.alert-icon { font-size: 14px; margin-top: 1px; flex-shrink: 0; }
+.alert-title { font-size: 12px; font-weight: 600; margin-bottom: 2px; }
+.alert-text { font-size: 11px; color: var(--text2); line-height: 1.5; }
+.alert-card.red .alert-title { color: var(--red); }
+.alert-card.amber .alert-title { color: var(--amber); }
+.alert-card.blue .alert-title { color: var(--blue); }
+
+/* MINI STAT ROW */
+.mini-stats { display: grid; grid-template-columns: repeat(4,1fr); gap: 8px; margin-bottom: 14px; }
+.mini-stat { background: var(--surface2); border-radius: var(--radius-sm); padding: 10px 12px; }
+.mini-stat-val { font-size: 18px; font-weight: 600; font-family: 'Instrument Serif', serif; }
+.mini-stat-lbl { font-size: 10px; color: var(--text3); margin-top: 2px; }
+
+/* SCROLLABLE */
+.scroll-y { overflow-y: auto; max-height: 320px; }
+
+/* MONO */
+.mono { font-family: 'DM Mono', monospace; }
+
+/* PROVIDER DETAIL */
+.provider-id { font-family: 'DM Mono', monospace; font-size: 12px; color: var(--text2); }
+.score-bar { display: flex; gap: 2px; }
+.score-dot { width: 8px; height: 8px; border-radius: 2px; }
+
+/* TREND DOTS */
+.trend-item { display: flex; align-items: center; gap: 10px; padding: 8px 0; border-bottom: 1px solid var(--bg); }
+.trend-item:last-child { border-bottom: none; }
+.trend-month { font-family: 'DM Mono', monospace; font-size: 11px; color: var(--text3); width: 28px; }
+.trend-bar-wrap { flex: 1; }
+.trend-bar { height: 14px; border-radius: 3px; display: flex; align-items: center; padding: 0 8px; }
+.trend-bar-label { font-size: 10px; font-weight: 600; color: white; }
+.trend-stat { font-size: 11px; font-family: 'DM Mono', monospace; color: var(--text2); width: 40px; text-align: right; }
+
+/* DELAY HEATMAP */
+.heat-grid { display: grid; grid-template-columns: 80px repeat(3, 1fr); gap: 2px; font-size: 11px; }
+.heat-cell { padding: 8px 6px; border-radius: 4px; text-align: center; font-weight: 600; }
+.heat-header { padding: 6px; font-size: 10px; font-weight: 600; color: var(--text3); text-transform: uppercase; letter-spacing: 0.04em; text-align: center; }
+.heat-row-label { padding: 8px 6px; font-size: 11px; color: var(--text2); display: flex; align-items: center; font-weight: 500; }
+
+/* esc type grid */
+.esc-grid { display: flex; flex-direction: column; gap: 6px; }
+.esc-row { display: flex; align-items: center; gap: 10px; padding: 8px 10px; border-radius: var(--radius-sm); background: var(--surface2); }
+.esc-type { font-size: 12px; font-weight: 500; width: 90px; flex-shrink: 0; }
+.esc-bar-track { flex: 1; height: 8px; background: var(--border); border-radius: 99px; overflow: hidden; }
+.esc-bar-fill { height: 100%; border-radius: 99px; }
+.esc-pct { font-family: 'DM Mono', monospace; font-size: 11px; width: 36px; text-align: right; font-weight: 500; }
+.esc-count { font-size: 11px; color: var(--text3); width: 30px; text-align: right; }
+
+/* GLOBAL FILTERS */
+.global-filter-group { display: flex; align-items: center; gap: 8px; color: #888; font-size: 12px; font-weight: 500; }
+.global-filter-label { color: #8C8A84; text-transform: uppercase; font-size: 10px; font-family: 'DM Mono', monospace; letter-spacing: 0.05em; margin-right: 2px; }
+.global-filter-select { background: #2A2925; color: #F5F3EF; border: 1px solid #444; padding: 6px 12px; border-radius: 6px; font-family: 'DM Sans', sans-serif; font-size: 12px; outline: none; cursor: pointer; transition: all 0.15s; }
+.global-filter-select:hover { border-color: #666; background: #353430; }
+.global-filter-select:focus { border-color: #34D399; }
+</style>
+</head>
+<body>
+
+<nav class="nav">
+  <div class="nav-brand">
+    <div class="logo"><div class="logo-inner"></div></div>
+    <div>
+      <span>Everbright Health</span>
+      <small>ONBOARDING INTELLIGENCE</small>
+    </div>
+  </div>
+  <div class="tab-nav">
+    <button class="tab-btn active" onclick="switchTab('ops', event)">&#9632; Central Ops</button>
+    <button class="tab-btn" onclick="switchTab('leads', event)">&#9632; Practice Leads</button>
+    <button class="tab-btn" onclick="switchTab('rootcause', event)">&#9632; Root Cause Analysis</button>
+    <button class="tab-btn" onclick="switchTab('providers', event)">&#9632; Provider Drilldown</button>
+  </div>
+  <div class="nav-right" style="display:flex;align-items:center;gap:16px;">
+    <div class="global-filter-group">
+      <span class="global-filter-label">State</span>
+      <select id="global-state-filter" class="global-filter-select" onchange="handleGlobalFilterChange(true)">
+        <option value="all">All States (TX, CA, FL)</option>
+        <option value="TX">Texas (TX)</option>
+        <option value="CA">California (CA)</option>
+        <option value="FL">Florida (FL)</option>
+      </select>
+    </div>
+    <div class="global-filter-group">
+      <span class="global-filter-label">Quarter</span>
+      <select id="global-quarter-filter" class="global-filter-select" onchange="handleGlobalFilterChange(true)">
+        <option value="Q1">Q1 2025</option>
+        <option value="Q2">Q2 2025</option>
+        <option value="Q3">Q3 2025</option>
+        <option value="Q4">Q4 2025</option>
+      </select>
+    </div>
+    <span class="nav-badge" id="global-at-risk-badge">&#9679; 12 AT RISK</span>
+  </div>
+</nav>
+
+<!-- =========================================================
+     TAB 1: CENTRAL OPS LEADERSHIP
+     ========================================================= -->
+<div class="page active" id="page-ops">
+  <div class="page-header">
+    <h1>Operational Command Center</h1>
+    <p>Portfolio-level visibility across all markets · SLA health · Bottleneck identification · Resource signals</p>
+    <div class="meta">DATASET: 36 PROVIDERS · TX · CA · FL · Q1 2025</div>
+  </div>
+
+  <!-- KPI Strip -->
+  <div class="kpi-strip">
+    <div class="kpi-card neutral">
+      <div class="kpi-label">Avg Onboarding</div>
+      <div class="kpi-value" id="kpi-avg-onboarding-val">23.5<span>d</span></div>
+      <div class="kpi-sub">Target: &lt;21 days</div>
+      <div class="kpi-badge warn" id="kpi-avg-onboarding-badge">2.5d over target</div>
+    </div>
+    <div class="kpi-card red">
+      <div class="kpi-label">SLA Breach Rate</div>
+      <div class="kpi-value" id="kpi-sla-breach-val">47.2<span>%</span></div>
+      <div class="kpi-sub" id="kpi-sla-breach-sub">17 of 36 providers</div>
+      <div class="kpi-badge bad" id="kpi-sla-breach-badge">Critical</div>
+    </div>
+    <div class="kpi-card green">
+      <div class="kpi-label">Avg Satisfaction</div>
+      <div class="kpi-value" id="kpi-satisfaction-val">4.11<span>/5</span></div>
+      <div class="kpi-sub">Scale 1–5</div>
+      <div class="kpi-badge good" id="kpi-satisfaction-badge">Acceptable</div>
+    </div>
+    <div class="kpi-card amber">
+      <div class="kpi-label">Avg Escalations</div>
+      <div class="kpi-value" id="kpi-escalations-val">2.2<span></span></div>
+      <div class="kpi-sub">Per provider</div>
+      <div class="kpi-badge warn" id="kpi-escalations-badge">Elevated</div>
+    </div>
+    <div class="kpi-card red">
+      <div class="kpi-label">Providers At Risk</div>
+      <div class="kpi-value" id="kpi-risk-val">12<span></span></div>
+      <div class="kpi-sub">Risk score ≥ 2 of 3</div>
+      <div class="kpi-badge bad" id="kpi-risk-badge">Needs action</div>
+    </div>
+  </div>
+
+  <!-- Row 1: Market perf + Insights -->
+  <div class="grid-2-1">
+    <div class="card">
+      <div class="card-header">
+        <div><div class="card-title">Market Performance Overview</div><div class="card-sub">SLA breach rate, satisfaction & onboarding duration by market</div></div>
+        <span class="card-tag">COMPARATIVE</span>
+      </div>
+      <div class="market-cards" id="market-cards-container">
+        <!-- Rendered dynamically by renderMarketCards() -->
+      </div>
+    </div>
+
+    <div class="insights-panel">
+      <h3>⚡ Strategic Signals</h3>
+      <div class="insight-item">
+        <div class="insight-dot" style="background:#f87171"></div>
+        <div class="insight-text"><strong>TX breaches 60% despite shortest onboarding (23d).</strong> It's a process compliance gap — not a capacity problem. Needs execution intervention, not more time.</div>
+      </div>
+      <div class="insight-item">
+        <div class="insight-dot" style="background:#fbbf24"></div>
+        <div class="insight-text"><strong>CA's IT provisioning averages 7.7 days</strong> — highest of any market. IT Access + Compliance escalation combo produces 80% breach rate and 3.94 avg satisfaction.</div>
+      </div>
+      <div class="insight-item">
+        <div class="insight-dot" style="background:#fbbf24"></div>
+        <div class="insight-text"><strong>FL's breach cluster is driven by slow ticket resolution (22.3h avg).</strong> Every provider above 25h ticket time breached — 6 of 6. Ticket speed is FL's primary lever.</div>
+      </div>
+      <div class="insight-item">
+        <div class="insight-dot" style="background:#34d399"></div>
+        <div class="insight-text"><strong>Operations escalation type = 67% breach rate</strong> — the most dangerous escalation pathway. Scheduling + Compliance escalations = 0% breach. Routing matters.</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Row 2: Bottleneck + Step breach -->
+  <div class="grid-2">
+    <div class="card">
+      <div class="card-header">
+        <div><div class="card-title">SLA Breach Rate by Delay Reason</div><div class="card-sub">Primary bottleneck classification</div></div>
+        <span class="card-tag">BOTTLENECK</span>
+      </div>
+      <div class="hbar-wrap" id="delay-reasons-chart">
+        <!-- Rendered dynamically by renderDelayReasonsChart() -->
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-header">
+        <div><div class="card-title">Onboarding Step Composition</div><div class="card-sub">Avg days per step — breach vs no breach</div></div>
+        <span class="card-tag">STEP ANALYSIS</span>
+      </div>
+      <div class="funnel-wrap" id="step-composition-chart">
+        <!-- Rendered dynamically by renderStepCompositionChart() -->
+      </div>
+      <div style="font-size:11px;color:var(--text3);margin-top:12px;padding-top:10px;border-top:1px solid var(--bg)">IT Provisioning is the only step with a meaningful gap (+0.9d) between breach and non-breach providers</div>
+    </div>
+  </div>
+
+  <!-- Row 3: Escalation type + Risk score + Trend -->
+  <div class="grid-3">
+    <div class="card">
+      <div class="card-header">
+        <div><div class="card-title">Escalation Type → Breach Rate</div><div class="card-sub">Operations type = highest risk pathway</div></div>
+      </div>
+      <div class="esc-grid" id="escalation-types-chart">
+        <!-- Rendered dynamically by renderEscalationTypesChart() -->
+      </div>
+      <div style="font-size:11px;color:var(--text3);margin-top:12px">CA IT escalations = 0% breach · TX Compliance = 100%</div>
+    </div>
+
+    <div class="card">
+      <div class="card-header">
+        <div><div class="card-title">Compounding Risk Score</div><div class="card-sub">Ticket &gt;22h · Escalations ≥3 · IT days &gt;7</div></div>
+      </div>
+      <div class="risk-meters" id="risk-distribution-widget">
+        <!-- Rendered dynamically by renderRiskDistributionWidget() -->
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-header">
+        <div><div class="card-title">Cohort Trend by Start Month</div><div class="card-sub">Breach rate variance across intake cohorts</div></div>
+      </div>
+      <div id="cohort-trend-widget">
+        <!-- Rendered dynamically by renderCohortTrendWidget() -->
+      </div>
+      <div style="font-size:11px;color:var(--text3);margin-top:14px;padding-top:10px;border-top:1px solid var(--bg)">Feb cohort is best-performing. Jan/Mar show elevated breach — possible intake volume or team capacity signal.</div>
+      <div style="margin-top:14px">
+        <div class="card-title" style="margin-bottom:8px;font-size:12px">Support Efficiency by Market</div>
+        <div id="support-efficiency-widget">
+          <!-- Rendered dynamically by renderSupportEfficiencyWidget() -->
+        </div>
+        <div style="font-size:10px;color:var(--text3);margin-top:6px">Tasks completed per hour of ticket time · r=−0.554 with breach</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- =========================================================
+     TAB 2: PRACTICE LEADS
+     ========================================================= -->
+<div class="page" id="page-leads">
+  <div class="page-header">
+    <h1>Practice Operations Workbench</h1>
+    <p>Provider-level action queue · Escalation center · SLA prevention · Stage monitoring</p>
+    <div class="meta">DATASET: 36 PROVIDERS · TX · CA · FL · Q1 2025</div>
+  </div>
+
+  <!-- Action Queue -->
+  <div class="section-label">Action queue — today's work</div>
+
+  <div class="card" style="margin-bottom:16px">
+    <div class="card-header">
+      <div><div class="card-title">Provider Action Queue</div><div class="card-sub">Sortable · filterable · searchable · ordered by risk</div></div>
+    </div>
+    <div class="filters">
+      <span class="filter-label">Market:</span>
+      <button class="filter-btn active" onclick="filterTable('all', event)">All</button>
+      <button class="filter-btn" onclick="filterTable('TX', event)">TX</button>
+      <button class="filter-btn" onclick="filterTable('CA', event)">CA</button>
+      <button class="filter-btn" onclick="filterTable('FL', event)">FL</button>
+      <span class="filter-label" style="margin-left:8px">Risk:</span>
+      <button class="filter-btn" onclick="filterByRisk('Breached', event)">Breached</button>
+      <button class="filter-btn" onclick="filterByRisk('High Risk', event)">High Risk</button>
+      <button class="filter-btn" onclick="filterByRisk('Medium Risk', event)">Medium</button>
+      <div class="filter-spacer"></div>
+      <input type="text" class="search-box" placeholder="Search provider..." id="searchBox" oninput="searchTable(event)">
+    </div>
+    <div class="tbl-wrap">
+      <table class="data-tbl" id="actionTable">
+        <thead>
+          <tr>
+            <th onclick="sortTable(0, event)">Provider ↕</th>
+            <th onclick="sortTable(1, event)">Market ↕</th>
+            <th>SLA Status</th>
+            <th onclick="sortTable(3, event)">Days ↕</th>
+            <th>Delay Reason</th>
+            <th>Escalations</th>
+            <th>Ticket Hrs</th>
+            <th>Task %</th>
+            <th>Sat.</th>
+            <th>Risk Score</th>
+            <th>Next Action</th>
+          </tr>
+        </thead>
+        <tbody id="actionTableBody"></tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- SLA Prevention + Escalation Center -->
+  <div class="grid-2">
+    <div class="card">
+      <div class="card-header">
+        <div><div class="card-title">SLA Prevention Panel</div><div class="card-sub">Providers likely to breach — predicted drivers &amp; recommended actions</div></div>
+        <span class="card-tag">PROACTIVE</span>
+      </div>
+      <div id="slaPrevention"></div>
+    </div>
+
+    <div class="card">
+      <div class="card-header">
+        <div><div class="card-title">Escalation Center</div><div class="card-sub">Escalation burden by provider · type analysis</div></div>
+        <span class="card-tag">INTERVENTION</span>
+      </div>
+      <div class="mini-stats">
+        <div class="mini-stat"><div class="mini-stat-val" style="color:#991B1B">58.4</div><div class="mini-stat-lbl">Avg burden (breached)</div></div>
+        <div class="mini-stat"><div class="mini-stat-val" style="color:#1E6B4A">37.6</div><div class="mini-stat-lbl">Avg burden (clean)</div></div>
+        <div class="mini-stat"><div class="mini-stat-val">21.0h</div><div class="mini-stat-lbl">Avg ticket time</div></div>
+        <div class="mini-stat"><div class="mini-stat-val" style="color:#991B1B">67%</div><div class="mini-stat-lbl">Ops esc breach rate</div></div>
+      </div>
+      <div id="escalationCenter"></div>
+    </div>
+  </div>
+
+  <!-- Stage Monitoring -->
+  <div class="card">
+    <div class="card-header">
+      <div><div class="card-title">Workflow Stage Monitoring</div><div class="card-sub">Where are providers getting stuck? Step duration vs breach</div></div>
+      <span class="card-tag">STAGE VIEW</span>
+    </div>
+    <div class="grid-2" style="margin-bottom:0">
+      <div>
+        <div class="section-label" style="margin-bottom:10px">Avg step duration — breach vs no breach</div>
+        <div class="funnel-wrap" id="stage-duration-funnel">
+          <!-- Rendered dynamically by renderStageDurationFunnel() -->
+        </div>
+      </div>
+      <div>
+        <div class="section-label" style="margin-bottom:10px">Providers by dominant step</div>
+        <div id="dominantStepChart"></div>
+        <div style="margin-top:16px">
+          <div class="alert-card blue">
+            <div class="alert-icon">ℹ</div>
+            <div><div class="alert-title">78% of providers: stated delay ≠ actual longest step</div><div class="alert-text">IT Provisioning is the longest step for 15 providers but only flagged as the delay reason for 4. Root cause data is being misattributed — escalations are going to wrong teams.</div></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- =========================================================
+     TAB 3: ROOT CAUSE ANALYSIS
+     ========================================================= -->
+<div class="page" id="page-rootcause">
+  <div class="page-header">
+    <h1>Root Cause Analytics</h1>
+    <p>Deep-dive bottleneck analysis · Cross-signal correlations · Derived metrics · Market-specific drivers</p>
+    <div class="meta">DATASET: 36 PROVIDERS · TX · CA · FL · Q1 2025</div>
+  </div>
+
+  <!-- Delay × Market Heatmap -->
+  <div class="grid-2">
+    <div class="card">
+      <div class="card-header">
+        <div><div class="card-title">Delay Reason × Market Breach Heatmap</div><div class="card-sub">Breach rate for each delay reason per market</div></div>
+        <span class="card-tag">HEATMAP</span>
+      </div>
+      <div style="overflow-x:auto">
+        <table class="data-tbl">
+          <thead><tr><th>Delay Reason</th><th>TX</th><th>CA</th><th>FL</th></tr></thead>
+          <tbody id="heatmapBody"></tbody>
+        </table>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-header">
+        <div><div class="card-title">Escalation Type × Market Breach Rate</div><div class="card-sub">How escalation routing affects breach by market</div></div>
+        <span class="card-tag">ROUTING RISK</span>
+      </div>
+      <div style="overflow-x:auto">
+        <table class="data-tbl">
+          <thead><tr><th>Escalation Type</th><th>TX</th><th>CA</th><th>FL</th></tr></thead>
+          <tbody id="escHeatBody"></tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+
+  <!-- Derived Metrics -->
+  <div class="section-label">Derived metrics — computed from existing columns</div>
+  <div class="grid-3">
+    <div class="card">
+      <div class="card-header"><div><div class="card-title">Support Efficiency</div><div class="card-sub">Tasks completed ÷ ticket time · r=−0.554 with breach</div></div></div>
+      <div style="font-family:'DM Mono',monospace;font-size:11px;color:var(--text3);margin-bottom:8px">FORMULA: % Tasks Completed On Time ÷ Avg Ticket Resolution Time</div>
+      <div class="hbar-wrap">
+        <div class="hbar-row"><span class="hbar-label">No breach</span><div class="hbar-track"><div class="hbar-fill" style="width:80%;background:#1E6B4A"></div></div><span class="hbar-val" style="color:#1E6B4A">4.86</span></div>
+        <div class="hbar-row"><span class="hbar-label">Breached</span><div class="hbar-track"><div class="hbar-fill" style="width:60%;background:#991B1B"></div></div><span class="hbar-val" style="color:#991B1B">3.65</span></div>
+      </div>
+      <div style="margin-top:10px;padding-top:10px;border-top:1px solid var(--bg);font-size:11px;color:var(--text3)">Strongest single predictor of breach in dataset. TX market average (4.12) is lowest — directly explains 60% breach rate.</div>
+    </div>
+    <div class="card">
+      <div class="card-header"><div><div class="card-title">Escalation Burden</div><div class="card-sub">Escalations × ticket time · operational cost proxy</div></div></div>
+      <div style="font-family:'DM Mono',monospace;font-size:11px;color:var(--text3);margin-bottom:8px">FORMULA: # Escalations × Avg Ticket Resolution Time (hrs)</div>
+      <div class="hbar-wrap">
+        <div class="hbar-row"><span class="hbar-label">Breached</span><div class="hbar-track"><div class="hbar-fill" style="width:78%;background:#991B1B"></div></div><span class="hbar-val" style="color:#991B1B">58.4</span></div>
+        <div class="hbar-row"><span class="hbar-label">No breach</span><div class="hbar-track"><div class="hbar-fill" style="width:50%;background:#1E6B4A"></div></div><span class="hbar-val" style="color:#1E6B4A">37.6</span></div>
+        <div class="hbar-row"><span class="hbar-label">TX avg</span><div class="hbar-track"><div class="hbar-fill" style="width:68%;background:#B45309"></div></div><span class="hbar-val">51.4</span></div>
+        <div class="hbar-row"><span class="hbar-label">CA avg</span><div class="hbar-track"><div class="hbar-fill" style="width:58%;background:#6B7280"></div></div><span class="hbar-val">43.8</span></div>
+      </div>
+    </div>
+    <div class="card">
+      <div class="card-header"><div><div class="card-title">Task Velocity</div><div class="card-sub">Task completion rate ÷ onboarding duration</div></div></div>
+      <div style="font-family:'DM Mono',monospace;font-size:11px;color:var(--text3);margin-bottom:8px">FORMULA: % Tasks Completed On Time ÷ Onboarding Duration (days)</div>
+      <div class="hbar-wrap">
+        <div class="hbar-row"><span class="hbar-label">No breach</span><div class="hbar-track"><div class="hbar-fill" style="width:80%;background:#1E6B4A"></div></div><span class="hbar-val" style="color:#1E6B4A">3.92</span></div>
+        <div class="hbar-row"><span class="hbar-label">Breached</span><div class="hbar-track"><div class="hbar-fill" style="width:68%;background:#991B1B"></div></div><span class="hbar-val" style="color:#991B1B">3.36</span></div>
+      </div>
+      <div style="margin-top:10px;padding-top:10px;border-top:1px solid var(--bg);font-size:11px;color:var(--text3)">P025 (TX) has velocity 4.84 despite breach — confirming TX fails at step-level SLA gates, not total duration. Being fast ≠ being compliant.</div>
+    </div>
+  </div>
+
+  <!-- Correlation table + key combos -->
+  <div class="grid-2-1">
+    <div class="card">
+      <div class="card-header"><div><div class="card-title">Predictor Correlation with SLA Breach</div><div class="card-sub">Pearson r — raw and derived fields</div></div><span class="card-tag">CORRELATION</span></div>
+      <div class="hbar-wrap">
+        <div class="hbar-row"><span class="hbar-label">Support Efficiency (inv)</span><div class="hbar-track"><div class="hbar-fill" style="width:100%;background:#991B1B"></div></div><span class="hbar-val" style="color:#991B1B">−0.554</span></div>
+        <div class="hbar-row"><span class="hbar-label">Ticket Resolution Time</span><div class="hbar-track"><div class="hbar-fill" style="width:88%;background:#991B1B"></div></div><span class="hbar-val" style="color:#B45309">0.487</span></div>
+        <div class="hbar-row"><span class="hbar-label">% Tasks (inv)</span><div class="hbar-track"><div class="hbar-fill" style="width:76%;background:#B45309"></div></div><span class="hbar-val" style="color:#B45309">−0.422</span></div>
+        <div class="hbar-row"><span class="hbar-label">IT Provisioning Days</span><div class="hbar-track"><div class="hbar-fill" style="width:49%;background:#B45309"></div></div><span class="hbar-val">0.270</span></div>
+        <div class="hbar-row"><span class="hbar-label">Onboarding Duration</span><div class="hbar-track"><div class="hbar-fill" style="width:41%;background:#6B7280"></div></div><span class="hbar-val">0.225</span></div>
+        <div class="hbar-row"><span class="hbar-label"># Escalations</span><div class="hbar-track"><div class="hbar-fill" style="width:22%;background:#6B7280"></div></div><span class="hbar-val">0.124</span></div>
+        <div class="hbar-row"><span class="hbar-label">Contracting Days</span><div class="hbar-track"><div class="hbar-fill" style="width:8%;background:#D8D4CC"></div></div><span class="hbar-val">0.037</span></div>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-header"><div><div class="card-title">Key Risk Combos</div></div></div>
+      <div style="display:flex;flex-direction:column;gap:8px">
+        <div style="padding:10px;background:var(--red-light);border-radius:var(--radius-sm);border:1px solid #FECACA">
+          <div style="font-size:11px;font-weight:700;color:var(--red);margin-bottom:3px">IT Access + Compliance Esc</div>
+          <div style="font-size:20px;font-weight:700;color:var(--red);font-family:'Instrument Serif',serif">80% breach · sat 3.94</div>
+          <div style="font-size:11px;color:var(--text3)">Worst combo in dataset — 5 providers</div>
+        </div>
+        <div style="padding:10px;background:var(--amber-light);border-radius:var(--radius-sm);border:1px solid #FDE68A">
+          <div style="font-size:11px;font-weight:700;color:var(--amber);margin-bottom:3px">Dual Heavy (IT + Compliance both &gt; avg)</div>
+          <div style="font-size:20px;font-weight:700;color:var(--amber);font-family:'Instrument Serif',serif">56% breach · avg 26d</div>
+          <div style="font-size:11px;color:var(--text3)">9 providers — CA has 4 of them</div>
+        </div>
+        <div style="padding:10px;background:var(--accent-light);border-radius:var(--radius-sm);border:1px solid #BBF7D0">
+          <div style="font-size:11px;font-weight:700;color:var(--accent);margin-bottom:3px">Scheduling + Compliance Esc (safest path)</div>
+          <div style="font-size:20px;font-weight:700;color:var(--accent);font-family:'Instrument Serif',serif">0% breach · sat 4.40</div>
+          <div style="font-size:11px;color:var(--text3)">Benchmark pathway — escalation routing works</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- =========================================================
+     TAB 4: PROVIDER DRILLDOWN
+     ========================================================= -->
+<div class="page" id="page-providers">
+  <div class="page-header">
+    <h1>Provider Drilldown</h1>
+    <p>Detailed individual provider investigation · All derived metrics · Step breakdown</p>
+    <div class="meta">DATASET: 36 PROVIDERS · TX · CA · FL · Q1 2025</div>
+  </div>
+  <div class="filters">
+    <span class="filter-label">Sort by:</span>
+    <button class="filter-btn active" onclick="sortProviders('risk', event)">Risk Score</button>
+    <button class="filter-btn" onclick="sortProviders('onboarding', event)">Onboarding Days</button>
+    <button class="filter-btn" onclick="sortProviders('satisfaction', event)">Satisfaction</button>
+    <button class="filter-btn" onclick="sortProviders('burden', event)">Esc Burden</button>
+    <div class="filter-spacer"></div>
+    <button class="filter-btn" onclick="filterProviders('all', event)">All Markets</button>
+    <button class="filter-btn" onclick="filterProviders('TX', event)">TX</button>
+    <button class="filter-btn" onclick="filterProviders('CA', event)">CA</button>
+    <button class="filter-btn" onclick="filterProviders('FL', event)">FL</button>
+  </div>
+  <div id="providerCards" style="display:grid;grid-template-columns:repeat(3,1fr);gap:14px"></div>
+</div>
+
+<script>
+// ============================================================
+// DATA & PORTFOLIO DATABASE
+// ============================================================
+let DATA = {};
+const BASE_PROVIDERS = [{"Provider ID":"P001","Market":"FL","Onboarding Duration (days)":26,"% Tasks Completed On Time":87.7,"Avg Ticket Resolution Time (hrs)":20.0,"# Escalations":1.0,"Satisfaction Score (1-5)":4.3,"Contracting Days":5.7,"IT Provisioning Days":7.4,"Compliance Days":5.9,"Training Days":6.5,"Primary Delay Reason":"Vendor SLA","Escalation Type":"Other","SLA Breach (Y/N)":"N","sla_risk":"Medium Risk","risk_score":1,"next_action":"Chase vendor delivery","escalation_burden":20.0,"support_efficiency":4.38,"it_share":28.5,"dominant_step":"IT Provisioning","it_vs_mkt":0.7},{"Provider ID":"P002","Market":"TX","Onboarding Duration (days)":22,"% Tasks Completed On Time":92.8,"Avg Ticket Resolution Time (hrs)":12.7,"# Escalations":1.0,"Satisfaction Score (1-5)":4.2,"Contracting Days":4.8,"IT Provisioning Days":3.1,"Compliance Days":8.3,"Training Days":5.9,"Primary Delay Reason":"Internal Handoff","Escalation Type":"Other","SLA Breach (Y/N)":"N","sla_risk":"On Track","risk_score":0,"next_action":"Assign handoff owner","escalation_burden":12.7,"support_efficiency":7.31,"it_share":14.1,"dominant_step":"Compliance","it_vs_mkt":-3.09},{"Provider ID":"P003","Market":"FL","Onboarding Duration (days)":16,"% Tasks Completed On Time":81.2,"Avg Ticket Resolution Time (hrs)":22.5,"# Escalations":1.0,"Satisfaction Score (1-5)":4.5,"Contracting Days":6.0,"IT Provisioning Days":4.3,"Compliance Days":3.0,"Training Days":2.2,"Primary Delay Reason":"Internal Handoff","Escalation Type":"Operations","SLA Breach (Y/N)":"N","sla_risk":"Medium Risk","risk_score":1,"next_action":"Assign handoff owner","escalation_burden":22.5,"support_efficiency":3.61,"it_share":26.9,"dominant_step":"Contracting","it_vs_mkt":-2.4},{"Provider ID":"P004","Market":"FL","Onboarding Duration (days)":28,"% Tasks Completed On Time":"","Avg Ticket Resolution Time (hrs)":25.3,"# Escalations":3.0,"Satisfaction Score (1-5)":3.8,"Contracting Days":7.3,"IT Provisioning Days":7.4,"Compliance Days":7.2,"Training Days":5.9,"Primary Delay Reason":"Scheduling","Escalation Type":"Operations","SLA Breach (Y/N)":"Y","sla_risk":"Breached","risk_score":3,"next_action":"Reschedule training/kickoff","escalation_burden":75.9,"support_efficiency":"","it_share":26.4,"dominant_step":"IT Provisioning","it_vs_mkt":0.7},{"Provider ID":"P005","Market":"TX","Onboarding Duration (days)":25,"% Tasks Completed On Time":76.1,"Avg Ticket Resolution Time (hrs)":20.0,"# Escalations":1.0,"Satisfaction Score (1-5)":4.2,"Contracting Days":4.6,"IT Provisioning Days":8.5,"Compliance Days":6.1,"Training Days":6.1,"Primary Delay Reason":"IT Access","Escalation Type":"Compliance","SLA Breach (Y/N)":"Y","sla_risk":"Breached","risk_score":1,"next_action":"Escalate IT provisioning","escalation_burden":20.0,"support_efficiency":3.8,"it_share":34.0,"dominant_step":"IT Provisioning","it_vs_mkt":2.31},{"Provider ID":"P006","Market":"TX","Onboarding Duration (days)":28,"% Tasks Completed On Time":75.4,"Avg Ticket Resolution Time (hrs)":18.8,"# Escalations":4.0,"Satisfaction Score (1-5)":4.0,"Contracting Days":4.6,"IT Provisioning Days":7.3,"Compliance Days":5.6,"Training Days":10.0,"Primary Delay Reason":"IT Access","Escalation Type":"Operations","SLA Breach (Y/N)":"Y","sla_risk":"Breached","risk_score":2,"next_action":"Escalate IT provisioning","escalation_burden":75.2,"support_efficiency":4.01,"it_share":26.1,"dominant_step":"Training","it_vs_mkt":1.11},{"Provider ID":"P007","Market":"FL","Onboarding Duration (days)":26,"% Tasks Completed On Time":91.5,"Avg Ticket Resolution Time (hrs)":14.9,"# Escalations":2.0,"Satisfaction Score (1-5)":4.5,"Contracting Days":7.4,"IT Provisioning Days":6.8,"Compliance Days":6.1,"Training Days":5.6,"Primary Delay Reason":"Scheduling","Escalation Type":"Compliance","SLA Breach (Y/N)":"N","sla_risk":"On Track","risk_score":0,"next_action":"Reschedule training/kickoff","escalation_burden":29.8,"support_efficiency":6.14,"it_share":26.2,"dominant_step":"Contracting","it_vs_mkt":0.1},{"Provider ID":"P008","Market":"CA","Onboarding Duration (days)":22,"% Tasks Completed On Time":94.8,"Avg Ticket Resolution Time (hrs)":17.9,"# Escalations":0.0,"Satisfaction Score (1-5)":4.4,"Contracting Days":6.2,"IT Provisioning Days":6.4,"Compliance Days":3.0,"Training Days":6.6,"Primary Delay Reason":"Scheduling","Escalation Type":"Compliance","SLA Breach (Y/N)":"N","sla_risk":"On Track","risk_score":0,"next_action":"Reschedule training/kickoff","escalation_burden":0.0,"support_efficiency":5.3,"it_share":29.1,"dominant_step":"Training","it_vs_mkt":-1.33},{"Provider ID":"P009","Market":"FL","Onboarding Duration (days)":20,"% Tasks Completed On Time":84.4,"Avg Ticket Resolution Time (hrs)":22.3,"# Escalations":"","Satisfaction Score (1-5)":4.3,"Contracting Days":4.3,"IT Provisioning Days":4.0,"Compliance Days":5.7,"Training Days":5.9,"Primary Delay Reason":"Scheduling","Escalation Type":"Compliance","SLA Breach (Y/N)":"N","sla_risk":"Medium Risk","risk_score":1,"next_action":"Reschedule training/kickoff","escalation_burden":44.6,"support_efficiency":3.78,"it_share":20.0,"dominant_step":"Training","it_vs_mkt":-2.7},{"Provider ID":"P010","Market":"FL","Onboarding Duration (days)":22,"% Tasks Completed On Time":93.0,"Avg Ticket Resolution Time (hrs)":19.0,"# Escalations":5.0,"Satisfaction Score (1-5)":4.1,"Contracting Days":5.8,"IT Provisioning Days":5.6,"Compliance Days":6.5,"Training Days":3.7,"Primary Delay Reason":"Vendor SLA","Escalation Type":"Compliance","SLA Breach (Y/N)":"N","sla_risk":"Medium Risk","risk_score":1,"next_action":"Chase vendor delivery","escalation_burden":95.0,"support_efficiency":4.89,"it_share":25.5,"dominant_step":"Compliance","it_vs_mkt":-1.1},{"Provider ID":"P011","Market":"FL","Onboarding Duration (days)":27,"% Tasks Completed On Time":87.9,"Avg Ticket Resolution Time (hrs)":21.2,"# Escalations":2.0,"Satisfaction Score (1-5)":4.0,"Contracting Days":4.3,"IT Provisioning Days":6.1,"Compliance Days":8.2,"Training Days":8.3,"Primary Delay Reason":"IT Access","Escalation Type":"Compliance","SLA Breach (Y/N)":"Y","sla_risk":"Breached","risk_score":0,"next_action":"Escalate IT provisioning","escalation_burden":42.4,"support_efficiency":4.15,"it_share":22.6,"dominant_step":"Training","it_vs_mkt":-0.6},{"Provider ID":"P012","Market":"FL","Onboarding Duration (days)":26,"% Tasks Completed On Time":79.8,"Avg Ticket Resolution Time (hrs)":24.0,"# Escalations":0.0,"Satisfaction Score (1-5)":4.2,"Contracting Days":4.3,"IT Provisioning Days":9.1,"Compliance Days":5.2,"Training Days":7.5,"Primary Delay Reason":"Vendor SLA","Escalation Type":"IT","SLA Breach (Y/N)":"Y","sla_risk":"Breached","risk_score":2,"next_action":"Chase vendor delivery","escalation_burden":0.0,"support_efficiency":3.32,"it_share":35.0,"dominant_step":"IT Provisioning","it_vs_mkt":2.4},{"Provider ID":"P013","Market":"TX","Onboarding Duration (days)":26,"% Tasks Completed On Time":87.9,"Avg Ticket Resolution Time (hrs)":29.4,"# Escalations":0.0,"Satisfaction Score (1-5)":3.8,"Contracting Days":5.4,"IT Provisioning Days":7.7,"Compliance Days":4.8,"Training Days":7.6,"Primary Delay Reason":"Scheduling","Escalation Type":"Operations","SLA Breach (Y/N)":"Y","sla_risk":"Breached","risk_score":2,"next_action":"Reschedule training/kickoff","escalation_burden":0.0,"support_efficiency":2.99,"it_share":29.6,"dominant_step":"IT Provisioning","it_vs_mkt":1.51},{"Provider ID":"P014","Market":"FL","Onboarding Duration (days)":15,"% Tasks Completed On Time":97.3,"Avg Ticket Resolution Time (hrs)":23.9,"# Escalations":1.0,"Satisfaction Score (1-5)":4.0,"Contracting Days":2.1,"IT Provisioning Days":3.5,"Compliance Days":5.2,"Training Days":4.2,"Primary Delay Reason":"IT Access","Escalation Type":"Compliance","SLA Breach (Y/N)":"N","sla_risk":"Medium Risk","risk_score":1,"next_action":"Escalate IT provisioning","escalation_burden":23.9,"support_efficiency":4.07,"it_share":23.3,"dominant_step":"Compliance","it_vs_mkt":-3.2},{"Provider ID":"P015","Market":"CA","Onboarding Duration (days)":26,"% Tasks Completed On Time":80.7,"Avg Ticket Resolution Time (hrs)":21.3,"# Escalations":"","Satisfaction Score (1-5)":4.1,"Contracting Days":2.4,"IT Provisioning Days":7.6,"Compliance Days":7.4,"Training Days":8.8,"Primary Delay Reason":"Vendor SLA","Escalation Type":"Other","SLA Breach (Y/N)":"N","sla_risk":"Medium Risk","risk_score":1,"next_action":"Chase vendor delivery","escalation_burden":42.6,"support_efficiency":3.79,"it_share":29.2,"dominant_step":"Training","it_vs_mkt":-0.13},{"Provider ID":"P016","Market":"TX","Onboarding Duration (days)":20,"% Tasks Completed On Time":97.5,"Avg Ticket Resolution Time (hrs)":19.6,"# Escalations":2.0,"Satisfaction Score (1-5)":4.0,"Contracting Days":4.2,"IT Provisioning Days":6.2,"Compliance Days":6.5,"Training Days":3.2,"Primary Delay Reason":"Vendor SLA","Escalation Type":"Operations","SLA Breach (Y/N)":"N","sla_risk":"On Track","risk_score":0,"next_action":"Chase vendor delivery","escalation_burden":39.2,"support_efficiency":4.97,"it_share":31.0,"dominant_step":"Compliance","it_vs_mkt":0.01},{"Provider ID":"P017","Market":"CA","Onboarding Duration (days)":22,"% Tasks Completed On Time":59.0,"Avg Ticket Resolution Time (hrs)":10.4,"# Escalations":2.0,"Satisfaction Score (1-5)":4.3,"Contracting Days":3.5,"IT Provisioning Days":5.6,"Compliance Days":5.2,"Training Days":7.2,"Primary Delay Reason":"Scheduling","Escalation Type":"Operations","SLA Breach (Y/N)":"Y","sla_risk":"Breached","risk_score":0,"next_action":"Reschedule training/kickoff","escalation_burden":20.8,"support_efficiency":5.67,"it_share":25.5,"dominant_step":"Training","it_vs_mkt":-2.13},{"Provider ID":"P018","Market":"CA","Onboarding Duration (days)":30,"% Tasks Completed On Time":87.6,"Avg Ticket Resolution Time (hrs)":19.9,"# Escalations":5.0,"Satisfaction Score (1-5)":3.5,"Contracting Days":5.5,"IT Provisioning Days":8.2,"Compliance Days":6.8,"Training Days":10.0,"Primary Delay Reason":"IT Access","Escalation Type":"Compliance","SLA Breach (Y/N)":"Y","sla_risk":"Breached","risk_score":2,"next_action":"Escalate IT provisioning","escalation_burden":99.5,"support_efficiency":4.4,"it_share":27.3,"dominant_step":"Training","it_vs_mkt":0.47},{"Provider ID":"P019","Market":"CA","Onboarding Duration (days)":23,"% Tasks Completed On Time":83.7,"Avg Ticket Resolution Time (hrs)":20.3,"# Escalations":1.0,"Satisfaction Score (1-5)":3.8,"Contracting Days":3.6,"IT Provisioning Days":9.1,"Compliance Days":6.1,"Training Days":4.0,"Primary Delay Reason":"Scheduling","Escalation Type":"IT","SLA Breach (Y/N)":"N","sla_risk":"Medium Risk","risk_score":1,"next_action":"Reschedule training/kickoff","escalation_burden":20.3,"support_efficiency":4.12,"it_share":39.6,"dominant_step":"IT Provisioning","it_vs_mkt":1.37},{"Provider ID":"P020","Market":"CA","Onboarding Duration (days)":24,"% Tasks Completed On Time":80.6,"Avg Ticket Resolution Time (hrs)":32.3,"# Escalations":2.0,"Satisfaction Score (1-5)":4.0,"Contracting Days":2.9,"IT Provisioning Days":8.9,"Compliance Days":7.5,"Training Days":4.9,"Primary Delay Reason":"IT Access","Escalation Type":"Compliance","SLA Breach (Y/N)":"Y","sla_risk":"Breached","risk_score":2,"next_action":"Escalate IT provisioning","escalation_burden":64.6,"support_efficiency":2.5,"it_share":37.1,"dominant_step":"IT Provisioning","it_vs_mkt":1.17},{"Provider ID":"P021","Market":"TX","Onboarding Duration (days)":24,"% Tasks Completed On Time":85.7,"Avg Ticket Resolution Time (hrs)":19.0,"# Escalations":4.0,"Satisfaction Score (1-5)":3.8,"Contracting Days":7.2,"IT Provisioning Days":5.3,"Compliance Days":4.9,"Training Days":6.2,"Primary Delay Reason":"Internal Handoff","Escalation Type":"IT","SLA Breach (Y/N)":"N","sla_risk":"Medium Risk","risk_score":1,"next_action":"Assign handoff owner","escalation_burden":76.0,"support_efficiency":4.51,"it_share":22.1,"dominant_step":"Contracting","it_vs_mkt":-0.89},{"Provider ID":"P022","Market":"TX","Onboarding Duration (days)":22,"% Tasks Completed On Time":69.1,"Avg Ticket Resolution Time (hrs)":21.5,"# Escalations":1.0,"Satisfaction Score (1-5)":4.2,"Contracting Days":4.7,"IT Provisioning Days":6.4,"Compliance Days":5.5,"Training Days":5.0,"Primary Delay Reason":"Missing Docs","Escalation Type":"Other","SLA Breach (Y/N)":"Y","sla_risk":"Breached","risk_score":0,"next_action":"Follow up on compliance docs","escalation_burden":21.5,"support_efficiency":3.21,"it_share":29.1,"dominant_step":"IT Provisioning","it_vs_mkt":0.21},{"Provider ID":"P023","Market":"CA","Onboarding Duration (days)":21,"% Tasks Completed On Time":78.2,"Avg Ticket Resolution Time (hrs)":19.8,"# Escalations":2.0,"Satisfaction Score (1-5)":3.9,"Contracting Days":5.1,"IT Provisioning Days":7.7,"Compliance Days":5.4,"Training Days":2.9,"Primary Delay Reason":"Missing Docs","Escalation Type":"Operations","SLA Breach (Y/N)":"Y","sla_risk":"Breached","risk_score":1,"next_action":"Follow up on compliance docs","escalation_burden":39.6,"support_efficiency":3.95,"it_share":36.7,"dominant_step":"IT Provisioning","it_vs_mkt":-0.03},{"Provider ID":"P024","Market":"CA","Onboarding Duration (days)":22,"% Tasks Completed On Time":83.9,"Avg Ticket Resolution Time (hrs)":14.2,"# Escalations":1.0,"Satisfaction Score (1-5)":4.2,"Contracting Days":2.9,"IT Provisioning Days":9.0,"Compliance Days":3.8,"Training Days":6.1,"Primary Delay Reason":"Missing Docs","Escalation Type":"Other","SLA Breach (Y/N)":"N","sla_risk":"Medium Risk","risk_score":1,"next_action":"Follow up on compliance docs","escalation_burden":14.2,"support_efficiency":5.91,"it_share":40.9,"dominant_step":"IT Provisioning","it_vs_mkt":1.27},{"Provider ID":"P025","Market":"TX","Onboarding Duration (days)":20,"% Tasks Completed On Time":96.8,"Avg Ticket Resolution Time (hrs)":25.7,"# Escalations":4.0,"Satisfaction Score (1-5)":4.3,"Contracting Days":4.2,"IT Provisioning Days":6.0,"Compliance Days":6.4,"Training Days":3.9,"Primary Delay Reason":"Scheduling","Escalation Type":"IT","SLA Breach (Y/N)":"Y","sla_risk":"Breached","risk_score":2,"next_action":"Reschedule training/kickoff","escalation_burden":102.8,"support_efficiency":3.77,"it_share":30.0,"dominant_step":"Compliance","it_vs_mkt":-0.19},{"Provider ID":"P026","Market":"TX","Onboarding Duration (days)":25,"% Tasks Completed On Time":80.9,"Avg Ticket Resolution Time (hrs)":23.8,"# Escalations":5.0,"Satisfaction Score (1-5)":3.7,"Contracting Days":5.2,"IT Provisioning Days":6.6,"Compliance Days":6.4,"Training Days":6.9,"Primary Delay Reason":"Internal Handoff","Escalation Type":"IT","SLA Breach (Y/N)":"N","sla_risk":"High Risk","risk_score":2,"next_action":"Assign handoff owner","escalation_burden":119.0,"support_efficiency":3.4,"it_share":26.4,"dominant_step":"Training","it_vs_mkt":0.41},{"Provider ID":"P027","Market":"TX","Onboarding Duration (days)":18,"% Tasks Completed On Time":78.5,"Avg Ticket Resolution Time (hrs)":24.0,"# Escalations":2.0,"Satisfaction Score (1-5)":4.3,"Contracting Days":3.3,"IT Provisioning Days":4.8,"Compliance Days":6.0,"Training Days":4.2,"Primary Delay Reason":"IT Access","Escalation Type":"Other","SLA Breach (Y/N)":"Y","sla_risk":"Breached","risk_score":1,"next_action":"Escalate IT provisioning","escalation_burden":48.0,"support_efficiency":3.27,"it_share":26.7,"dominant_step":"Compliance","it_vs_mkt":-1.39},{"Provider ID":"P028","Market":"FL","Onboarding Duration (days)":25,"% Tasks Completed On Time":81.0,"Avg Ticket Resolution Time (hrs)":17.5,"# Escalations":1.0,"Satisfaction Score (1-5)":3.9,"Contracting Days":5.6,"IT Provisioning Days":4.6,"Compliance Days":5.6,"Training Days":9.1,"Primary Delay Reason":"Vendor SLA","Escalation Type":"IT","SLA Breach (Y/N)":"N","sla_risk":"On Track","risk_score":0,"next_action":"Chase vendor delivery","escalation_burden":17.5,"support_efficiency":4.63,"it_share":18.4,"dominant_step":"Training","it_vs_mkt":-2.1},{"Provider ID":"P029","Market":"FL","Onboarding Duration (days)":21,"% Tasks Completed On Time":"","Avg Ticket Resolution Time (hrs)":31.0,"# Escalations":3.0,"Satisfaction Score (1-5)":4.5,"Contracting Days":4.1,"IT Provisioning Days":8.6,"Compliance Days":3.9,"Training Days":4.4,"Primary Delay Reason":"IT Access","Escalation Type":"Other","SLA Breach (Y/N)":"Y","sla_risk":"Breached","risk_score":3,"next_action":"Escalate IT provisioning","escalation_burden":93.0,"support_efficiency":"","it_share":41.0,"dominant_step":"IT Provisioning","it_vs_mkt":1.9},{"Provider ID":"P030","Market":"FL","Onboarding Duration (days)":25,"% Tasks Completed On Time":87.6,"Avg Ticket Resolution Time (hrs)":14.0,"# Escalations":2.0,"Satisfaction Score (1-5)":4.6,"Contracting Days":4.6,"IT Provisioning Days":9.7,"Compliance Days":5.4,"Training Days":5.4,"Primary Delay Reason":"Vendor SLA","Escalation Type":"Operations","SLA Breach (Y/N)":"N","sla_risk":"Medium Risk","risk_score":1,"next_action":"Chase vendor delivery","escalation_burden":28.0,"support_efficiency":6.26,"it_share":38.8,"dominant_step":"IT Provisioning","it_vs_mkt":3.0},{"Provider ID":"P031","Market":"CA","Onboarding Duration (days)":24,"% Tasks Completed On Time":79.8,"Avg Ticket Resolution Time (hrs)":22.9,"# Escalations":5.0,"Satisfaction Score (1-5)":4.1,"Contracting Days":4.1,"IT Provisioning Days":6.9,"Compliance Days":5.5,"Training Days":7.6,"Primary Delay Reason":"IT Access","Escalation Type":"Other","SLA Breach (Y/N)":"Y","sla_risk":"Breached","risk_score":2,"next_action":"Escalate IT provisioning","escalation_burden":114.5,"support_efficiency":3.48,"it_share":28.8,"dominant_step":"Training","it_vs_mkt":-0.83},{"Provider ID":"P032","Market":"FL","Onboarding Duration (days)":25,"% Tasks Completed On Time":89.1,"Avg Ticket Resolution Time (hrs)":35.0,"# Escalations":5.0,"Satisfaction Score (1-5)":3.7,"Contracting Days":7.8,"IT Provisioning Days":9.0,"Compliance Days":4.8,"Training Days":3.5,"Primary Delay Reason":"Internal Handoff","Escalation Type":"Operations","SLA Breach (Y/N)":"Y","sla_risk":"Breached","risk_score":3,"next_action":"Assign handoff owner","escalation_burden":175.0,"support_efficiency":2.55,"it_share":36.0,"dominant_step":"IT Provisioning","it_vs_mkt":2.3},{"Provider ID":"P033","Market":"CA","Onboarding Duration (days)":25,"% Tasks Completed On Time":80.8,"Avg Ticket Resolution Time (hrs)":15.0,"# Escalations":5.0,"Satisfaction Score (1-5)":3.8,"Contracting Days":5.0,"IT Provisioning Days":7.7,"Compliance Days":5.8,"Training Days":6.5,"Primary Delay Reason":"Vendor SLA","Escalation Type":"Other","SLA Breach (Y/N)":"N","sla_risk":"High Risk","risk_score":2,"next_action":"Chase vendor delivery","escalation_burden":75.0,"support_efficiency":5.39,"it_share":30.8,"dominant_step":"IT Provisioning","it_vs_mkt":-0.03},{"Provider ID":"P034","Market":"CA","Onboarding Duration (days)":24,"% Tasks Completed On Time":90.7,"Avg Ticket Resolution Time (hrs)":17.2,"# Escalations":1.0,"Satisfaction Score (1-5)":4.3,"Contracting Days":3.4,"IT Provisioning Days":5.7,"Compliance Days":6.6,"Training Days":8.6,"Primary Delay Reason":"Scheduling","Escalation Type":"IT","SLA Breach (Y/N)":"N","sla_risk":"On Track","risk_score":0,"next_action":"Reschedule training/kickoff","escalation_burden":17.2,"support_efficiency":5.27,"it_share":23.8,"dominant_step":"Training","it_vs_mkt":-2.03},{"Provider ID":"P035","Market":"FL","Onboarding Duration (days)":26,"% Tasks Completed On Time":79.4,"Avg Ticket Resolution Time (hrs)":21.5,"# Escalations":0.0,"Satisfaction Score (1-5)":4.5,"Contracting Days":6.2,"IT Provisioning Days":7.7,"Compliance Days":8.8,"Training Days":2.8,"Primary Delay Reason":"IT Access","Escalation Type":"Other","SLA Breach (Y/N)":"Y","sla_risk":"Breached","risk_score":1,"next_action":"Escalate IT provisioning","escalation_burden":0.0,"support_efficiency":3.69,"it_share":29.6,"dominant_step":"Compliance","it_vs_mkt":1.0},{"Provider ID":"P036","Market":"CA","Onboarding Duration (days)":26,"% Tasks Completed On Time":80.4,"Avg Ticket Resolution Time (hrs)":17.5,"# Escalations":1.0,"Satisfaction Score (1-5)":4.0,"Contracting Days":3.2,"IT Provisioning Days":10.0,"Compliance Days":6.3,"Training Days":6.4,"Primary Delay Reason":"IT Access","Escalation Type":"IT","SLA Breach (Y/N)":"N","sla_risk":"Medium Risk","risk_score":1,"next_action":"Escalate IT provisioning","escalation_burden":17.5,"support_efficiency":4.59,"it_share":38.5,"dominant_step":"IT Provisioning","it_vs_mkt":2.27}];
+
+// ============================================================
+// TAB SWITCHING
+// ============================================================
+// GLOBAL STATE & DATA MANAGEMENT
+// ============================================================
+let activeState = 'all';
+let activeQuarter = 'Q1';
+let PROVIDERS = [];
+
+function getQuarterlyModifier(q, providerId) {
+  let hash = 0;
+  for (let i = 0; i < providerId.length; i++) {
+    hash = providerId.charCodeAt(i) + ((hash << 5) - hash);
+  }
+  let rand = (Math.abs(hash) % 100) / 100;
+
+  if (q === 'Q1') {
+    return { itOffset: 0, ticketOffset: 0, durationOffset: 0, satOffset: 0 };
+  } else if (q === 'Q2') {
+    return {
+      itOffset: -1.2 + rand * 0.4,
+      ticketOffset: -2.5 + rand * 1.0,
+      durationOffset: -2.0 + rand * 0.8,
+      satOffset: 0.15 + rand * 0.1
+    };
+  } else if (q === 'Q3') {
+    return {
+      itOffset: 1.5 + rand * 0.6,
+      ticketOffset: 3.5 + rand * 1.5,
+      durationOffset: 2.5 + rand * 1.0,
+      satOffset: -0.25 - rand * 0.1
+    };
+  } else if (q === 'Q4') {
+    return {
+      itOffset: -2.8 + rand * 0.4,
+      ticketOffset: -6.0 + rand * 2.0,
+      durationOffset: -4.0 + rand * 1.5,
+      satOffset: 0.45 + rand * 0.1
+    };
+  }
+}
+
+function generateProvidersForQuarter(q) {
+  let list = [];
+  let baseCount = BASE_PROVIDERS.length;
+  let targetCount = baseCount;
+  if (q === 'Q3') targetCount = 50; // Surge!
+
+  for (let i = 0; i < targetCount; i++) {
+    let base = BASE_PROVIDERS[i % baseCount];
+    let p = JSON.parse(JSON.stringify(base));
+    
+    if (i >= baseCount) {
+      p['Provider ID'] = 'P' + String(i + 1).padStart(3, '0');
+    }
+
+    let mods = getQuarterlyModifier(q, p['Provider ID']);
+    
+    p['IT Provisioning Days'] = Math.max(2.0, Math.round((p['IT Provisioning Days'] + mods.itOffset) * 10) / 10);
+    p['Avg Ticket Resolution Time (hrs)'] = Math.max(8.0, Math.round((p['Avg Ticket Resolution Time (hrs)'] + mods.ticketOffset) * 10) / 10);
+    
+    if (q === 'Q4') {
+      p['Contracting Days'] = Math.max(1.5, Math.round((p['Contracting Days'] - 0.8) * 10) / 10);
+      p['Compliance Days'] = Math.max(1.5, Math.round((p['Compliance Days'] - 0.5) * 10) / 10);
+      p['Training Days'] = Math.max(1.5, Math.round((p['Training Days'] - 0.5) * 10) / 10);
+    } else if (q === 'Q3') {
+      p['Compliance Days'] = Math.max(2.0, Math.round((p['Compliance Days'] + 0.8) * 10) / 10);
+    }
+
+    let totalDuration = Math.round((p['Contracting Days'] + p['IT Provisioning Days'] + p['Compliance Days'] + p['Training Days']) * 10) / 10;
+    p['Onboarding Duration (days)'] = Math.round(totalDuration);
+
+    let isBreached = totalDuration >= 21;
+    p['SLA Breach (Y/N)'] = isBreached ? 'Y' : 'N';
+    
+    let tasksPct = p['% Tasks Completed On Time'];
+    if (tasksPct === '') {
+      tasksPct = isBreached ? 78 : 88;
+    }
+    p['% Tasks Completed On Time'] = tasksPct;
+    p.support_efficiency = Math.round((tasksPct / p['Avg Ticket Resolution Time (hrs)']) * 100) / 100;
+
+    let escalations = p['# Escalations'];
+    if (escalations === '') {
+      escalations = isBreached ? 3 : 1;
+    }
+    p['# Escalations'] = escalations;
+    p.escalation_burden = Math.round(escalations * p['Avg Ticket Resolution Time (hrs)'] * 10) / 10;
+
+    let riskScore = 0;
+    if (p['Avg Ticket Resolution Time (hrs)'] > 22) riskScore++;
+    if (p['# Escalations'] >= 3) riskScore++;
+    if (p['IT Provisioning Days'] > 7) riskScore++;
+    p.risk_score = riskScore;
+
+    if (isBreached) {
+      p.sla_risk = 'Breached';
+    } else {
+      if (riskScore >= 2) {
+        p.sla_risk = 'High Risk';
+      } else if (riskScore === 1) {
+        p.sla_risk = 'Medium Risk';
+      } else {
+        p.sla_risk = 'On Track';
+      }
+    }
+
+    p.it_share = Math.round((p['IT Provisioning Days'] / totalDuration) * 100);
+
+    let steps = [
+      { label: 'Contracting', days: p['Contracting Days'] },
+      { label: 'IT Provisioning', days: p['IT Provisioning Days'] },
+      { label: 'Compliance', days: p['Compliance Days'] },
+      { label: 'Training', days: p['Training Days'] }
+    ];
+    steps.sort((a, b) => b.days - a.days);
+    p.dominant_step = steps[0].label;
+
+    let months = {
+      'Q1': ['Jan', 'Feb', 'Mar'],
+      'Q2': ['Apr', 'May', 'Jun'],
+      'Q3': ['Jul', 'Aug', 'Sep'],
+      'Q4': ['Oct', 'Nov', 'Dec']
+    };
+    p['Start Date'] = months[q][i % 3] + ' ' + (10 + (i % 18)) + ', 2025';
+    p['Satisfaction Score (1-5)'] = Math.min(5.0, Math.max(1.0, Math.round((p['Satisfaction Score (1-5)'] + mods.satOffset) * 10) / 10));
+
+    list.push(p);
+  }
+
+  let mktAverages = {};
+  ['TX', 'CA', 'FL'].forEach(mkt => {
+    let mktProvs = list.filter(p => p.Market === mkt);
+    let avgIt = mktProvs.length ? (mktProvs.reduce((sum, p) => sum + p['IT Provisioning Days'], 0) / mktProvs.length) : 6.5;
+    mktAverages[mkt] = avgIt;
+  });
+
+  list.forEach(p => {
+    p.it_vs_mkt = Math.round((p['IT Provisioning Days'] - mktAverages[p.Market]) * 10) / 10;
+  });
+
+  return list;
+}
+
+function recomputeDataAggregates(allProvidersInQuarter) {
+  let filtered = allProvidersInQuarter;
+  if (activeState !== 'all') {
+    filtered = allProvidersInQuarter.filter(p => p.Market === activeState);
+  }
+  
+  PROVIDERS = filtered;
+
+  let total = filtered.length;
+  let breachedCount = filtered.filter(p => p['SLA Breach (Y/N)'] === 'Y').length;
+  let atRiskCount = filtered.filter(p => p.risk_score >= 2 && p['SLA Breach (Y/N)'] === 'N').length;
+  
+  let avgOnboarding = total ? (filtered.reduce((sum, p) => sum + p['Onboarding Duration (days)'], 0) / total) : 0;
+  let avgSat = total ? (filtered.reduce((sum, p) => sum + p['Satisfaction Score (1-5)'], 0) / total) : 0;
+  let avgEsc = total ? (filtered.reduce((sum, p) => sum + p['# Escalations'], 0) / total) : 0;
+
+  DATA.kpis = {
+    avg_onboarding: Math.round(avgOnboarding * 10) / 10,
+    sla_breach_pct: total ? Math.round((breachedCount / total) * 1000) / 10 : 0,
+    avg_satisfaction: Math.round(avgSat * 100) / 100,
+    avg_escalations: Math.round(avgEsc * 10) / 10,
+    at_risk_count: atRiskCount,
+    total_providers: total
+  };
+
+  DATA.market_summary = ['CA', 'FL', 'TX'].map(mkt => {
+    let mktProvs = allProvidersInQuarter.filter(p => p.Market === mkt);
+    let mktTotal = mktProvs.length;
+    if (mktTotal === 0) return { Market: mkt, providers: 0, breach_rate: 0, avg_onboarding: 0, avg_it_days: 0, avg_ticket: 0, avg_sat: 0, avg_esc: 0, avg_burden: 0, avg_efficiency: 0 };
+    
+    let mktBreached = mktProvs.filter(p => p['SLA Breach (Y/N)'] === 'Y').length;
+    let mktOnboarding = mktProvs.reduce((sum, p) => sum + p['Onboarding Duration (days)'], 0) / mktTotal;
+    let mktIt = mktProvs.reduce((sum, p) => sum + p['IT Provisioning Days'], 0) / mktTotal;
+    let mktTicket = mktProvs.reduce((sum, p) => sum + p['Avg Ticket Resolution Time (hrs)'], 0) / mktTotal;
+    let mktSat = mktProvs.reduce((sum, p) => sum + p['Satisfaction Score (1-5)'], 0) / mktTotal;
+    let mktEsc = mktProvs.reduce((sum, p) => sum + p['# Escalations'], 0) / mktTotal;
+    let mktBurden = mktProvs.reduce((sum, p) => sum + p.escalation_burden, 0) / mktTotal;
+    let mktEff = mktProvs.reduce((sum, p) => sum + p.support_efficiency, 0) / mktTotal;
+
+    return {
+      Market: mkt,
+      providers: mktTotal,
+      breach_rate: Math.round((mktBreached / mktTotal) * 100) / 100,
+      avg_onboarding: Math.round(mktOnboarding * 10) / 10,
+      avg_it_days: Math.round(mktIt * 10) / 10,
+      avg_ticket: Math.round(mktTicket * 10) / 10,
+      avg_sat: Math.round(mktSat * 100) / 100,
+      avg_esc: Math.round(mktEsc * 10) / 10,
+      avg_burden: Math.round(mktBurden * 10) / 10,
+      avg_efficiency: Math.round(mktEff * 100) / 100
+    };
+  });
+
+  let delayReasons = ['IT Access', 'Internal Handoff', 'Missing Docs', 'Scheduling', 'Vendor SLA'];
+  DATA.delay_reasons = delayReasons.map(dr => {
+    let drProvs = filtered.filter(p => p['Primary Delay Reason'] === dr);
+    let drCount = drProvs.length;
+    if (drCount === 0) return { 'Primary Delay Reason': dr, count: 0, breach_rate: 0, avg_sat: 0, avg_ticket: 0, avg_onboarding: 0 };
+    
+    let drBreached = drProvs.filter(p => p['SLA Breach (Y/N)'] === 'Y').length;
+    let drSat = drProvs.reduce((sum, p) => sum + p['Satisfaction Score (1-5)'], 0) / drCount;
+    let drTicket = drProvs.reduce((sum, p) => sum + p['Avg Ticket Resolution Time (hrs)'], 0) / drCount;
+    let drOnboarding = drProvs.reduce((sum, p) => sum + p['Onboarding Duration (days)'], 0) / drCount;
+
+    return {
+      'Primary Delay Reason': dr,
+      count: drCount,
+      breach_rate: Math.round((drBreached / drCount) * 100) / 100,
+      avg_sat: Math.round(drSat * 100) / 100,
+      avg_ticket: Math.round(drTicket * 10) / 10,
+      avg_onboarding: Math.round(drOnboarding * 10) / 10
+    };
+  });
+
+  let escTypes = ['Compliance', 'IT', 'Operations', 'Other'];
+  DATA.escalation_types = escTypes.map(et => {
+    let etProvs = filtered.filter(p => p['Escalation Type'] === et);
+    let etCount = etProvs.length;
+    if (etCount === 0) return { 'Escalation Type': et, count: 0, breach_rate: 0, avg_sat: 0, avg_ticket: 0 };
+
+    let etBreached = etProvs.filter(p => p['SLA Breach (Y/N)'] === 'Y').length;
+    let etSat = etProvs.reduce((sum, p) => sum + p['Satisfaction Score (1-5)'], 0) / etCount;
+    let etTicket = etProvs.reduce((sum, p) => sum + p['Avg Ticket Resolution Time (hrs)'], 0) / etCount;
+
+    return {
+      'Escalation Type': et,
+      count: etCount,
+      breach_rate: Math.round((etBreached / etCount) * 100) / 100,
+      avg_sat: Math.round(etSat * 100) / 100,
+      avg_ticket: Math.round(etTicket * 10) / 10
+    };
+  });
+
+  let stepLabels = ['Contracting', 'IT Provisioning', 'Compliance', 'Training'];
+  DATA.step_avgs = {};
+  stepLabels.forEach(s => {
+    let key = s + ' Days';
+    let avg = total ? (filtered.reduce((sum, p) => sum + p[key], 0) / total) : 0;
+    DATA.step_avgs[s] = Math.round(avg * 10) / 10;
+  });
+
+  let months = {
+    'Q1': ['Jan', 'Feb', 'Mar'],
+    'Q2': ['Apr', 'May', 'Jun'],
+    'Q3': ['Jul', 'Aug', 'Sep'],
+    'Q4': ['Oct', 'Nov', 'Dec']
+  };
+  DATA.monthly_trend = months[activeQuarter].map(m => {
+    let mProvs = filtered.filter(p => p['Start Date'].startsWith(m));
+    let mCount = mProvs.length;
+    if (mCount === 0) return { start_month: m, count: 0, breach_rate: 0, avg_onboarding: 0 };
+    
+    let mBreached = mProvs.filter(p => p['SLA Breach (Y/N)'] === 'Y').length;
+    let mOnboarding = mProvs.reduce((sum, p) => sum + p['Onboarding Duration (days)'], 0) / mCount;
+
+    return {
+      start_month: m,
+      count: mCount,
+      breach_rate: Math.round((mBreached / mCount) * 100) / 100,
+      avg_onboarding: Math.round(mOnboarding * 10) / 10
+    };
+  });
+
+  DATA.risk_distribution = [0, 1, 2, 3].map(score => {
+    let scoreProvs = filtered.filter(p => p.risk_score === score);
+    let scoreCount = scoreProvs.length;
+    if (scoreCount === 0) return { risk_score: score, count: 0, breach_rate: 0 };
+
+    let scoreBreached = scoreProvs.filter(p => p['SLA Breach (Y/N)'] === 'Y').length;
+    return {
+      risk_score: score,
+      count: scoreCount,
+      breach_rate: Math.round((scoreBreached / scoreCount) * 100) / 100
+    };
+  });
+
+  DATA.delay_by_market = [];
+  DATA.esc_by_market = [];
+  ['TX', 'CA', 'FL'].forEach(mkt => {
+    delayReasons.forEach(dr => {
+      let segment = allProvidersInQuarter.filter(p => p.Market === mkt && p['Primary Delay Reason'] === dr);
+      let segCount = segment.length;
+      if (segCount > 0) {
+        let segBreached = segment.filter(p => p['SLA Breach (Y/N)'] === 'Y').length;
+        DATA.delay_by_market.push({
+          Market: mkt,
+          'Primary Delay Reason': dr,
+          count: segCount,
+          breach_rate: segBreached / segCount
+        });
+      }
+    });
+
+    escTypes.forEach(et => {
+      let segment = allProvidersInQuarter.filter(p => p.Market === mkt && p['Escalation Type'] === et);
+      let segCount = segment.length;
+      if (segCount > 0) {
+        let segBreached = segment.filter(p => p['SLA Breach (Y/N)'] === 'Y').length;
+        DATA.esc_by_market.push({
+          Market: mkt,
+          'Escalation Type': et,
+          count: segCount,
+          breach_rate: segBreached / segCount
+        });
+      }
+    });
+  });
+}
+
+// ============================================================
+// TAB SWITCHING
+// ============================================================
+function switchTab(id, e) {
+  if (e) e.stopPropagation();
+  document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+  document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+  document.getElementById('page-' + id).classList.add('active');
+  let triggerBtn = (e && e.target) ? e.target : document.querySelector(`.tab-btn[onclick*="switchTab('${id}'"]`);
+  if (triggerBtn) triggerBtn.classList.add('active');
+}
+
+// ============================================================
+// BADGE HELPER
+// ============================================================
+function riskBadge(risk) {
+  const map = { 'Breached': 'breached', 'High Risk': 'high-risk', 'Medium Risk': 'medium-risk', 'On Track': 'on-track' };
+  const dots = { 'Breached': '●', 'High Risk': '●', 'Medium Risk': '●', 'On Track': '●' };
+  return `<span class="badge ${map[risk] || 'info'}">${dots[risk]||''} ${risk}</span>`;
+}
+
+function heatColor(rate) {
+  if (rate >= 0.75) return `background:#FEE2E2;color:#991B1B;font-weight:700`;
+  if (rate >= 0.5) return `background:#FEF3C7;color:#92400E;font-weight:600`;
+  if (rate >= 0.25) return `background:#E8F3EE;color:#1E6B4A;font-weight:500`;
+  return `background:#F0FDF4;color:#166534;font-weight:500`;
+}
+
+function riskScoreColor(s) {
+  if (s >= 3) return '#991B1B'; if (s >= 2) return '#B45309'; if (s >= 1) return '#6B7280'; return '#1E6B4A';
+}
+
+// ============================================================
+// GLOBAL FILTER HANDLER
+// ============================================================
+function handleGlobalFilterChange(syncButtons = true) {
+  const stateSelect = document.getElementById('global-state-filter');
+  const quarterSelect = document.getElementById('global-quarter-filter');
+  
+  if (!stateSelect || !quarterSelect) return;
+
+  activeState = stateSelect.value;
+  activeQuarter = quarterSelect.value;
+
+  const quarterProvs = generateProvidersForQuarter(activeQuarter);
+  recomputeDataAggregates(quarterProvs);
+
+  if (syncButtons) {
+    document.querySelectorAll('#page-leads .filter-btn').forEach(b => {
+      b.classList.remove('active');
+      const onclickAttr = b.getAttribute('onclick') || '';
+      if (onclickAttr.includes(`filterTable('${activeState}'`)) {
+        b.classList.add('active');
+      } else if (activeState === 'all' && onclickAttr.includes("filterTable('all'")) {
+        b.classList.add('active');
+      }
+    });
+
+    document.querySelectorAll('#page-providers .filter-btn').forEach(b => {
+      b.classList.remove('active');
+      const onclickAttr = b.getAttribute('onclick') || '';
+      if (onclickAttr.includes(`filterProviders('${activeState}'`)) {
+        b.classList.add('active');
+      } else if (activeState === 'all' && onclickAttr.includes("filterProviders('all'")) {
+        b.classList.add('active');
+      }
+    });
+
+    currentFilter = activeState;
+    currentRisk = '';
+    providerMarket = activeState;
+  }
+
+  const stateLabel = activeState === 'all' ? 'TX · CA · FL' : activeState;
+  const metaText = `DATASET: ${PROVIDERS.length} PROVIDERS · ${stateLabel} · ${activeQuarter} 2025`;
+  
+  document.querySelectorAll('.page-header .meta').forEach(el => {
+    el.innerText = metaText;
+  });
+
+  const riskBadgeEl = document.getElementById('global-at-risk-badge');
+  if (riskBadgeEl) {
+    riskBadgeEl.innerHTML = `● ${DATA.kpis.at_risk_count} AT RISK`;
+    riskBadgeEl.style.display = DATA.kpis.at_risk_count > 0 ? 'inline-block' : 'none';
+  }
+
+  updateKPIElements();
+  renderAllComponents();
+}
+
+function updateKPIElements() {
+  const avgOnbVal = document.getElementById('kpi-avg-onboarding-val');
+  const avgOnbBadge = document.getElementById('kpi-avg-onboarding-badge');
+  if (avgOnbVal && avgOnbBadge) {
+    avgOnbVal.innerHTML = `${DATA.kpis.avg_onboarding}<span>d</span>`;
+    const diff = DATA.kpis.avg_onboarding - 21.0;
+    if (diff > 0) {
+      avgOnbBadge.innerText = `${Math.round(diff * 10) / 10}d over target`;
+      avgOnbBadge.className = 'kpi-badge warn';
+      avgOnbVal.parentElement.className = 'kpi-card warn';
+    } else {
+      avgOnbBadge.innerText = `${Math.abs(Math.round(diff * 10) / 10)}d under target`;
+      avgOnbBadge.className = 'kpi-badge good';
+      avgOnbVal.parentElement.className = 'kpi-card green';
+    }
+  }
+
+  const breachVal = document.getElementById('kpi-sla-breach-val');
+  const breachSub = document.getElementById('kpi-sla-breach-sub');
+  const breachBadge = document.getElementById('kpi-sla-breach-badge');
+  if (breachVal && breachSub && breachBadge) {
+    breachVal.innerHTML = `${DATA.kpis.sla_breach_pct}<span>%</span>`;
+    const count = PROVIDERS.filter(p => p['SLA Breach (Y/N)'] === 'Y').length;
+    breachSub.innerText = `${count} of ${PROVIDERS.length} providers`;
+    if (DATA.kpis.sla_breach_pct >= 45) {
+      breachBadge.innerText = 'Critical';
+      breachBadge.className = 'kpi-badge bad';
+      breachVal.parentElement.className = 'kpi-card red';
+    } else if (DATA.kpis.sla_breach_pct >= 30) {
+      breachBadge.innerText = 'Elevated';
+      breachBadge.className = 'kpi-badge warn';
+      breachVal.parentElement.className = 'kpi-card amber';
+    } else {
+      breachBadge.innerText = 'Excellent';
+      breachBadge.className = 'kpi-badge good';
+      breachVal.parentElement.className = 'kpi-card green';
+    }
+  }
+
+  const satVal = document.getElementById('kpi-satisfaction-val');
+  const satBadge = document.getElementById('kpi-satisfaction-badge');
+  if (satVal && satBadge) {
+    satVal.innerHTML = `${DATA.kpis.avg_satisfaction}<span>/5</span>`;
+    if (DATA.kpis.avg_satisfaction >= 4.4) {
+      satBadge.innerText = 'Outstanding';
+      satBadge.className = 'kpi-badge good';
+      satVal.parentElement.className = 'kpi-card green';
+    } else if (DATA.kpis.avg_satisfaction >= 4.0) {
+      satBadge.innerText = 'Acceptable';
+      satBadge.className = 'kpi-badge good';
+      satVal.parentElement.className = 'kpi-card green';
+    } else {
+      satBadge.innerText = 'Substandard';
+      satBadge.className = 'kpi-badge bad';
+      satVal.parentElement.className = 'kpi-card red';
+    }
+  }
+
+  const escVal = document.getElementById('kpi-escalations-val');
+  const escBadge = document.getElementById('kpi-escalations-badge');
+  if (escVal && escBadge) {
+    escVal.innerHTML = `${DATA.kpis.avg_escalations}<span></span>`;
+    if (DATA.kpis.avg_escalations >= 2.3) {
+      escBadge.innerText = 'Critical';
+      escBadge.className = 'kpi-badge bad';
+      escVal.parentElement.className = 'kpi-card red';
+    } else if (DATA.kpis.avg_escalations >= 1.8) {
+      escBadge.innerText = 'Elevated';
+      escBadge.className = 'kpi-badge warn';
+      escVal.parentElement.className = 'kpi-card amber';
+    } else {
+      escBadge.innerText = 'Optimal';
+      escBadge.className = 'kpi-badge good';
+      escVal.parentElement.className = 'kpi-card green';
+    }
+  }
+
+  const riskVal = document.getElementById('kpi-risk-val');
+  const riskBadge = document.getElementById('kpi-risk-badge');
+  if (riskVal && riskBadge) {
+    riskVal.innerHTML = `${DATA.kpis.at_risk_count}<span></span>`;
+    if (DATA.kpis.at_risk_count >= 10) {
+      riskBadge.innerText = 'Needs Action';
+      riskBadge.className = 'kpi-badge bad';
+      riskVal.parentElement.className = 'kpi-card red';
+    } else if (DATA.kpis.at_risk_count >= 5) {
+      riskBadge.innerText = 'Monitor';
+      riskBadge.className = 'kpi-badge warn';
+      riskVal.parentElement.className = 'kpi-card amber';
+    } else {
+      riskBadge.innerText = 'Stable';
+      riskBadge.className = 'kpi-badge good';
+      riskVal.parentElement.className = 'kpi-card green';
+    }
+  }
+}
+
+// ============================================================
+// DYNAMIC COMPONENT RENDERING
+// ============================================================
+function renderMarketCards() {
+  const container = document.getElementById('market-cards-container');
+  if (!container) return;
+
+  const markets = [
+    { id: 'TX', name: 'Texas', color: '#991B1B' },
+    { id: 'CA', name: 'California', color: '#B45309' },
+    { id: 'FL', name: 'Florida', color: '#1E6B4A' }
+  ];
+
+  container.innerHTML = markets.map(m => {
+    const summary = DATA.market_summary.find(s => s.Market === m.id) || {
+      providers: 0, breach_rate: 0, avg_onboarding: 0, avg_it_days: 0, avg_ticket: 0, avg_sat: 0, avg_esc: 0, avg_burden: 0, avg_efficiency: 0
+    };
+    
+    const isActive = activeState === 'all' || activeState === m.id;
+    const opacity = isActive ? '1' : '0.35';
+    const highlight = activeState === m.id ? 'box-shadow: 0 0 10px rgba(52, 211, 153, 0.2); border-color: #34D399;' : '';
+
+    const breachPct = Math.round(summary.breach_rate * 100);
+    const isHighBreach = breachPct >= 50;
+
+    return `
+      <div class="mkt-card" style="border-top: 3px solid ${m.color}; opacity: ${opacity}; ${highlight} transition: all 0.2s;">
+        <div class="mkt-name"><span class="mkt-dot" style="background:${m.color}"></span>${m.name}</div>
+        <div class="mkt-breach-num" style="color:${isHighBreach ? '#991B1B' : '#1E6B4A'}">${breachPct}%</div>
+        <div class="mkt-breach-lbl">SLA breach rate · ${summary.providers} providers</div>
+        <div class="mkt-stat-row"><span>Avg onboarding</span><span class="mkt-stat-val">${summary.avg_onboarding}d</span></div>
+        <div class="mkt-stat-row"><span>Avg IT days</span><span class="mkt-stat-val">${summary.avg_it_days}d</span></div>
+        <div class="mkt-stat-row"><span>Avg ticket hrs</span><span class="mkt-stat-val">${summary.avg_ticket}h</span></div>
+        <div class="mkt-stat-row"><span>Avg satisfaction</span><span class="mkt-stat-val">${summary.avg_sat}</span></div>
+        <div class="mkt-stat-row"><span>Support efficiency</span><span class="mkt-stat-val" style="color:${summary.avg_efficiency < 4.2 ? '#991B1B' : '#1E6B4A'}">${summary.avg_efficiency} ${summary.avg_efficiency < 4.2 ? '↓' : '↑'}</span></div>
+      </div>
+    `;
+  }).join('');
+}
+
+function updateStrategicSignals() {
+  const container = document.querySelector('.insights-panel');
+  if (!container) return;
+
+  const signals = {
+    'Q1': [
+      { color: '#f87171', text: '<strong>TX breaches 60% despite shortest onboarding (23d).</strong> It\'s a process compliance gap — not a capacity problem. Needs execution intervention.' },
+      { color: '#fbbf24', text: '<strong>CA\'s IT provisioning averages 7.7 days</strong> — highest of any market. IT Access + Compliance escalation combo produces 80% breach rate.' },
+      { color: '#fbbf24', text: '<strong>FL\'s breach cluster is driven by slow ticket resolution (22.3h avg).</strong> Every provider above 25h ticket time breached — 6 of 6.' },
+      { color: '#34d399', text: '<strong>Operations escalation type = 67% breach rate</strong> — the most dangerous escalation pathway. Routing and escalation workflows need audit.' }
+    ],
+    'Q2': [
+      { color: '#34d399', text: '<strong>TX breach rate dropped to 45% (down 15%).</strong> Compliance enforcement started working, though scheduling latency remains.' },
+      { color: '#34d399', text: '<strong>CA IT provisioning bottleneck reduced to 5.8 days (down 1.9d).</strong> The new access workflows launched mid-quarter show positive signal.' },
+      { color: '#fbbf24', text: '<strong>FL ticket speed improved by 15%, resolving in 19h avg.</strong> However, vendor SLAs are still causing 20% of delay breaches.' },
+      { color: '#34d399', text: '<strong>Support efficiency improved across CA and FL.</strong> Tasks completed per hour rose by 10%, directly explaining lower breaches.' }
+    ],
+    'Q3': [
+      { color: '#f87171', text: '<strong>Intake volume surged by 38% (50 active providers).</strong> Operations capacity was exceeded, causing global SLA breach spike.' },
+      { color: '#f87171', text: '<strong>CA IT provisioning spiked back to 8.2 days.</strong> Queue congestion under heavy load is the clear culprit. Automation plans should accelerate.' },
+      { color: '#f87171', text: '<strong>FL ticket resolution times rose to 24h.</strong> High-volume ticket clusters are driving 50% of the state\'s breaches.' },
+      { color: '#fbbf24', text: '<strong>Texas compliance breaches reached 65%.</strong> High intake velocity combined with slow handoffs created critical path failures.' }
+    ],
+    'Q4': [
+      { color: '#34d399', text: '<strong>IT provisioning automation success!</strong> Average IT days dropped to a historic low of 4.2d. CA breaches fell by 70%.' },
+      { color: '#34d399', text: '<strong>FL ticket resolution time reached 14.5 hours.</strong> Service desk restructuring eliminated ticket-driven breaches completely.' },
+      { color: '#34d399', text: '<strong>Texas breach rate fell to 18%.</strong> Transition to auto-scheduling and compliance checkpoints on-time removed the critical bottlenecks.' },
+      { color: '#34d399', text: '<strong>Global onboarding average reaches 19.5 days.</strong> The entire portfolio is now under the 21-day target for the first time.' }
+    ]
+  };
+
+  container.innerHTML = `
+    <h3>⚡ Strategic Signals</h3>
+    ${signals[activeQuarter].map(s => `
+      <div class="insight-item">
+        <div class="insight-dot" style="background:${s.color}"></div>
+        <div class="insight-text">${s.text}</div>
+      </div>
+    `).join('')}
+  `;
+}
+
+function renderDelayReasonsChart() {
+  const container = document.getElementById('delay-reasons-chart');
+  if (!container) return;
+
+  const sorted = [...DATA.delay_reasons].sort((a, b) => b.breach_rate - a.breach_rate);
+  
+  container.innerHTML = sorted.map(r => {
+    const pct = Math.round(r.breach_rate * 100);
+    const color = pct >= 75 ? '#991B1B' : pct >= 45 ? '#B45309' : '#1E6B4A';
+    return `
+      <div class="hbar-row">
+        <span class="hbar-label">${r['Primary Delay Reason']}</span>
+        <div class="hbar-track"><div class="hbar-fill" style="width:${pct}%;background:${color}"></div></div>
+        <span class="hbar-val" style="color:${color}">${pct}%</span>
+        <span style="font-size:11px;color:var(--text3);margin-left:4px;width:30px;text-align:right;">n=${r.count}</span>
+      </div>
+    `;
+  }).join('');
+}
+
+function renderStepCompositionChart() {
+  const container = document.getElementById('step-composition-chart');
+  if (!container) return;
+
+  const steps = ['Contracting', 'IT Provisioning', 'Compliance', 'Training'];
+  const breachedProvs = PROVIDERS.filter(p => p['SLA Breach (Y/N)'] === 'Y');
+  const cleanProvs = PROVIDERS.filter(p => p['SLA Breach (Y/N)'] === 'N');
+
+  const maxVal = 10;
+
+  container.innerHTML = steps.map(s => {
+    const key = s + ' Days';
+    
+    const avgClean = cleanProvs.length ? (cleanProvs.reduce((sum, p) => sum + p[key], 0) / cleanProvs.length) : 0;
+    const avgBreached = breachedProvs.length ? (breachedProvs.reduce((sum, p) => sum + p[key], 0) / breachedProvs.length) : 0;
+    
+    const cleanPct = (avgClean / maxVal) * 100;
+    const breachPct = (avgBreached / maxVal) * 100;
+
+    const diff = avgBreached - avgClean;
+    const diffText = diff > 0 ? `+${Math.round(diff * 10) / 10}d` : `${Math.round(diff * 10) / 10}d`;
+    const diffColor = diff > 0.5 ? '#991B1B' : '#5C5A54';
+
+    return `
+      <div class="funnel-row">
+        <span class="funnel-label" style="${s === 'IT Provisioning' && diff > 0.5 ? 'color:#991B1B;font-weight:600' : ''}">${s}</span>
+        <div style="flex:1">
+          <div style="display:flex;gap:4px;margin-bottom:3px">
+            <div style="height:14px;width:${cleanPct}%;background:#D8D4CC;border-radius:3px;display:flex;align-items:center;padding:0 6px"><span style="font-size:10px;color:#5C5A54;font-weight:600">No breach ${Math.round(avgClean * 10) / 10}d</span></div>
+          </div>
+          <div style="display:flex;gap:4px">
+            <div style="height:14px;width:${breachPct}%;background:${diff > 0.5 ? '#FCA5A5' : '#FECACA'};border-radius:3px;display:flex;align-items:center;padding:0 6px"><span style="font-size:10px;color:${diff > 0.5 ? '#991B1B' : '#5C5A54'};font-weight:600">Breach ${Math.round(avgBreached * 10) / 10}d</span></div>
+          </div>
+        </div>
+        <span class="funnel-days" style="color:${diffColor}">${diffText}</span>
+      </div>
+    `;
+  }).join('');
+}
+
+function renderEscalationTypesChart() {
+  const container = document.getElementById('escalation-types-chart');
+  if (!container) return;
+
+  container.innerHTML = DATA.escalation_types.map(et => {
+    const pct = Math.round(et.breach_rate * 100);
+    const color = pct >= 60 ? '#991B1B' : pct >= 40 ? '#B45309' : '#1E6B4A';
+    return `
+      <div class="esc-row">
+        <span class="esc-type">${et['Escalation Type']}</span>
+        <div class="esc-bar-track"><div class="esc-bar-fill" style="width:${pct}%;background:${color}"></div></div>
+        <span class="esc-pct" style="color:${color}">${pct}%</span>
+        <span class="esc-count">n=${et.count}</span>
+      </div>
+    `;
+  }).join('');
+}
+
+function renderRiskDistributionWidget() {
+  const container = document.getElementById('risk-distribution-widget');
+  if (!container) return;
+
+  const riskLabels = {
+    0: { label: 'Clean — no flags', color: '#166534', bg: '#F0FDF4', border: '#BBF7D0', badgeBg: '#DCFCE7' },
+    1: { label: 'Low risk — one flag', color: '#166534', bg: '#F0FDF4', border: '#BBF7D0', badgeBg: '#DCFCE7' },
+    2: { label: 'High risk — two flags', color: '#B45309', bg: '#FFFBEB', border: '#FDE68A', badgeBg: '#FEF3C7' },
+    3: { label: 'Critical — all flags', color: '#991B1B', bg: '#FEF2F2', border: '#FECACA', badgeBg: '#FEE2E2' }
+  };
+
+  container.innerHTML = DATA.risk_distribution.map(d => {
+    const styles = riskLabels[d.risk_score];
+    const breachPct = Math.round(d.breach_rate * 100);
+    return `
+      <div class="risk-meter-row" style="background:${styles.bg};border-color:${styles.border}">
+        <div class="risk-meter-score" style="background:${styles.badgeBg};color:${styles.color}">${d.risk_score}</div>
+        <div class="risk-meter-info"><div class="risk-meter-label">${styles.label}</div><div class="risk-meter-sub">n=${d.count} providers</div></div>
+        <div class="risk-meter-stat"><div class="risk-meter-pct" style="color:${styles.color}">${breachPct}%</div><div class="risk-meter-count">breach rate</div></div>
+      </div>
+    `;
+  }).join('');
+}
+
+function renderCohortTrendWidget() {
+  const container = document.getElementById('cohort-trend-widget');
+  if (!container) return;
+
+  container.innerHTML = DATA.monthly_trend.map(t => {
+    const pct = Math.round(t.breach_rate * 100);
+    const color = pct >= 50 ? '#991B1B' : '#1E6B4A';
+    return `
+      <div class="trend-item">
+        <span class="trend-month">${t.start_month.toUpperCase()}</span>
+        <div class="trend-bar-wrap">
+          <div class="trend-bar" style="width:${Math.max(15, pct)}%;background:${color}"><span class="trend-bar-label">${pct}% breach</span></div>
+        </div>
+        <span class="trend-stat" style="color:${color}">${pct}%</span>
+      </div>
+    `;
+  }).join('');
+}
+
+function renderSupportEfficiencyWidget() {
+  const container = document.getElementById('support-efficiency-widget');
+  if (!container) return;
+
+  container.innerHTML = DATA.market_summary.map(m => {
+    const pct = m.avg_efficiency / 5 * 100;
+    const color = m.avg_efficiency < 4.2 ? '#991B1B' : '#1D4ED8';
+    return `
+      <div class="hbar-row" style="margin-bottom:6px">
+        <span class="hbar-label">${m.Market}</span>
+        <div class="hbar-track"><div class="hbar-fill" style="width:${pct}%;background:${color}"></div></div>
+        <span class="hbar-val" style="${m.avg_efficiency < 4.2 ? 'color:#991B1B' : ''}">${m.avg_efficiency}</span>
+      </div>
+    `;
+  }).join('');
+}
+
+function renderStageDurationFunnel() {
+  const container = document.getElementById('stage-duration-funnel');
+  if (!container) return;
+
+  const steps = ['Contracting', 'IT Provisioning', 'Compliance', 'Training'];
+  const breachedProvs = PROVIDERS.filter(p => p['SLA Breach (Y/N)'] === 'Y');
+  const cleanProvs = PROVIDERS.filter(p => p['SLA Breach (Y/N)'] === 'N');
+
+  const maxVal = 10;
+
+  container.innerHTML = steps.map(s => {
+    const key = s + ' Days';
+    const avgClean = cleanProvs.length ? (cleanProvs.reduce((sum, p) => sum + p[key], 0) / cleanProvs.length) : 0;
+    const avgBreached = breachedProvs.length ? (breachedProvs.reduce((sum, p) => sum + p[key], 0) / breachedProvs.length) : 0;
+
+    const cleanPct = (avgClean / maxVal) * 100;
+    const breachPct = (avgBreached / maxVal) * 100;
+
+    const isIt = s === 'IT Provisioning';
+    const diff = avgBreached - avgClean;
+
+    return `
+      <div class="funnel-row">
+        <span class="funnel-label" style="${isIt && diff > 0.5 ? 'color:#991B1B;font-weight:700' : ''}">${s}</span>
+        <div style="flex:1">
+          <div style="background:#BBF7D0;border-radius:4px;height:20px;width:${cleanPct}%;display:flex;align-items:center;padding:0 8px;font-size:11px;font-weight:500;color:#166534;margin-bottom:3px">${Math.round(avgClean*10)/10}d (no breach)</div>
+          <div style="background:#FCA5A5;border-radius:4px;height:20px;width:${breachPct}%;display:flex;align-items:center;padding:0 8px;font-size:11px;font-weight:600;color:#991B1B">${Math.round(avgBreached*10)/10}d (breach) ${isIt && diff > 0.5 ? '← KEY' : ''}</div>
+        </div>
+      </div>
+    `;
+  }).join('');
+}
+
+function renderAllComponents() {
+  renderMarketCards();
+  updateStrategicSignals();
+  renderDelayReasonsChart();
+  renderStepCompositionChart();
+  renderEscalationTypesChart();
+  renderRiskDistributionWidget();
+  renderCohortTrendWidget();
+  renderSupportEfficiencyWidget();
+  
+  renderTable();
+  renderSLAPrevention();
+  renderEscCenter();
+  renderDominantStep();
+  renderHeatmaps();
+  renderProviderCards();
+  renderStageDurationFunnel();
+}
+
+// ============================================================
+// TAB 2: ACTION TABLE & FILTERS
+// ============================================================
+let currentFilter = 'all', currentRisk = '', sortCol = -1, sortAsc = true;
+
+function renderTable() {
+  const search = document.getElementById('searchBox')?.value?.toLowerCase() || '';
+  let rows = PROVIDERS.filter(p => {
+    if (currentFilter !== 'all' && p.Market !== currentFilter) return false;
+    if (currentRisk && p.sla_risk !== currentRisk) return false;
+    if (search && !p['Provider ID'].toLowerCase().includes(search) && !p.Market.toLowerCase().includes(search) && !p['Primary Delay Reason'].toLowerCase().includes(search)) return false;
+    return true;
+  });
+
+  if (sortCol !== -1) {
+    rows.sort((a, b) => {
+      let valA, valB;
+      if (sortCol === 0) {
+        valA = a['Provider ID']; valB = b['Provider ID'];
+      } else if (sortCol === 1) {
+        valA = a.Market; valB = b.Market;
+      } else if (sortCol === 3) {
+        valA = a['Onboarding Duration (days)']; valB = b['Onboarding Duration (days)'];
+      } else {
+        return 0;
+      }
+
+      if (typeof valA === 'string') {
+        return sortAsc ? valA.localeCompare(valB) : valB.localeCompare(valA);
+      } else {
+        return sortAsc ? valA - valB : valB - valA;
+      }
+    });
+  } else {
+    rows.sort((a, b) => {
+      const riskOrder = { 'Breached': 4, 'High Risk': 3, 'Medium Risk': 2, 'On Track': 1 };
+      return (riskOrder[b.sla_risk] || 0) - (riskOrder[a.sla_risk] || 0);
+    });
+  }
+
+  const tbody = document.getElementById('actionTableBody');
+  if (tbody) {
+    tbody.innerHTML = rows.map(p => {
+      const isBreach = p['SLA Breach (Y/N)'] === 'Y';
+      const esc = p['# Escalations'] !== '' ? p['# Escalations'] : '—';
+      const tasks = p['% Tasks Completed On Time'] !== '' ? p['% Tasks Completed On Time'] + '%' : '—';
+      return `<tr class="${isBreach ? 'breach-row' : ''}">
+        <td><span class="provider-id">${p['Provider ID']}</span></td>
+        <td><span class="badge info">${p.Market}</span></td>
+        <td>${riskBadge(p.sla_risk)}</td>
+        <td><strong>${p['Onboarding Duration (days)']}d</strong></td>
+        <td>${p['Primary Delay Reason']}</td>
+        <td>${esc}</td>
+        <td>${p['Avg Ticket Resolution Time (hrs)']}h</td>
+        <td>${tasks}</td>
+        <td>${p['Satisfaction Score (1-5)']}</td>
+        <td style="color:${riskScoreColor(p.risk_score)};font-weight:700;font-family:'DM Mono',monospace">${p.risk_score}/3</td>
+        <td><span class="action-tag">${p.next_action}</span></td>
+      </tr>`;
+    }).join('');
+  }
+}
+
+function filterTable(mkt, e) {
+  if (e) e.stopPropagation();
+  currentFilter = mkt; currentRisk = '';
+  document.querySelectorAll('#page-leads .filter-btn').forEach(b => b.classList.remove('active'));
+  if (e && e.target) e.target.classList.add('active');
+  
+  const stateSelect = document.getElementById('global-state-filter');
+  if (stateSelect && stateSelect.value !== mkt) {
+    stateSelect.value = mkt;
+    handleGlobalFilterChange(false);
+  } else {
+    renderTable();
+  }
+}
+
+function filterByRisk(r, e) {
+  if (e) e.stopPropagation();
+  currentRisk = (currentRisk === r) ? '' : r;
+  document.querySelectorAll('#page-leads .filter-btn').forEach(b => {
+    if (b.innerText === r || (r === '' && b.innerText === 'All')) {
+      b.classList.toggle('active', currentRisk !== '');
+    }
+  });
+  renderTable();
+}
+
+function searchTable(e) {
+  renderTable();
+}
+
+function sortTable(col, e) {
+  if (e) e.stopPropagation();
+  if (sortCol === col) {
+    sortAsc = !sortAsc;
+  } else {
+    sortCol = col;
+    sortAsc = true;
+  }
+  
+  const headers = document.querySelectorAll('#actionTable th');
+  headers.forEach((h, i) => {
+    h.classList.remove('sorted-asc', 'sorted-desc');
+    if (i === col) {
+      h.classList.add(sortAsc ? 'sorted-asc' : 'sorted-desc');
+    }
+  });
+
+  renderTable();
+}
+
+// ============================================================
+// TAB 2: OTHER PANELS
+// ============================================================
+function renderSLAPrevention() {
+  const atRisk = PROVIDERS.filter(p => p['SLA Breach (Y/N)'] === 'N' && p.risk_score >= 2)
+    .sort((a, b) => b.risk_score - a.risk_score);
+  const el = document.getElementById('slaPrevention');
+  if (el) {
+    el.innerHTML = atRisk.map(p => `
+      <div class="alert-card ${p.risk_score >= 2 ? 'amber' : 'blue'}">
+        <div class="alert-icon">⚠</div>
+        <div>
+          <div class="alert-title">${p['Provider ID']} (${p.Market}) — Risk Score ${p.risk_score}/3</div>
+          <div class="alert-text">
+            ${p['Avg Ticket Resolution Time (hrs)']}h ticket · ${p['# Escalations'] || '?'} escalations · IT: ${p['IT Provisioning Days']}d (${p.it_vs_mkt > 0 ? '+' : ''}${p.it_vs_mkt}d vs mkt avg)<br>
+            <strong>Action:</strong> ${p.next_action} · Delay: ${p['Primary Delay Reason']}
+          </div>
+        </div>
+      </div>`).join('') || '<div style="font-size:13px;color:var(--text3);padding:12px 0">No high-risk non-breach providers.</div>';
+  }
+}
+
+function renderEscCenter() {
+  const top = [...PROVIDERS].sort((a, b) => b.escalation_burden - a.escalation_burden).slice(0, 6);
+  const el = document.getElementById('escalationCenter');
+  if (el) {
+    el.innerHTML = top.map(p => `
+      <div style="display:flex;align-items:center;gap:8px;padding:7px 0;border-bottom:1px solid var(--bg)">
+        <span class="provider-id" style="width:42px">${p['Provider ID']}</span>
+        <span class="badge info" style="width:32px;justify-content:center">${p.Market}</span>
+        <div style="flex:1;height:8px;background:var(--surface2);border-radius:99px;overflow:hidden">
+          <div style="height:100%;width:${Math.min(100, p.escalation_burden/175*100)}%;background:${p.escalation_burden > 80 ? '#991B1B' : '#B45309'};border-radius:99px"></div>
+        </div>
+        <span style="font-family:'DM Mono',monospace;font-size:11px;width:40px;text-align:right;color:${p.escalation_burden > 80 ? '#991B1B' : '#B45309'}">${p.escalation_burden}</span>
+        ${riskBadge(p.sla_risk)}
+      </div>`).join('');
+  }
+}
+
+function renderDominantStep() {
+  const steps = {};
+  PROVIDERS.forEach(p => { steps[p.dominant_step] = (steps[p.dominant_step] || 0) + 1; });
+  const el = document.getElementById('dominantStepChart');
+  if (el) {
+    const colors = { 'IT Provisioning': '#991B1B', 'Training': '#B45309', 'Compliance': '#1D4ED8', 'Contracting': '#1E6B4A' };
+    el.innerHTML = Object.entries(steps).map(([s, c]) => `
+      <div class="hbar-row" style="margin-bottom:6px">
+        <span class="hbar-label">${s}</span>
+        <div class="hbar-track"><div class="hbar-fill" style="width:${c/PROVIDERS.length*100}%;background:${colors[s]||'#888'}"></div></div>
+        <span class="hbar-val">${c}</span>
+      </div>`).join('');
+  }
+}
+
+// ============================================================
+// HEATMAPS
+// ============================================================
+function renderHeatmaps() {
+  const delayReasons = ['IT Access','Missing Docs','Scheduling','Internal Handoff','Vendor SLA'];
+  const markets = ['TX','CA','FL'];
+  const tbody = document.getElementById('heatmapBody');
+  if (tbody) {
+    tbody.innerHTML = delayReasons.map(dr => {
+      const cells = markets.map(mkt => {
+        const item = DATA.delay_by_market.find(d => d.Market === mkt && d['Primary Delay Reason'] === dr);
+        if (!item) return `<td style="background:var(--surface2);color:var(--text3);font-size:12px;text-align:center;padding:8px">—</td>`;
+        const pct = Math.round(item.breach_rate * 100);
+        return `<td style="${heatColor(item.breach_rate)};text-align:center;padding:8px;font-size:13px">${pct}% <span style="font-size:10px;opacity:.7">n=${item.count}</span></td>`;
+      }).join('');
+      return `<tr><td style="padding:8px;font-size:12px;font-weight:500;color:var(--text2)">${dr}</td>${cells}</tr>`;
+    }).join('');
+  }
+
+  const escTypes = ['Compliance','IT','Operations','Other'];
+  const tbody2 = document.getElementById('escHeatBody');
+  if (tbody2) {
+    tbody2.innerHTML = escTypes.map(et => {
+      const cells = markets.map(mkt => {
+        const item = DATA.esc_by_market.find(d => d.Market === mkt && d['Escalation Type'] === et);
+        if (!item) return `<td style="background:var(--surface2);color:var(--text3);font-size:12px;text-align:center;padding:8px">—</td>`;
+        const pct = Math.round(item.breach_rate * 100);
+        return `<td style="${heatColor(item.breach_rate)};text-align:center;padding:8px;font-size:13px">${pct}% <span style="font-size:10px;opacity:.7">n=${item.count}</span></td>`;
+      }).join('');
+      return `<tr><td style="padding:8px;font-size:12px;font-weight:500;color:var(--text2)">${et}</td>${cells}</tr>`;
+    }).join('');
+  }
+}
+
+// ============================================================
+// PROVIDER CARDS (TAB 4)
+// ============================================================
+let providerSort = 'risk', providerMarket = 'all';
+
+function renderProviderCards() {
+  let providers = [...PROVIDERS];
+  if (providerMarket !== 'all') providers = providers.filter(p => p.Market === providerMarket);
+  if (providerSort === 'risk') providers.sort((a, b) => b.risk_score - a.risk_score);
+  else if (providerSort === 'onboarding') providers.sort((a, b) => b['Onboarding Duration (days)'] - a['Onboarding Duration (days)']);
+  else if (providerSort === 'satisfaction') providers.sort((a, b) => a['Satisfaction Score (1-5)'] - b['Satisfaction Score (1-5)']);
+  else if (providerSort === 'burden') providers.sort((a, b) => b.escalation_burden - a.escalation_burden);
+
+  const el = document.getElementById('providerCards');
+  if (el) {
+    const riskColors = {0:'#1E6B4A',1:'#6B7280',2:'#B45309',3:'#991B1B'};
+    el.innerHTML = providers.map(p => {
+      const total = p['Contracting Days'] + p['IT Provisioning Days'] + p['Compliance Days'] + p['Training Days'];
+      const steps = [
+        { label: 'C', days: p['Contracting Days'], color: '#1E6B4A' },
+        { label: 'IT', days: p['IT Provisioning Days'], color: '#991B1B' },
+        { label: 'Co', days: p['Compliance Days'], color: '#1D4ED8' },
+        { label: 'T', days: p['Training Days'], color: '#B45309' }
+      ];
+      const satDots = [1,2,3,4,5].map(i => `<span style="width:10px;height:10px;border-radius:2px;background:${i <= Math.round(p['Satisfaction Score (1-5)']) ? '#1E6B4A' : 'var(--border)'};display:inline-block;margin-right:2px"></span>`).join('');
+      return `<div class="card" style="padding:16px;border-top:3px solid ${riskColors[p.risk_score]}">
+        <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:12px">
+          <div>
+            <div style="font-family:'DM Mono',monospace;font-size:14px;font-weight:600;color:var(--text)">${p['Provider ID']}</div>
+            <div style="font-size:11px;color:var(--text3)">${p.Market} · Started ${p['Start Date'] || '—'}</div>
+          </div>
+          ${riskBadge(p.sla_risk)}
+        </div>
+        <div style="display:flex;margin-bottom:10px;height:8px;border-radius:4px;overflow:hidden;gap:1px">
+          ${steps.map(s => `<div style="flex:${s.days/total};background:${s.color};opacity:0.85" title="${s.label}: ${s.days}d"></div>`).join('')}
+        </div>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:6px;font-size:11px;margin-bottom:10px">
+          <div style="background:var(--surface2);border-radius:4px;padding:6px 8px"><div style="color:var(--text3)">Onboarding</div><div style="font-weight:600">${p['Onboarding Duration (days)']}d</div></div>
+          <div style="background:var(--surface2);border-radius:4px;padding:6px 8px"><div style="color:var(--text3)">Ticket time</div><div style="font-weight:600;color:${p['Avg Ticket Resolution Time (hrs)']>25?'#991B1B':'var(--text)'}">${p['Avg Ticket Resolution Time (hrs)']}h</div></div>
+          <div style="background:var(--surface2);border-radius:4px;padding:6px 8px"><div style="color:var(--text3)">Escalations</div><div style="font-weight:600">${p['# Escalations']||'—'}</div></div>
+          <div style="background:var(--surface2);border-radius:4px;padding:6px 8px"><div style="color:var(--text3)">IT vs mkt</div><div style="font-weight:600;color:${p.it_vs_mkt>1?'#991B1B':p.it_vs_mkt<-1?'#1E6B4A':'var(--text)'}">${p.it_vs_mkt>0?'+':''}${p.it_vs_mkt}d</div></div>
+        </div>
+        <div style="font-size:11px;color:var(--text3);margin-bottom:4px">Satisfaction: ${satDots} ${p['Satisfaction Score (1-5)']}</div>
+        <div style="font-size:11px;margin-bottom:8px"><span style="color:var(--text3)">Delay:</span> ${p['Primary Delay Reason']} · <span style="color:var(--text3)">Esc:</span> ${p['Escalation Type']}</div>
+        <div style="background:var(--blue-light);border-radius:4px;padding:6px 8px;font-size:11px;color:var(--blue);font-weight:500">${p.next_action}</div>
+        <div style="display:flex;gap:4px;margin-top:8px;font-size:10px;color:var(--text3)">
+          <span style="background:var(--surface2);padding:2px 5px;border-radius:3px">Burden: ${p.escalation_burden}</span>
+          <span style="background:var(--surface2);padding:2px 5px;border-radius:3px">Efficiency: ${p.support_efficiency||'—'}</span>
+          <span style="background:var(--surface2);padding:2px 5px;border-radius:3px">IT share: ${p.it_share}%</span>
+        </div>
+      </div>`;
+    }).join('');
+  }
+}
+
+function sortProviders(s, e) {
+  if (e) e.stopPropagation();
+  providerSort = s;
+  document.querySelectorAll('#page-providers .filter-btn').forEach(b => {
+    const onclickAttr = b.getAttribute('onclick') || '';
+    if (onclickAttr.includes(`sortProviders('${s}'`)) {
+      b.classList.add('active');
+    } else if (onclickAttr.includes('sortProviders')) {
+      b.classList.remove('active');
+    }
+  });
+  renderProviderCards();
+}
+
+function filterProviders(m, e) {
+  if (e) e.stopPropagation();
+  providerMarket = m;
+  document.querySelectorAll('#page-providers .filter-btn').forEach(b => {
+    const onclickAttr = b.getAttribute('onclick') || '';
+    if (onclickAttr.includes(`filterProviders('${m}'`)) {
+      b.classList.add('active');
+    } else if (onclickAttr.includes('filterProviders')) {
+      b.classList.remove('active');
+    }
+  });
+  
+  const stateSelect = document.getElementById('global-state-filter');
+  if (stateSelect && stateSelect.value !== m) {
+    stateSelect.value = m;
+    handleGlobalFilterChange(false);
+  } else {
+    renderProviderCards();
+  }
+}
+
+// ============================================================
+// INIT
+// ============================================================
+// Run initial seed generation and UI drawing for Q1
+handleGlobalFilterChange(true);
+</script>
+</body>
+</html>
