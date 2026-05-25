@@ -736,8 +736,7 @@ export function generateProvidersForQuarter(q, customBaseProviders = null) {
     let totalDuration = Math.round((p['Contracting Days'] + p['IT Provisioning Days'] + p['Compliance Days'] + p['Training Days']) * 10) / 10;
     p['Onboarding Duration (days)'] = Math.round(totalDuration);
 
-    let isBreached = totalDuration >= 21;
-    p['SLA Breach (Y/N)'] = isBreached ? 'Y' : 'N';
+    let isBreached = p['SLA Breach (Y/N)'] === 'Y';
     
     let tasksPct = p['% Tasks Completed On Time'];
     if (tasksPct === '' || !tasksPct) {
