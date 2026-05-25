@@ -3,7 +3,7 @@
 :root {
   /* Everbright Health Typography custom properties */
   --font-sans: Inter, Arial, sans-serif;
-  --font-serif: 'PT Serif', Arial, sans-serif;
+  --font-serif: Inter, Arial, sans-serif;
   --font-mono: Inter, Arial, sans-serif;
 
   /* TweakCN Minimal Tokens adapted to Everbright Health (Light Mode Default) */

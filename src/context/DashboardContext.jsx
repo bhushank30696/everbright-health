@@ -70,7 +70,7 @@ export const DashboardProvider = ({ children }) => {
   const [selectedProviderId, setSelectedProviderId] = useState(null);
 
   // Theme support
-  const [darkMode, setDarkMode] = useState(true);
+  const [darkMode, setDarkMode] = useState(false);
 
   // Live Spreadsheet States
   const [liveBaseProviders, setLiveBaseProviders] = useState(null);

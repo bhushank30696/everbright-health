@@ -81,7 +81,7 @@ export default function CentralOps() {
   return (
     <div className="page active" id="page-ops" style={{ animation: 'fadeIn 0.2s ease-out' }}>
       <div className="page-header">
-        <h1>Operational Command Center</h1>
+        <h1>Central Ops Dashboard</h1>
         <p>Portfolio-level visibility across all markets · SLA health · Bottleneck identification · Resource signals</p>
         <div className="meta">
           DATASET: {kpis.total_providers} PROVIDERS
