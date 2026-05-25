@@ -26,7 +26,7 @@ export default function PracticeLeads() {
   const [searchQuery, setSearchQuery] = useState('');
   const [sortBy, setSortBy] = useState('risk'); // risk, completion, duration, name
   const [sortAsc, setSortAsc] = useState(false);
-  const [viewMode, setViewMode] = useState('grid'); // grid, list
+  const [viewMode, setViewMode] = useState('list'); // grid, list
 
   // Status-based provider counts
   const counts = useMemo(() => {
