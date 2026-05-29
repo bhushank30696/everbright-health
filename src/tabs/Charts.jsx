@@ -2798,13 +2798,13 @@ export default function Charts() {
 
                   <div style={{ width: '100%', height: 240, position: 'relative' }}>
                     <ResponsiveContainer>
-                      <BarChart data={insight3AData} layout="vertical" margin={{ top: 10, right: 30, left: 10, bottom: 10 }}>
+                      <BarChart data={coreInsight3AData} layout="vertical" margin={{ top: 10, right: 30, left: 10, bottom: 10 }}>
                         <CartesianGrid strokeDasharray="3 3" stroke="var(--border)" horizontal={false} />
                         <XAxis type="number" stroke="var(--text3)" fontSize={9} domain={[0, 100]} unit="%" tickLine={false} />
                         <YAxis dataKey="type" type="category" stroke="var(--text)" fontSize={9} tickLine={false} axisLine={false} width={80} />
                         <Tooltip />
                         <Bar dataKey="breachRate" radius={[0, 4, 4, 0]} barSize={16}>
-                          {insight3AData.map((entry, index) => (
+                          {coreInsight3AData.map((entry, index) => (
                             <Cell key={`cell-${index}`} fill={entry.color} />
                           ))}
                         </Bar>
@@ -2868,7 +2868,7 @@ export default function Charts() {
                     <div style={{ position: 'absolute', top: '10px', left: '160px', width: '70px', bottom: '38px', background: '#ECF4FB', opacity: 0.6, borderRadius: '4px', zIndex: 0 }} />
 
                     <ResponsiveContainer>
-                      <BarChart data={insight3BData} margin={{ top: 20, right: 10, bottom: 20, left: -25 }} barGap={2}>
+                      <BarChart data={coreInsight3BData} margin={{ top: 20, right: 10, bottom: 20, left: -25 }} barGap={2}>
                         <CartesianGrid strokeDasharray="3 3" stroke="var(--border)" vertical={false} />
                         <XAxis dataKey="reason" stroke="var(--text3)" fontSize={8.5} tickLine={false} />
                         <YAxis stroke="var(--text3)" fontSize={9} domain={[0, 80]} tickLine={false} axisLine={false} />
