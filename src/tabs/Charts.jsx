@@ -461,6 +461,19 @@ const coreInsight3CData = [
   { reason: 'Missing Docs', breachRate: 67, escalations: 1.3, color: '#F09595' }
 ];
 
+const insight2_metrics = [
+  { label: 'Training days', r: '0.640', sub: 'Strongest phase driver ← Never discussed', highlight: true },
+  { label: 'IT provisioning', r: '0.551', sub: 'Second strongest', highlight: false },
+  { label: 'Compliance days', r: '0.398', sub: 'Moderate', highlight: false },
+  { label: 'Contracting days', r: '0.322', sub: 'Weakest', highlight: false }
+];
+
+const insight3_metrics = [
+  { value: '67%', label: 'Operations escalation breach rate', subtext: 'Highest of any escalation type', type: 'ops' },
+  { value: '44%', label: 'Compliance escalation breach rate', subtext: 'Near dataset average', type: 'comp' },
+  { value: '25%', label: 'IT escalation breach rate', subtext: 'Lowest — ticket system works', type: 'it' }
+];
+
 // Custom SVG shape for the Categorical Bubble Lollipop Matrix (Insight 3, Chart C)
 const CustomLollipopBar = (props) => {
   const { x, y, width, height, fill, payload } = props;
