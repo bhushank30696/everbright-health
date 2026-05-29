@@ -631,6 +631,23 @@ export default function Charts() {
   const renderCaseStudyChart = (id) => {
     switch (id) {
       case 1:
+        const chart1OptionAData = [
+          {
+            name: 'Normal Onboarding (No IT Access Delay)',
+            'Fast Tickets (≤22h)': 29,
+            'Slow Tickets (>22h)': 33,
+            fastN: 14,
+            slowN: 9
+          },
+          {
+            name: 'Blocked Onboarding (IT Access Delayed)',
+            'Fast Tickets (≤22h)': 100,
+            'Slow Tickets (>22h)': 80,
+            fastN: 3,
+            slowN: 10
+          }
+        ];
+
         return (
           <div className="chart-card-premium" style={{ gap: '20px' }}>
             <div>
@@ -639,86 +656,71 @@ export default function Charts() {
                 Slow Tickets ≠ Cause of Breach — Both Are Symptoms of the Same Upstream Failure
               </h3>
               <p style={{ color: 'var(--text3)', fontSize: '11.5px', marginTop: '4px' }}>
-                r=0.49 looks strong but disappears when delay reason is controlled (0=N, 1=Y Breach status plotted with jitter)
+                A scientific control comparison: the r=0.49 correlation disappears when the IT Access upstream variable is controlled.
               </p>
             </div>
             
-            <div style={{ display: 'grid', gridTemplateColumns: '3fr 2fr', gap: '20px', alignItems: 'start' }}>
-              <div style={{ width: '100%', height: 260, position: 'relative' }}>
-                {/* Visual Shaded Region for IT Access dots */}
-                <div style={{
-                  position: 'absolute',
-                  top: '10px',
-                  left: '42%',
-                  right: '5%',
-                  bottom: '10px',
-                  background: 'var(--clr-critical-bg)',
-                  border: '1px dashed var(--clr-critical-border)',
-                  borderRadius: '6px',
-                  pointerEvents: 'none',
-                  display: 'flex',
-                  alignItems: 'flex-start',
-                  justifyContent: 'center',
-                  padding: '6px'
-                }}>
-                  <span style={{ fontSize: '9px', fontWeight: '600', color: 'var(--clr-critical)', textAlign: 'center', opacity: 0.85 }}>
-                    IT Access Block Region (Slow Tickets & Breaches)
-                  </span>
-                </div>
-
+            <div style={{ display: 'grid', gridTemplateColumns: '3fr 2fr', gap: '20px', alignItems: 'start' }} className="insights-split">
+              <div style={{ width: '100%', height: 260 }}>
                 <ResponsiveContainer>
-                  <ScatterChart margin={{ top: 20, right: 20, left: -20, bottom: 5 }}>
-                    <CartesianGrid strokeDasharray="3 3" stroke="var(--border)" horizontal={false} />
-                    <XAxis type="number" dataKey="ticketHrs" name="Avg Ticket Time" stroke="var(--text3)" fontSize={10} domain={[10, 36]} unit="h" />
-                    <YAxis type="number" dataKey="breached" name="Breached" stroke="var(--text3)" fontSize={10} domain={[-0.2, 1.2]} ticks={[0, 1]} tickFormatter={(v) => v === 0 ? 'N (0)' : 'Y (1)'} />
-                    <Tooltip cursor={{ strokeDasharray: '3 3' }} content={({ active, payload }) => {
+                  <BarChart data={chart1OptionAData} margin={{ top: 20, right: 30, left: -10, bottom: 5 }}>
+                    <CartesianGrid strokeDasharray="3 3" stroke="var(--border)" vertical={false} />
+                    <XAxis dataKey="name" stroke="var(--text3)" fontSize={10} tickLine={false} />
+                    <YAxis stroke="var(--text3)" fontSize={10} tickLine={false} axisLine={false} unit="%" domain={[0, 100]} />
+                    <Tooltip content={({ active, payload }) => {
                       if (active && payload && payload.length) {
                         const p = payload[0].payload;
                         return (
-                          <div style={{ background: 'var(--card)', border: '1px solid var(--border)', borderRadius: '6px', padding: '10px', boxShadow: 'var(--shadow)' }}>
-                            <p style={{ fontSize: '11px', fontWeight: '700', color: 'var(--text)', marginBottom: '4px' }}>Provider: {p.id}</p>
-                            <p style={{ fontSize: '10.5px', color: 'var(--text2)' }}>Avg Ticket Time: <strong>{p.ticketHrs}h</strong></p>
-                            <p style={{ fontSize: '10.5px', color: 'var(--text2)' }}>Delay Reason: <strong>{p.delay}</strong></p>
-                            <p style={{ fontSize: '10.5px', color: p.breached ? 'var(--clr-critical)' : 'var(--clr-good)', fontWeight: '600' }}>
-                              SLA status: {p.breached ? '❌ Breached' : '✓ On Track'}
+                          <div style={{ background: 'var(--card)', border: '1px solid var(--border)', borderRadius: 'var(--radius)', padding: '12px 16px', boxShadow: 'var(--shadow)', backdropFilter: 'blur(8px)' }}>
+                            <p style={{ fontWeight: '600', color: 'var(--text)', marginBottom: '8px', fontSize: '11px' }}>{p.name}</p>
+                            <p style={{ color: 'var(--clr-good)', fontSize: '10.5px', margin: '4px 0', display: 'flex', alignItems: 'center', gap: '6px' }}>
+                              <span style={{ width: '6px', height: '6px', borderRadius: '50%', background: 'var(--clr-good)', display: 'inline-block' }} />
+                              <span>Fast Tickets (≤22h):</span>
+                              <strong>{p['Fast Tickets (≤22h)']}%</strong> breach rate <span style={{ color: 'var(--text3)' }}>(n={p.fastN})</span>
+                            </p>
+                            <p style={{ color: 'var(--clr-critical)', fontSize: '10.5px', margin: '4px 0', display: 'flex', alignItems: 'center', gap: '6px' }}>
+                              <span style={{ width: '6px', height: '6px', borderRadius: '50%', background: 'var(--clr-critical)', display: 'inline-block' }} />
+                              <span>Slow Tickets (&gt;22h):</span>
+                              <strong>{p['Slow Tickets (>22h)']}%</strong> breach rate <span style={{ color: 'var(--text3)' }}>(n={p.slowN})</span>
                             </p>
                           </div>
                         );
                       }
                       return null;
                     }} />
-                    <ReferenceLine x={22} stroke="var(--clr-warn)" strokeDasharray="3 3" label={{ value: 'Slow threshold (22h)', fill: 'var(--clr-warn)', fontSize: 10, position: 'top' }} />
-                    <Scatter name="Providers" data={chart1ScatterData} shape={renderCustomScatterNode} />
-                  </ScatterChart>
+                    <Legend iconSize={10} wrapperStyle={{ fontSize: '10px', paddingTop: '10px' }} />
+                    <Bar dataKey="Fast Tickets (≤22h)" fill="var(--clr-good)" radius={[4, 4, 0, 0]} name="Fast Tickets (≤22h)" />
+                    <Bar dataKey="Slow Tickets (>22h)" fill="var(--clr-critical)" radius={[4, 4, 0, 0]} name="Slow Tickets (>22h)" />
+                  </BarChart>
                 </ResponsiveContainer>
               </div>
 
               {/* Sidebar Callouts */}
               <div style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
-                <div style={{ background: 'var(--surface)', borderLeft: '3px solid var(--accent)', padding: '10px', borderRadius: '6px' }}>
-                  <h4 style={{ fontSize: '10px', fontWeight: '700', color: 'var(--text)', textTransform: 'uppercase', marginBottom: '4px' }}>
-                    r = 0.487 Pearson Correlation
+                <div style={{ background: 'var(--surface)', borderLeft: '3px solid var(--clr-good)', padding: '10px', borderRadius: '6px' }}>
+                  <h4 style={{ fontSize: '10px', fontWeight: '700', color: 'var(--clr-good)', textTransform: 'uppercase', marginBottom: '4px' }}>
+                    Normal Intake (No IT Access Block)
                   </h4>
                   <p style={{ fontSize: '11px', color: 'var(--text2)', lineHeight: '1.4' }}>
-                    Strong correlation initially suggests slow tickets cause breaches. However, the data reveals both are symptoms of the same upstream block (e.g. IT Access or Contracting delays).
+                    Slowing down helpdesk tickets (&gt;22h) barely increases breaches by **4%** (29% vs 33%). When the onboarding path is clean, ticket resolution speed has **no meaningful causal impact**.
                   </p>
                 </div>
 
                 <div style={{ background: 'var(--surface)', borderLeft: '3px solid var(--clr-critical)', padding: '10px', borderRadius: '6px' }}>
                   <h4 style={{ fontSize: '10px', fontWeight: '700', color: 'var(--clr-critical)', textTransform: 'uppercase', marginBottom: '4px' }}>
-                    🚨 P013 Scheduling Delay Callout
+                    Blocked Intake (IT Access Delayed)
                   </h4>
                   <p style={{ fontSize: '11px', color: 'var(--text2)', lineHeight: '1.4' }}>
-                    <strong>P013 (29.4 hrs, Breached=Y)</strong>: Slowest tickets in the set, but delay is due to Scheduling — not IT Access.
+                    Breaches remain extremely high (**80%–100%**) *regardless* of ticket resolution speed. The upstream blockage pre-determines failure, making ticket speed a symptom of the block—not a cure.
                   </p>
                 </div>
 
-                <div style={{ background: 'var(--surface)', borderLeft: '3px solid var(--clr-good)', padding: '10px', borderRadius: '6px' }}>
-                  <h4 style={{ fontSize: '10px', fontWeight: '700', color: 'var(--clr-good)', textTransform: 'uppercase', marginBottom: '4px' }}>
-                    ✓ P014 Support Speed Exception
+                <div style={{ background: 'var(--surface)', borderLeft: '3px solid var(--accent)', padding: '10px', borderRadius: '6px' }}>
+                  <h4 style={{ fontSize: '10px', fontWeight: '700', color: 'var(--accent)', textTransform: 'uppercase', marginBottom: '4px' }}>
+                    💡 Operational Insight
                   </h4>
-                  <p style={{ fontSize: '11px', color: 'var(--text2)', lineHeight: '1.4' }}>
-                    <strong>P014 (23.9 hrs, Breached=N)</strong>: Had slow tickets but achieved the fastest onboarding (15 days) and NO breach because compliance and contracting were completed instantly.
+                  <p style={{ fontSize: '10px', color: 'var(--text3)', lineHeight: '1.4' }}>
+                    P013 (slow scheduling delay, no IT block) and P014 (slow IT ticket, no breach, fast 15d start) prove that resolving upstream coordination is the high-value target—not service desk staffing.
                   </p>
                 </div>
               </div>
