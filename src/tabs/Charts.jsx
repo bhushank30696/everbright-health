@@ -22,7 +22,8 @@ import {
   User,
   Zap,
   Eye,
-  EyeOff
+  EyeOff,
+  TrendingUp
 } from 'lucide-react';
 import {
   ResponsiveContainer,
