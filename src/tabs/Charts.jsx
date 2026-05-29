@@ -328,6 +328,12 @@ const chart14Bubbles = [
   { name: 'IT-Stressed', duration: 24.25, breachRate: 67, count: 12, sat: 4.09, escalations: 1.92, ticketHrs: 24.06, color: 'var(--clr-critical)' }
 ];
 
+const chart15Monthly = [
+  { month: 'Jan', breachRate: 55, avgDays: 23.82, sat: 4.16, itProv: 6.40, ticketHrs: 19.86, n: 11, itAccessPct: 35, schedulingPct: 20, otherPct: 45 },
+  { month: 'Feb', breachRate: 38, avgDays: 23.56, sat: 4.09, itProv: 7.36, ticketHrs: 20.47, n: 16, itAccessPct: 20, schedulingPct: 30, otherPct: 50 },
+  { month: 'Mar', breachRate: 56, avgDays: 23.11, sat: 4.06, itProv: 6.71, ticketHrs: 23.24, n: 9, itAccessPct: 45, schedulingPct: 15, otherPct: 40 }
+];
+
 // ==========================================
 // STATIC DATASETS FOR CORE INSIGHTS SUB-TAB
 // ==========================================
