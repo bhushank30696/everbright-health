@@ -67,6 +67,7 @@ export const DashboardProvider = ({ children }) => {
   const [activeState, setActiveState] = useState('all');
   const [activeQuarter, setActiveQuarter] = useState('Q1');
   const [activeTab, setActiveTab] = useState('ops');
+  const [activeSubTab, setActiveSubTab] = useState('market');
   const [selectedProviderId, setSelectedProviderId] = useState(null);
 
   // Theme support
@@ -156,6 +157,8 @@ export const DashboardProvider = ({ children }) => {
       setActiveQuarter,
       activeTab,
       setActiveTab,
+      activeSubTab,
+      setActiveSubTab,
       selectedProviderId,
       setSelectedProviderId,
       providers, // Filtered provider list

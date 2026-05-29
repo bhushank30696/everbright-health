@@ -10,6 +10,7 @@ export default function Navbar() {
     setActiveQuarter,
     activeTab,
     setActiveTab,
+    setActiveSubTab,
     dashboardData,
     isLive,
     lastSync,
@@ -31,7 +32,10 @@ export default function Navbar() {
       <div className="tab-nav">
         <button
           className={`tab-btn ${activeTab === 'charts' ? 'active' : ''}`}
-          onClick={() => setActiveTab('charts')}
+          onClick={() => {
+            setActiveTab('charts');
+            setActiveSubTab('market');
+          }}
         >
           ■ Charts
         </button>
