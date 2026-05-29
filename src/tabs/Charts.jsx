@@ -494,47 +494,57 @@ const CustomLollipopBar = (props) => {
   );
 };
 
+const CORE_CHART_TITLES = {
+  'chart-1': 'Slow Tickets ≠ Cause of Breach — Both Are Symptoms of the Same Upstream Failure',
+  'chart-2': 'TX\'s 60% Breach Rate Is Entirely Explained by Delay Reason Concentration',
+  'chart-3': 'Training Days Drives Total Duration More Than Any Other Phase',
+  'chart-4': 'Task Completion Rate Is the Wrong Dashboard Metric',
+  'chart-5': 'Operations Escalations Are 3x More Likely to Cause SLA Breach Than IT Escalations',
+  'chart-6': 'IT Provisioning Is the Phase That Grows Most When Onboarding Fails',
+  'chart-7': 'A 5-Factor Risk Score Flags 88% of SLA Breaches Early Enough to Intervene',
+  'chart-8': 'The Satisfaction Survey Has a 1.1-Point Range — It Cannot Detect Real Dissatisfaction',
+  'chart-9': 'Vendor SLA Delays Have the Lowest Breach Rate — Because Teams Plan Around External Failures',
+  'chart-10': 'When Compliance + IT Exceeds 13 Days, Providers Go Live Without Clinical Access',
+  'chart-11': 'Internal Handoff Has the Lowest Satisfaction of Any Category — and It Doesn\'t Show Up as a Breach',
+  'chart-12': 'Every Provider Who Started Onboarding on a Friday Breached SLA',
+  'chart-13': 'P014 and P003 Prove 15–16 Day Onboarding Is Achievable Today',
+  'chart-14': 'Three Provider Profiles — Each Requiring a Different Operational Intervention',
+  'chart-15': 'February\'s 38% Breach Rate Looks Like Improvement — But May Be a Cohort Artifact',
+  'chart-16': 'Panel 1 — Chart A — Correlation with satisfaction score',
+  'chart-17': 'Panel 2 — Chart B — The paradox scatter',
+  'chart-18': 'Panel 3 — Chart C — Escalation count &rarr; satisfaction decay',
+  'chart-19': 'Panel 1 — Chart A — Training days vs total onboarding duration',
+  'chart-20': 'Panel 2 — Chart B — Phase correlation comparison: duration vs breach',
+  'chart-21': 'Panel 3 — Chart C — Training days distribution with breach rate overlay',
+  'chart-22': 'Panel 1 — Chart A — Breach rate by escalation type',
+  'chart-23': 'Panel 2 — Chart B — Internal Handoff: hidden churn risk disguised as low breach',
+  'chart-24': 'Bottom Panel — Chart C — Where coordination fails: the four unmanaged handoff gaps',
+  'chart-25': 'IT Access Delay & Ticket Speed Compounding Impact',
+  'chart-26': 'Texas Onboarding Duration & Stage Bottleneck',
+  'chart-27': 'Task Completion & Escalation Satisfaction Collapse',
+  'chart-28': 'Average Onboarding Duration by Market',
+  'chart-29': 'Average Satisfaction Score by Market',
+  'chart-30': 'Average Ticket Resolution Time by Market',
+  'chart-31': 'Market vs Task Completion Rate',
+  'chart-32': 'Total Escalations by Market',
+  'chart-33': 'SLA Breach by Market',
+  'chart-34': 'Onboarding Stages by Market',
+  'chart-35': 'Primary Delay Reasons',
+  'chart-36': 'Distribution of Escalation Types',
+  'chart-37': 'Primary Delay Reason vs Market',
+  'chart-38': 'SLA Breach vs Avg Ticket Resolution Time',
+  'chart-39': 'Market vs SLA Breach vs Onboarding Days',
+  'chart-40': 'Delay Reason vs SLA Breach Rate',
+  'chart-41': 'Chronological Onboarding Speed & Trend Diagnostics',
+  'chart-42': 'SLA Breach Rate Trend by Month',
+  'chart-43': 'Overall Onboarding Speed Trend',
+};
+
 // Reusable Helper Component to allow hiding/unhiding of charts across all tabs
 const CollapsibleChartCard = ({ id, title, children, minimizedCharts, onToggle, className = "chart-card-premium", style = {} }) => {
   const isHidden = minimizedCharts[id];
   if (isHidden) {
-    return (
-      <div 
-        className={className} 
-        style={{ 
-          ...style, 
-          height: '56px', 
-          display: 'flex', 
-          flexDirection: 'row', 
-          alignItems: 'center', 
-          justifyContent: 'space-between', 
-          padding: '12px 20px', 
-          background: 'var(--surface)', 
-          border: '1px dashed var(--border)',
-          cursor: 'pointer',
-          borderRadius: 'var(--radius)'
-        }}
-        onClick={() => onToggle(id)}
-      >
-        <span style={{ fontSize: '12px', fontWeight: '600', color: 'var(--text2)', display: 'flex', alignItems: 'center', gap: '8px', fontFamily: 'var(--font-sans)' }}>
-          <EyeOff size={14} color="var(--accent)" />
-          {title} has been minimized
-        </span>
-        <span 
-          style={{ 
-            fontSize: '11px', 
-            fontWeight: '700', 
-            color: 'var(--accent)', 
-            fontFamily: 'var(--font-sans)',
-            display: 'flex',
-            alignItems: 'center',
-            gap: '4px'
-          }}
-        >
-          <Eye size={12} /> Show Chart
-        </span>
-      </div>
-    );
+    return null;
   }
   return children;
 };
@@ -547,9 +557,21 @@ export default function Charts() {
   const [selectedCoreInsight, setSelectedCoreInsight] = useState(1);
   const [insight1BView, setInsight1BView] = useState('grid'); // 'grid' | 'scatter'
   const [insight2AView, setInsight2AView] = useState('lollipop'); // 'lollipop' | 'scatter'
-  const [minimizedCharts, setMinimizedCharts] = useState({});
+  const [minimizedCharts, setMinimizedCharts] = useState(() => {
+    try {
+      const saved = localStorage.getItem('minimizedCharts');
+      return saved ? JSON.parse(saved) : {};
+    } catch (e) {
+      return {};
+    }
+  });
+
   const toggleChart = (chartId) => {
-    setMinimizedCharts(prev => ({ ...prev, [chartId]: !prev[chartId] }));
+    setMinimizedCharts(prev => {
+      const updated = { ...prev, [chartId]: !prev[chartId] };
+      localStorage.setItem('minimizedCharts', JSON.stringify(updated));
+      return updated;
+    });
   };
   // Interactive View Toggles
   const [trendViewMode, setTrendViewMode] = useState('provider'); // 'provider' | 'market'
@@ -2120,7 +2142,7 @@ export default function Charts() {
           <span>CURRENT DATASET COHORT: {kpis.total_providers} PROVIDERS · {activeQuarter} 2025 · FILTER: {activeState.toUpperCase()}</span>
           {Object.values(minimizedCharts).some(val => val) && (
             <button 
-              onClick={() => setMinimizedCharts({})} 
+              onClick={() => { setMinimizedCharts({}); localStorage.removeItem('minimizedCharts'); }} 
               style={{
                 fontSize: '9px',
                 fontWeight: '700',
@@ -4393,6 +4415,80 @@ export default function Charts() {
           {/* Right Workspace - Selected Chart display */}
           <div style={{ display: 'flex', flexDirection: 'column', gap: '20px' }}>
             {renderCaseStudyChart(selectedCaseStudyChart)}
+          </div>
+        </div>
+      )}
+
+      {/* Persistent Minimized Charts Shelf at the bottom of the page */}
+      {Object.values(minimizedCharts).some(val => val) && (
+        <div style={{ 
+          marginTop: '40px', 
+          padding: '24px', 
+          background: 'var(--surface)', 
+          border: '1.5px dashed var(--border)', 
+          borderRadius: 'var(--radius)',
+          animation: 'fadeIn 0.2s ease-out',
+          boxShadow: '0 4px 20px rgba(0,0,0,0.03)'
+        }}>
+          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '16px' }}>
+            <span style={{ fontSize: '11px', fontWeight: '700', color: 'var(--text2)', display: 'flex', alignItems: 'center', gap: '8px', fontFamily: 'var(--font-mono)', textTransform: 'uppercase', letterSpacing: '0.05em' }}>
+              <EyeOff size={14} color="var(--accent)" />
+              Minimized Workspace Shelf ({Object.values(minimizedCharts).filter(val => val).length})
+            </span>
+            <button 
+              onClick={() => { setMinimizedCharts({}); localStorage.removeItem('minimizedCharts'); }}
+              style={{ 
+                fontSize: '10px', 
+                fontWeight: '700', 
+                color: '#E24B4A', 
+                border: '1px solid #F7C1C1', 
+                background: '#FCEBEB', 
+                borderRadius: '4px',
+                padding: '5px 12px',
+                cursor: 'pointer',
+                fontFamily: 'var(--font-sans)',
+                textTransform: 'uppercase',
+                transition: 'all 0.15s ease'
+              }}
+              onMouseEnter={(e) => { e.currentTarget.style.background = '#F9D5D5'; }}
+              onMouseLeave={(e) => { e.currentTarget.style.background = '#FCEBEB'; }}
+            >
+              Restore All Charts
+            </button>
+          </div>
+          <div style={{ display: 'flex', flexWrap: 'wrap', gap: '10px' }}>
+            {Object.keys(minimizedCharts).map(key => {
+              if (!minimizedCharts[key]) return null;
+              const title = CORE_CHART_TITLES[key] || key.replace(/-/g, ' ');
+              return (
+                <div 
+                  key={key} 
+                  onClick={() => toggleChart(key)}
+                  style={{
+                    background: 'var(--card)',
+                    border: '1px solid var(--border)',
+                    borderRadius: 'var(--radius)',
+                    padding: '8px 14px',
+                    fontSize: '11.5px',
+                    fontWeight: '600',
+                    color: 'var(--text)',
+                    cursor: 'pointer',
+                    display: 'inline-flex',
+                    alignItems: 'center',
+                    gap: '8px',
+                    boxShadow: '0 1px 3px rgba(0,0,0,0.02)',
+                    transition: 'all 0.15s ease'
+                  }}
+                  onMouseEnter={(e) => { e.currentTarget.style.borderColor = 'var(--accent)'; e.currentTarget.style.background = 'var(--surface)'; }}
+                  onMouseLeave={(e) => { e.currentTarget.style.borderColor = 'var(--border)'; e.currentTarget.style.background = 'var(--card)'; }}
+                >
+                  <span style={{ maxWidth: '280px', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{title}</span>
+                  <span style={{ fontSize: '10px', color: 'var(--accent)', fontWeight: '700', borderLeft: '1px solid var(--border)', paddingLeft: '8px', display: 'flex', alignItems: 'center', gap: '4px' }}>
+                    <Eye size={11} /> Restore
+                  </span>
+                </div>
+              );
+            })}
           </div>
         </div>
       )}
