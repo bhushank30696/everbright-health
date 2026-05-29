@@ -96,6 +96,63 @@ const PIE_COLORS = [
 ];
 
 // ==========================================
+// STATIC DATASETS FOR NO CORRELATION SUB-TAB
+// ==========================================
+
+const noCorrInsight1AData = [
+  { group: '< 75% tasks', satisfaction: 4.17, color: '#85B7EB' },
+  { group: '75–90% tasks', satisfaction: 4.09, color: '#85B7EB' },
+  { group: '> 90% tasks', satisfaction: 4.11, color: '#85B7EB' }
+];
+
+const noCorrInsight1BData = [
+  { group: '0 escalations', satisfaction: 4.40, color: '#1D9E75' },
+  { group: '1–2 escalations', satisfaction: 4.15, color: '#EF9F27' },
+  { group: '3–5 escalations', satisfaction: 3.88, color: '#E24B4A' }
+];
+
+const noCorrInsight2AData = [
+  { phase: 'Training', Short: 21.7, Long: 26.3, ShortColor: '#9FE1CB', LongColor: '#E24B4A', gap: '+4.6 days' },
+  { phase: 'IT Provisioning', Short: 21.9, Long: 25.3, ShortColor: '#9FE1CB', LongColor: '#E24B4A', gap: '+3.4 days' },
+  { phase: 'Compliance', Short: 22.4, Long: 24.9, ShortColor: '#9FE1CB', LongColor: '#E24B4A', gap: '+2.5 days' },
+  { phase: 'Contracting', Short: 22.8, Long: 24.5, ShortColor: '#9FE1CB', LongColor: '#E24B4A', gap: '+1.7 days' }
+];
+
+const noCorrInsight2BData = [
+  { name: 'Short training (≤ 5.9d)', avgDays: 21.9, breachRate: 32 },
+  { name: 'Long training (> 5.9d)', avgDays: 25.5, breachRate: 53 }
+];
+
+const noCorrInsight2CData = [
+  { bucket: '< 4d training', avgDays: 21.4, color: '#9FE1CB' },
+  { bucket: '4–6d training', avgDays: 22.8, color: '#9FE1CB' },
+  { bucket: '6–8d training', avgDays: 25.0, color: '#FAC775' },
+  { bucket: '> 8d training', avgDays: 26.7, color: '#E24B4A' }
+];
+
+const noCorrInsight3AData = [
+  { type: 'Operations', breachRate: 67, label: 'n=9', color: '#A32D2D' },
+  { type: 'Other', breachRate: 50, label: 'n=10', color: '#EF9F27' },
+  { type: 'Compliance', breachRate: 44, label: 'n=9', color: '#FAC775' },
+  { type: 'IT', breachRate: 25, label: 'n=8', color: '#1D9E75' }
+];
+
+const noCorrInsight3BData = [
+  { type: 'Operations', breached: 6, withinSLA: 3 },
+  { type: 'Other', breached: 5, withinSLA: 5 },
+  { type: 'Compliance', breached: 4, withinSLA: 5 },
+  { type: 'IT', breached: 2, withinSLA: 6 }
+];
+
+const noCorrInsight3CData = [
+  { reason: 'IT Access', breachRate: 73, escalations: 19, satisfaction: 40 },
+  { reason: 'Scheduling', breachRate: 56, escalations: 15, satisfaction: 41 },
+  { reason: 'Internal Handoff', breachRate: 20, escalations: 32, satisfaction: 40 },
+  { reason: 'Vendor SLA', breachRate: 13, escalations: 23, satisfaction: 41 },
+  { reason: 'Missing Docs', breachRate: 67, escalations: 13, satisfaction: 41 }
+];
+
+// ==========================================
 // STATIC DATASETS FOR CORE INSIGHTS SUB-TAB
 // ==========================================
 
@@ -262,6 +319,9 @@ const CustomLollipopBar = (props) => {
 };
 
 const CORE_CHART_TITLES = {
+  'chart-nc-1': 'Insight 1 — Task completion is the wrong KPI',
+  'chart-nc-2': 'Insight 2 — Training days: the silent duration killer',
+  'chart-nc-3': 'Insight 3 — Operations escalations predict breach, not IT escalations',
   'chart-16': 'Panel 1 — Chart A — Correlation with satisfaction score',
   'chart-17': 'Panel 2 — Chart B — The paradox scatter',
   'chart-18': 'Panel 3 — Chart C — Escalation count &rarr; satisfaction decay',
@@ -685,6 +745,12 @@ export default function Charts() {
           onClick={() => setActiveSubTab('trends')}
         >
           📈 Chronological Trends
+        </button>
+        <button
+          className={`charts-sub-btn ${activeSubTab === 'nocorrelation' ? 'active' : ''}`}
+          onClick={() => setActiveSubTab('nocorrelation')}
+        >
+          🚫 No Correlation
         </button>
 
       </div>
@@ -2829,7 +2895,514 @@ export default function Charts() {
 
 
 
-      {/* Persistent Minimized Charts Shelf at the bottom of the page */}
+      {activeSubTab === 'nocorrelation' && (
+        <div style={{ display: 'flex', flexDirection: 'column', gap: '30px', animation: 'fadeIn 0.2s ease-out' }}>
+          
+          {/* ======================================================== */}
+          {/* INSIGHT 1: TASK COMPLETION IS THE WRONG KPI */}
+          {/* ======================================================== */}
+          <CollapsibleChartCard id="chart-nc-1" title="Insight 1 — Task completion is the wrong KPI" minimizedCharts={minimizedCharts} onToggle={toggleChart}>
+            <div className="chart-card-premium" style={{ background: '#FFFFFF', padding: '24px', border: '1px solid var(--border)', borderRadius: 'var(--radius)' }}>
+              {/* Header */}
+              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: '20px' }}>
+                <div>
+                  <h2 style={{ fontSize: '18px', fontWeight: '700', color: 'var(--text)', display: 'flex', alignItems: 'center', gap: '8px' }}>
+                    <Activity size={18} color="var(--accent)" />
+                    Insight 1 — Task completion is the wrong KPI
+                  </h2>
+                  <p style={{ fontSize: '13px', color: 'var(--text3)', marginTop: '4px', lineHeight: '1.5' }}>
+                    When providers are grouped by task completion, satisfaction barely changes. When grouped by escalation count, satisfaction drops sharply. Same grouping logic. Completely different result.
+                  </p>
+                </div>
+                <button 
+                  onClick={() => toggleChart('chart-nc-1')}
+                  title="Minimize Dashboard Section"
+                  style={{ border: 'none', background: 'transparent', cursor: 'pointer', padding: '6px', color: 'var(--text3)', display: 'flex', alignItems: 'center', justifyContent: 'center', borderRadius: '4px', transition: 'all 0.2s' }}
+                >
+                  <EyeOff size={16} />
+                </button>
+              </div>
+
+              {/* Side-by-Side Panels */}
+              <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(450px, 1fr))', gap: '24px', marginBottom: '24px' }}>
+                
+                {/* Panel 1 */}
+                <div style={{ border: '0.5px solid var(--border)', padding: '16px', borderRadius: '8px', background: '#FFFFFF' }}>
+                  <h3 style={{ fontSize: '13.5px', fontWeight: '600', color: 'var(--text)' }}>Avg satisfaction by task completion group</h3>
+                  <p style={{ fontSize: '11px', color: 'var(--text3)', marginTop: '2px', marginBottom: '16px' }}>
+                    If task completion drove satisfaction, bars should clearly step down. They don't.
+                  </p>
+                  
+                  <div style={{ width: '100%', height: 200 }}>
+                    <ResponsiveContainer>
+                      <BarChart data={noCorrInsight1AData} margin={{ top: 20, right: 10, left: -20, bottom: 5 }}>
+                        <CartesianGrid strokeDasharray="3 3" stroke="var(--border)" vertical={false} />
+                        <XAxis dataKey="group" stroke="var(--text3)" fontSize={10} tickLine={false} />
+                        <YAxis stroke="var(--text3)" fontSize={10} tickLine={false} axisLine={false} domain={[3.8, 4.6]} />
+                        <Tooltip content={<CustomTooltip />} />
+                        <ReferenceLine y={4.12} stroke="var(--text3)" strokeDasharray="3 3" label={{ value: 'Dataset avg', fill: 'var(--text3)', fontSize: 9, position: 'top' }} />
+                        <Bar dataKey="satisfaction" fill="#85B7EB" radius={[4, 4, 0, 0]} barSize={36} label={{ position: 'top', formatter: (v) => v.toFixed(2), fill: 'var(--text)', fontSize: 10, fontWeight: '700' }} />
+                      </BarChart>
+                    </ResponsiveContainer>
+                  </div>
+
+                  <div style={{ borderLeft: '3px solid var(--clr-critical)', padding: '12px 16px', background: 'var(--surface2)', borderRadius: '0 var(--radius) var(--radius) 0', marginTop: '16px', fontSize: '11.5px', color: 'var(--text2)', lineHeight: '1.6' }}>
+                    All three bars are nearly the same height — 4.17, 4.09, 4.11.<br/>
+                    High task completion and low task completion groups have identical satisfaction scores.<br/>
+                    <strong>The metric is producing no signal.</strong>
+                  </div>
+                </div>
+
+                {/* Panel 2 */}
+                <div style={{ border: '0.5px solid var(--border)', padding: '16px', borderRadius: '8px', background: '#FFFFFF', position: 'relative' }}>
+                  <h3 style={{ fontSize: '13.5px', fontWeight: '600', color: 'var(--text)' }}>Avg satisfaction by escalation count group</h3>
+                  <p style={{ fontSize: '11px', color: 'var(--text3)', marginTop: '2px', marginBottom: '16px' }}>
+                    Same grouping logic — completely different result. Clear staircase down.
+                  </p>
+                  
+                  <div style={{ width: '100%', height: 200, position: 'relative' }}>
+                    <ResponsiveContainer>
+                      <BarChart data={noCorrInsight1BData} margin={{ top: 20, right: 10, left: -20, bottom: 5 }}>
+                        <CartesianGrid strokeDasharray="3 3" stroke="var(--border)" vertical={false} />
+                        <XAxis dataKey="group" stroke="var(--text3)" fontSize={10} tickLine={false} />
+                        <YAxis stroke="var(--text3)" fontSize={10} tickLine={false} axisLine={false} domain={[3.6, 4.6]} />
+                        <Tooltip content={<CustomTooltip />} />
+                        <ReferenceLine y={4.12} stroke="var(--text3)" strokeDasharray="3 3" label={{ value: 'Dataset avg', fill: 'var(--text3)', fontSize: 9, position: 'top' }} />
+                        <Bar dataKey="satisfaction" radius={[4, 4, 0, 0]} barSize={36} label={{ position: 'top', formatter: (v) => v.toFixed(2), fill: 'var(--text)', fontSize: 10, fontWeight: '700' }}>
+                          {noCorrInsight1BData.map((entry, idx) => (
+                            <Cell key={`cell-${idx}`} fill={entry.color} />
+                          ))}
+                        </Bar>
+                      </BarChart>
+                    </ResponsiveContainer>
+                    
+                    {/* Downward sloping arrow overlay */}
+                    <svg style={{ position: 'absolute', top: 0, left: 0, width: '100%', height: '100%', pointerEvents: 'none' }}>
+                      <defs>
+                        <marker id="arrow" viewBox="0 0 10 10" refX="5" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+                          <path d="M 0 0 L 10 5 L 0 10 z" fill="#E24B4A" />
+                        </marker>
+                      </defs>
+                      <line x1="30%" y1="28%" x2="80%" y2="82%" stroke="#E24B4A" strokeWidth="2" strokeDasharray="4 3" markerEnd="url(#arrow)" />
+                      <rect x="50%" y="45%" width="64" height="18" fill="var(--card)" rx="4" stroke="var(--border)" strokeWidth="0.5" />
+                      <text x="50%" y="45%" dx="32" dy="12" textAnchor="middle" fill="#E24B4A" fontSize="9px" fontWeight="700">−0.52 drop</text>
+                    </svg>
+                  </div>
+
+                  <div style={{ borderLeft: '3px solid var(--clr-good)', padding: '12px 16px', background: 'var(--surface2)', borderRadius: '0 var(--radius) var(--radius) 0', marginTop: '16px', fontSize: '11.5px', color: 'var(--text2)', lineHeight: '1.6' }}>
+                    A 0.52-point drop from 0 escalations to 3–5 escalations.<br/>
+                    Every escalation bucket steps clearly down.<br/>
+                    <strong>Escalation count is the real satisfaction driver — not task completion.</strong>
+                  </div>
+                </div>
+
+              </div>
+
+              {/* Stat Comparison Summary Row */}
+              <div style={{ border: '0.5px solid var(--border)', borderRadius: '8px', padding: '16px', background: 'var(--surface2)' }}>
+                <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '30px', alignItems: 'center' }}>
+                  
+                  {/* Left Summary Box */}
+                  <div style={{ paddingRight: '15px' }}>
+                    <h4 style={{ fontSize: '12px', fontWeight: '700', color: 'var(--text3)', textTransform: 'uppercase', marginBottom: '8px' }}>What Chart A says</h4>
+                    <div style={{ fontSize: '13px', color: 'var(--text)', fontWeight: '600', display: 'flex', flexDirection: 'column', gap: '4px' }}>
+                      <span>High task % group avg sat = <span style={{ color: 'var(--accent)' }}>4.11</span></span>
+                      <span>Low task % group avg sat = <span style={{ color: 'var(--text2)' }}>4.17</span></span>
+                      <span style={{ color: 'var(--clr-good)', fontWeight: '700', fontSize: '11.5px', background: '#EAF3DE', padding: '2px 6px', borderRadius: '4px', width: 'fit-content', marginTop: '4px' }}>Difference: +0.06 — meaningless</span>
+                    </div>
+                  </div>
+
+                  {/* Right Summary Box */}
+                  <div style={{ paddingLeft: '15px', borderLeft: '1px solid var(--border)' }}>
+                    <h4 style={{ fontSize: '12px', fontWeight: '700', color: 'var(--text3)', textTransform: 'uppercase', marginBottom: '8px' }}>What Chart B says</h4>
+                    <div style={{ fontSize: '13px', color: 'var(--text)', fontWeight: '600', display: 'flex', flexDirection: 'column', gap: '4px' }}>
+                      <span>0 escalations avg sat = <span style={{ color: 'var(--clr-good)' }}>4.40</span></span>
+                      <span>3–5 escalations avg sat = <span style={{ color: 'var(--clr-critical)' }}>3.88</span></span>
+                      <span style={{ color: '#E24B4A', fontWeight: '700', fontSize: '11.5px', background: '#FCEBEB', padding: '2px 6px', borderRadius: '4px', width: 'fit-content', marginTop: '4px' }}>Difference: −0.52 — large and clear</span>
+                    </div>
+                  </div>
+
+                </div>
+
+                <div style={{ borderLeft: '3px solid var(--clr-critical)', padding: '10px 14px', background: '#FFFFFF', borderRadius: '0 4px 4px 0', marginTop: '16px', fontSize: '11.5px', color: 'var(--text2)' }}>
+                  Same grouping logic applied to two different metrics. Task completion produces flat bars. Escalations produce a staircase. The current dashboard is built around the flat metric.
+                </div>
+              </div>
+
+            </div>
+          </CollapsibleChartCard>
+
+          {/* ======================================================== */}
+          {/* INSIGHT 2: TRAINING DAYS: THE SILENT DURATION KILLER */}
+          {/* ======================================================== */}
+          <CollapsibleChartCard id="chart-nc-2" title="Insight 2 — Training days: the silent duration killer" minimizedCharts={minimizedCharts} onToggle={toggleChart}>
+            <div className="chart-card-premium" style={{ background: '#FFFFFF', padding: '24px', border: '1px solid var(--border)', borderRadius: 'var(--radius)' }}>
+              
+              {/* Header */}
+              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: '20px' }}>
+                <div>
+                  <h2 style={{ fontSize: '18px', fontWeight: '700', color: 'var(--text)', display: 'flex', alignItems: 'center', gap: '8px' }}>
+                    <Layers size={18} color="var(--accent)" />
+                    Insight 2 — Training days: the silent duration killer
+                  </h2>
+                  <p style={{ fontSize: '13px', color: 'var(--text3)', marginTop: '4px', lineHeight: '1.5' }}>
+                    No statistics needed. When any phase runs long, how many extra days does total onboarding take? The phase with the biggest gap is the biggest driver.
+                  </p>
+                </div>
+                <button 
+                  onClick={() => toggleChart('chart-nc-2')}
+                  title="Minimize Dashboard Section"
+                  style={{ border: 'none', background: 'transparent', cursor: 'pointer', padding: '6px', color: 'var(--text3)', display: 'flex', alignItems: 'center', justifyContent: 'center', borderRadius: '4px', transition: 'all 0.2s' }}
+                >
+                  <EyeOff size={16} />
+                </button>
+              </div>
+
+              {/* Top Panel (Full Width) */}
+              <div style={{ border: '0.5px solid var(--border)', padding: '20px', borderRadius: '8px', background: '#FFFFFF', marginBottom: '24px', position: 'relative' }}>
+                <h3 style={{ fontSize: '14px', fontWeight: '600', color: 'var(--text)' }}>When each phase runs long vs short — how many extra days does it add to total onboarding?</h3>
+                <p style={{ fontSize: '11.5px', color: 'var(--text3)', marginTop: '2px', marginBottom: '20px' }}>
+                  Every phase split at its median. Long group vs short group. Biggest gap = biggest bottleneck.
+                </p>
+
+                <div style={{ width: '100%', height: 260, position: 'relative' }}>
+                  <ResponsiveContainer>
+                    <BarChart data={noCorrInsight2AData} margin={{ top: 30, right: 10, left: -20, bottom: 5 }}>
+                      <CartesianGrid strokeDasharray="3 3" stroke="var(--border)" vertical={false} />
+                      <XAxis dataKey="phase" stroke="var(--text3)" fontSize={10} tickLine={false} />
+                      <YAxis stroke="var(--text3)" fontSize={10} tickLine={false} axisLine={false} domain={[18, 30]} />
+                      <Tooltip content={<CustomTooltip />} />
+                      
+                      {/* Shaded highlight for Training */}
+                      <ReferenceArea x1="Training" x2="Training" fill="#FCEBEB" fillOpacity={0.25} />
+                      
+                      <Legend iconSize={10} wrapperStyle={{ fontSize: '11px', paddingTop: '10px' }} />
+                      <Bar dataKey="Short" fill="#9FE1CB" name="Short (below median)" radius={[4, 4, 0, 0]} label={{ position: 'top', fill: 'var(--text2)', fontSize: 10, fontWeight: '600' }} />
+                      <Bar dataKey="Long" fill="#E24B4A" name="Long (above median)" radius={[4, 4, 0, 0]} label={{ position: 'top', fill: 'var(--text2)', fontSize: 10, fontWeight: '600' }} />
+                    </BarChart>
+                  </ResponsiveContainer>
+
+                  {/* Highlight label for Training */}
+                  <div style={{ position: 'absolute', top: 5, left: '6%', background: '#E24B4A', color: '#FFFFFF', fontSize: '9px', fontWeight: '800', padding: '2px 6px', borderRadius: '4px', textTransform: 'uppercase', fontFamily: 'var(--font-mono)' }}>
+                    Biggest lever
+                  </div>
+
+                  {/* Bracket annotations overlay */}
+                  <svg style={{ position: 'absolute', top: 0, left: 0, width: '100%', height: '100%', pointerEvents: 'none' }}>
+                    {/* Training Bracket */}
+                    <path d="M 8% 40 L 8% 28 L 22% 28 L 22% 40" fill="none" stroke="#E24B4A" strokeWidth="1.5" />
+                    <text x="15%" y="23" textAnchor="middle" fill="#E24B4A" fontSize="10px" fontWeight="800">+4.6 days</text>
+
+                    {/* IT Prov Bracket */}
+                    <path d="M 32% 40 L 32% 28 L 46% 28 L 46% 40" fill="none" stroke="var(--text3)" strokeWidth="1.2" />
+                    <text x="39%" y="23" textAnchor="middle" fill="var(--text)" fontSize="9.5px" fontWeight="600">+3.4 days</text>
+
+                    {/* Compliance Bracket */}
+                    <path d="M 57% 40 L 57% 28 L 71% 28 L 71% 40" fill="none" stroke="var(--text3)" strokeWidth="1.2" />
+                    <text x="64%" y="23" textAnchor="middle" fill="var(--text)" fontSize="9.5px" fontWeight="600">+2.5 days</text>
+
+                    {/* Contracting Bracket */}
+                    <path d="M 81% 40 L 81% 28 L 95% 28 L 95% 40" fill="none" stroke="var(--text3)" strokeWidth="1.2" />
+                    <text x="88%" y="23" textAnchor="middle" fill="var(--text)" fontSize="9.5px" fontWeight="600">+1.7 days</text>
+                  </svg>
+                </div>
+
+                <div style={{ borderLeft: '3px solid var(--clr-critical)', padding: '12px 16px', background: 'var(--surface2)', borderRadius: '0 var(--radius) var(--radius) 0', marginTop: '16px', fontSize: '11.5px', color: 'var(--text2)', lineHeight: '1.6' }}>
+                  Read this chart as: when training runs long, total onboarding takes 4.6 extra days on average. When contracting runs long, it takes only 1.7 extra days. <strong>Training is the biggest lever — 2.7× more impactful than contracting.</strong> No statistics needed. Just compare the gaps.
+                </div>
+              </div>
+
+              {/* Bottom Panels (Side-by-Side) */}
+              <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(450px, 1fr))', gap: '24px' }}>
+                
+                {/* Bottom Left Panel */}
+                <div style={{ border: '0.5px solid var(--border)', padding: '16px', borderRadius: '8px', background: '#FFFFFF', position: 'relative' }}>
+                  <h3 style={{ fontSize: '13.5px', fontWeight: '600', color: 'var(--text)' }}>Short training vs long training: duration and breach rate</h3>
+                  <p style={{ fontSize: '11px', color: 'var(--text3)', marginTop: '2px', marginBottom: '16px' }}>
+                    Two groups only. Training ≤ 5.9 days vs &gt; 5.9 days.
+                  </p>
+
+                  <div style={{ width: '100%', height: 200, position: 'relative' }}>
+                    <ResponsiveContainer>
+                      <BarChart data={noCorrInsight2BData} margin={{ top: 20, right: 10, left: -20, bottom: 5 }}>
+                        <CartesianGrid strokeDasharray="3 3" stroke="var(--border)" vertical={false} />
+                        <XAxis dataKey="name" stroke="var(--text3)" fontSize={10} tickLine={false} />
+                        <YAxis stroke="var(--text3)" fontSize={10} tickLine={false} axisLine={false} domain={[0, 30]} />
+                        <Tooltip content={<CustomTooltip />} />
+                        <Bar dataKey="avgDays" radius={[4, 4, 0, 0]} barSize={36} label={{ position: 'top', formatter: (v) => `${v}d`, fill: 'var(--text)', fontSize: 10, fontWeight: '700' }}>
+                          <Cell fill="#9FE1CB" />
+                          <Cell fill="#E24B4A" />
+                        </Bar>
+                      </BarChart>
+                    </ResponsiveContainer>
+
+                    {/* Arrow / Line Overlay and Breach rate line representation */}
+                    <div style={{ position: 'absolute', top: 5, right: '15px', background: 'var(--surface2)', border: '1px solid var(--border)', padding: '8px 12px', borderRadius: '6px', fontSize: '10.5px', display: 'flex', flexDirection: 'column', gap: '3px' }}>
+                      <span style={{ fontWeight: '700', color: 'var(--text2)' }}>Breach Rate Trend:</span>
+                      <span style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
+                        <span style={{ width: '8px', height: '8px', borderRadius: '50%', background: 'var(--text3)' }}></span>
+                        Short: <span style={{ fontWeight: '700' }}>32%</span>
+                      </span>
+                      <span style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
+                        <span style={{ width: '8px', height: '8px', borderRadius: '50%', background: 'var(--clr-critical)' }}></span>
+                        Long: <span style={{ fontWeight: '700', color: 'var(--clr-critical)' }}>53%</span>
+                      </span>
+                    </div>
+
+                    <svg style={{ position: 'absolute', top: 0, left: 0, width: '100%', height: '100%', pointerEvents: 'none' }}>
+                      <line x1="28%" y1="52%" x2="72%" y2="40%" stroke="var(--text)" strokeWidth="1.5" markerStart="url(#darrow)" markerEnd="url(#darrow)" />
+                      <rect x="42%" y="36%" width="46" height="16" fill="var(--card)" rx="4" stroke="var(--border)" strokeWidth="0.5" />
+                      <text x="42%" y="36%" dx="23" dy="11" textAnchor="middle" fill="var(--text)" fontSize="8.5px" fontWeight="700">+3.6 days</text>
+                    </svg>
+                  </div>
+
+                  <div style={{ borderLeft: '3px solid var(--clr-good)', padding: '12px 16px', background: 'var(--surface2)', borderRadius: '0 var(--radius) var(--radius) 0', marginTop: '16px', fontSize: '11.5px', color: 'var(--text2)', lineHeight: '1.6' }}>
+                    3.6 extra days and a 21 percentage point higher breach rate — just from being above the training median. No formula. No statistics. <strong>Long training = longer onboarding + higher breach risk.</strong>
+                  </div>
+                </div>
+
+                {/* Bottom Right Panel */}
+                <div style={{ border: '0.5px solid var(--border)', padding: '16px', borderRadius: '8px', background: '#FFFFFF', position: 'relative' }}>
+                  <h3 style={{ fontSize: '13.5px', fontWeight: '600', color: 'var(--text)' }}>As training gets longer, total onboarding gets longer</h3>
+                  <p style={{ fontSize: '11px', color: 'var(--text3)', marginTop: '2px', marginBottom: '16px' }}>
+                    Four training buckets → four bars → clear staircase up.
+                  </p>
+
+                  <div style={{ width: '100%', height: 200, position: 'relative' }}>
+                    <ResponsiveContainer>
+                      <BarChart data={noCorrInsight2CData} margin={{ top: 20, right: 10, left: -20, bottom: 5 }}>
+                        <CartesianGrid strokeDasharray="3 3" stroke="var(--border)" vertical={false} />
+                        <XAxis dataKey="bucket" stroke="var(--text3)" fontSize={10} tickLine={false} />
+                        <YAxis stroke="var(--text3)" fontSize={10} tickLine={false} axisLine={false} domain={[18, 29]} />
+                        <Tooltip content={<CustomTooltip />} />
+                        <ReferenceLine y={23.5} stroke="var(--text3)" strokeDasharray="3 3" label={{ value: 'Overall avg', fill: 'var(--text3)', fontSize: 9, position: 'top' }} />
+                        <Bar dataKey="avgDays" radius={[4, 4, 0, 0]} barSize={28} label={{ position: 'top', formatter: (v) => `${v}d`, fill: 'var(--text)', fontSize: 9.5, fontWeight: '700' }}>
+                          {noCorrInsight2CData.map((entry, idx) => (
+                            <Cell key={`cell-${idx}`} fill={entry.color} />
+                          ))}
+                        </Bar>
+                      </BarChart>
+                    </ResponsiveContainer>
+
+                    {/* Diagonal upward arrow overlay */}
+                    <svg style={{ position: 'absolute', top: 0, left: 0, width: '100%', height: '100%', pointerEvents: 'none' }}>
+                      <line x1="16%" y1="72%" x2="84%" y2="32%" stroke="#E24B4A" strokeWidth="2" strokeDasharray="4 3" markerEnd="url(#arrow)" />
+                      <rect x="42%" y="45%" width="105" height="18" fill="var(--card)" rx="4" stroke="var(--border)" strokeWidth="0.5" />
+                      <text x="42%" y="45%" dx="52" dy="12" textAnchor="middle" fill="#E24B4A" fontSize="9px" fontWeight="700">+5.3 days across range</text>
+                    </svg>
+                  </div>
+
+                  <div style={{ borderLeft: '3px solid var(--clr-critical)', padding: '12px 16px', background: 'var(--surface2)', borderRadius: '0 var(--radius) var(--radius) 0', marginTop: '16px', fontSize: '11.5px', color: 'var(--text2)', lineHeight: '1.6' }}>
+                    Each training bucket adds roughly 1.5 days to total onboarding. The staircase is the entire argument. When training exceeds 8 days, providers average 26.7 days total — 5.3 days above the fastest training group. <strong>This is a staffing and scheduling problem, not a system problem. It silently eats time.</strong>
+                  </div>
+                </div>
+
+              </div>
+
+            </div>
+          </CollapsibleChartCard>
+
+          {/* ======================================================== */}
+          {/* INSIGHT 3: OPERATIONS ESCALATIONS PREDICT BREACH, NOT IT */}
+          {/* ======================================================== */}
+          <CollapsibleChartCard id="chart-nc-3" title="Insight 3 — Operations escalations predict breach, not IT escalations" minimizedCharts={minimizedCharts} onToggle={toggleChart}>
+            <div className="chart-card-premium" style={{ background: '#FFFFFF', padding: '24px', border: '1px solid var(--border)', borderRadius: 'var(--radius)' }}>
+              
+              {/* Header */}
+              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: '20px' }}>
+                <div>
+                  <h2 style={{ fontSize: '18px', fontWeight: '700', color: 'var(--text)', display: 'flex', alignItems: 'center', gap: '8px' }}>
+                    <AlertTriangle size={18} color="var(--accent)" />
+                    Insight 3 — Operations escalations predict breach, not IT escalations
+                  </h2>
+                  <p style={{ fontSize: '13px', color: 'var(--text3)', marginTop: '4px', lineHeight: '1.5' }}>
+                    No statistics needed. Just count: of every provider with each escalation type, how many breached SLA? The answer breaks the current narrative.
+                  </p>
+                </div>
+                <button 
+                  onClick={() => toggleChart('chart-nc-3')}
+                  title="Minimize Dashboard Section"
+                  style={{ border: 'none', background: 'transparent', cursor: 'pointer', padding: '6px', color: 'var(--text3)', display: 'flex', alignItems: 'center', justifyContent: 'center', borderRadius: '4px', transition: 'all 0.2s' }}
+                >
+                  <EyeOff size={16} />
+                </button>
+              </div>
+
+              {/* Top Row: Stat Cards */}
+              <div style={{ position: 'relative', marginBottom: '24px' }}>
+                <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: '16px' }}>
+                  
+                  {/* Card 1 */}
+                  <div style={{ background: '#FCEBEB', border: '1px solid #F7C1C1', borderRadius: '8px', padding: '16px', display: 'flex', flexDirection: 'column', gap: '4px' }}>
+                    <span style={{ fontSize: '28px', fontWeight: '800', color: '#A32D2D', fontFamily: 'var(--font-mono)' }}>67%</span>
+                    <span style={{ fontSize: '11px', fontWeight: '700', color: 'var(--text)', textTransform: 'uppercase', letterSpacing: '0.02em' }}>Operations escalation — breach rate</span>
+                    <span style={{ fontSize: '11px', color: 'var(--text3)' }}>6 out of 9 providers breached</span>
+                  </div>
+
+                  {/* Card 2 */}
+                  <div style={{ background: '#FFF8EB', border: '1px solid #FAC775', borderRadius: '8px', padding: '16px', display: 'flex', flexDirection: 'column', gap: '4px' }}>
+                    <span style={{ fontSize: '28px', fontWeight: '800', color: '#B25E00', fontFamily: 'var(--font-mono)' }}>44%</span>
+                    <span style={{ fontSize: '11px', fontWeight: '700', color: 'var(--text)', textTransform: 'uppercase', letterSpacing: '0.02em' }}>Compliance escalation — breach rate</span>
+                    <span style={{ fontSize: '11px', color: 'var(--text3)' }}>4 out of 9 providers breached</span>
+                  </div>
+
+                  {/* Card 3 */}
+                  <div style={{ background: '#EAF3DE', border: '1px solid #C6E0A6', borderRadius: '8px', padding: '16px', display: 'flex', flexDirection: 'column', gap: '4px' }}>
+                    <span style={{ fontSize: '28px', fontWeight: '800', color: '#3B6D11', fontFamily: 'var(--font-mono)' }}>25%</span>
+                    <span style={{ fontSize: '11px', fontWeight: '700', color: 'var(--text)', textTransform: 'uppercase', letterSpacing: '0.02em' }}>IT escalation — breach rate</span>
+                    <span style={{ fontSize: '11px', color: 'var(--text3)' }}>2 out of 8 providers breached</span>
+                  </div>
+
+                </div>
+
+                {/* Annotation connection badge */}
+                <div style={{ position: 'absolute', top: '-10px', right: '10%', background: 'var(--card)', border: '1px solid var(--border)', padding: '4px 10px', borderRadius: '20px', fontSize: '9.5px', fontWeight: '700', color: '#A32D2D', display: 'flex', alignItems: 'center', gap: '4px', boxShadow: '0 2px 6px rgba(0,0,0,0.03)' }}>
+                  <TrendingUp size={11} /> Operations breach rate is 2.7× higher than IT
+                </div>
+              </div>
+
+              {/* Side-by-Side Panels */}
+              <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(450px, 1fr))', gap: '24px', marginBottom: '24px' }}>
+                
+                {/* Panel 1 */}
+                <div style={{ border: '0.5px solid var(--border)', padding: '16px', borderRadius: '8px', background: '#FFFFFF' }}>
+                  <h3 style={{ fontSize: '13.5px', fontWeight: '600', color: 'var(--text)' }}>Of every provider with this escalation type, how many breached SLA?</h3>
+                  <p style={{ fontSize: '11px', color: 'var(--text3)', marginTop: '2px', marginBottom: '16px' }}>
+                    Raw breach rate per escalation type. Simplest question: which type ends in breach most often?
+                  </p>
+
+                  <div style={{ width: '100%', height: 220, position: 'relative' }}>
+                    <ResponsiveContainer>
+                      <BarChart layout="vertical" data={noCorrInsight3AData} margin={{ top: 10, right: 35, left: 10, bottom: 5 }}>
+                        <CartesianGrid strokeDasharray="3 3" stroke="var(--border)" horizontal={false} />
+                        <XAxis type="number" stroke="var(--text3)" fontSize={10} tickLine={false} domain={[0, 80]} unit="%" />
+                        <YAxis type="category" dataKey="type" stroke="var(--text3)" fontSize={10} tickLine={false} axisLine={false} width={80} />
+                        <Tooltip content={<CustomTooltip />} />
+                        <ReferenceLine x={47} stroke="var(--text3)" strokeDasharray="3 3" label={{ value: 'Dataset avg (47%)', fill: 'var(--text3)', fontSize: 8.5, position: 'top' }} />
+                        <Bar dataKey="breachRate" radius={[0, 4, 4, 0]} barSize={20} label={{ position: 'right', formatter: (v, entry) => `${v}% (${entry.payload.label})`, fill: 'var(--text2)', fontSize: 9.5, fontWeight: '600' }}>
+                          {noCorrInsight3AData.map((entry, idx) => (
+                            <Cell key={`cell-${idx}`} fill={entry.color} />
+                          ))}
+                        </Bar>
+                      </BarChart>
+                    </ResponsiveContainer>
+                  </div>
+
+                  <div style={{ borderLeft: '3px solid var(--clr-critical)', padding: '12px 16px', background: 'var(--surface2)', borderRadius: '0 var(--radius) var(--radius) 0', marginTop: '16px', fontSize: '11.5px', color: 'var(--text2)', lineHeight: '1.6' }}>
+                    <strong>IT escalations have the LOWEST breach rate (25%).</strong> When a support ticket is opened, a defined resolution process exists. Someone owns it.<br/>
+                    <strong>Operations escalations have no equivalent workflow (67%).</strong> When a handoff breaks down or a coordinator drops the ball, no system assigns ownership. The process stalls. The SLA breaks.
+                  </div>
+                </div>
+
+                {/* Panel 2 */}
+                <div style={{ border: '0.5px solid var(--border)', padding: '16px', borderRadius: '8px', background: '#FFFFFF' }}>
+                  <h3 style={{ fontSize: '13.5px', fontWeight: '600', color: 'var(--text)' }}>Raw count: breached vs not breached — by escalation type</h3>
+                  <p style={{ fontSize: '11px', color: 'var(--text3)', marginTop: '2px', marginBottom: '16px' }}>
+                    Of the 17 total breaches in the dataset, here is where they actually came from.
+                  </p>
+
+                  <div style={{ width: '100%', height: 220 }}>
+                    <ResponsiveContainer>
+                      <BarChart data={noCorrInsight3BData} margin={{ top: 20, right: 10, left: -25, bottom: 5 }}>
+                        <CartesianGrid strokeDasharray="3 3" stroke="var(--border)" vertical={false} />
+                        <XAxis dataKey="type" stroke="var(--text3)" fontSize={10} tickLine={false} />
+                        <YAxis stroke="var(--text3)" fontSize={10} tickLine={false} axisLine={false} domain={[0, 10]} />
+                        <Tooltip content={<CustomTooltip />} />
+                        <Legend iconSize={10} wrapperStyle={{ fontSize: '10.5px', paddingTop: '6px' }} />
+                        <Bar dataKey="breached" stackId="esc" fill="#E24B4A" name="SLA breached" label={{ position: 'inside', fill: '#FFFFFF', fontSize: 9.5, fontWeight: '700' }} />
+                        <Bar dataKey="withinSLA" stackId="esc" fill="#9FE1CB" name="Within SLA" radius={[4, 4, 0, 0]} label={{ position: 'inside', fill: 'var(--text2)', fontSize: 9.5, fontWeight: '700' }} />
+                      </BarChart>
+                    </ResponsiveContainer>
+                  </div>
+
+                  <div style={{ borderLeft: '3px solid #378ADD', padding: '12px 16px', background: 'var(--surface2)', borderRadius: '0 var(--radius) var(--radius) 0', marginTop: '16px', fontSize: '11.5px', color: 'var(--text2)', lineHeight: '1.6' }}>
+                    <strong>6 out of 9 vs. 2 out of 8.</strong> These are the same-size groups. The outcomes are completely different.<br/>
+                    No formula needed. Just count who breached.
+                  </div>
+                </div>
+
+              </div>
+
+              {/* Bottom Panel (Full Width) */}
+              <div style={{ border: '0.5px solid var(--border)', padding: '20px', borderRadius: '8px', background: '#FFFFFF' }}>
+                <h3 style={{ fontSize: '14px', fontWeight: '600', color: 'var(--text)' }}>Internal Handoff: lowest satisfaction, highest escalations — yet only 20% breach rate</h3>
+                <p style={{ fontSize: '11.5px', color: 'var(--text3)', marginTop: '2px', marginBottom: '20px' }}>
+                  Compare all 5 delay reasons across 3 measures. Which delay reason looks worst? The answer is not the one the current analysis is focused on.
+                </p>
+
+                <div style={{ width: '100%', height: 260, position: 'relative' }}>
+                  <ResponsiveContainer>
+                    <BarChart data={noCorrInsight3CData} margin={{ top: 20, right: 10, left: -20, bottom: 5 }}>
+                      <CartesianGrid strokeDasharray="3 3" stroke="var(--border)" vertical={false} />
+                      <XAxis dataKey="reason" stroke="var(--text3)" fontSize={10} tickLine={false} />
+                      <YAxis stroke="var(--text3)" fontSize={10} tickLine={false} axisLine={false} domain={[0, 80]} />
+                      <Tooltip content={({ active, payload }) => {
+                        if (active && payload && payload.length) {
+                          return (
+                            <div style={{ background: 'var(--card)', border: '1px solid var(--border)', borderRadius: 'var(--radius)', padding: '10px 14px', boxShadow: 'var(--shadow)', backdropFilter: 'blur(8px)' }}>
+                              <p style={{ fontWeight: '700', fontSize: '11px', color: 'var(--text)', marginBottom: '5px' }}>{payload[0].payload.reason}</p>
+                              <span style={{ fontSize: '10px', display: 'block', color: '#E24B4A', fontWeight: '600' }}>Breach rate: {payload[0].payload.breachRate}%</span>
+                              <span style={{ fontSize: '10px', display: 'block', color: '#378ADD', fontWeight: '600' }}>Avg escalations: {(payload[0].payload.escalations/10).toFixed(1)}</span>
+                              <span style={{ fontSize: '10px', display: 'block', color: '#1D9E75', fontWeight: '600' }}>Avg satisfaction: {(payload[0].payload.satisfaction/10).toFixed(2)}</span>
+                            </div>
+                          );
+                        }
+                        return null;
+                      }} />
+                      
+                      {/* Highlight Area for Internal Handoff */}
+                      <ReferenceArea x1="Internal Handoff" x2="Internal Handoff" fill="#E6F1FB" fillOpacity={0.4} />
+                      {/* Highlight Area for IT Access */}
+                      <ReferenceArea x1="IT Access" x2="IT Access" fill="#FCEBEB" fillOpacity={0.4} />
+                      
+                      <Legend iconSize={10} wrapperStyle={{ fontSize: '11px', paddingTop: '10px' }} />
+                      <Bar dataKey="breachRate" fill="#E24B4A" name="Breach rate %" radius={[4, 4, 0, 0]} label={{ position: 'top', fill: '#E24B4A', fontSize: 9, fontWeight: '700', formatter: (v) => `${v}%` }} />
+                      <Bar dataKey="escalations" fill="#378ADD" name="Avg escalations (scaled ×10 for comparison)" radius={[4, 4, 0, 0]} label={{ position: 'top', fill: '#378ADD', fontSize: 9, fontWeight: '700', formatter: (v) => (v/10).toFixed(1) }} />
+                      <Bar dataKey="satisfaction" fill="#1D9E75" name="Avg satisfaction (scaled ×10 for comparison)" radius={[4, 4, 0, 0]} label={{ position: 'top', fill: '#1D9E75', fontSize: 9, fontWeight: '700', formatter: (v) => (v/10).toFixed(2) }} />
+                    </BarChart>
+                  </ResponsiveContainer>
+
+                  {/* Highlights Callouts */}
+                  <div style={{ position: 'absolute', top: 5, left: '3%', background: '#FCEBEB', border: '1px solid #F7C1C1', borderRadius: '4px', padding: '4px 8px', fontSize: '9px', width: '130px', color: '#A32D2D', display: 'flex', flexDirection: 'column' }}>
+                    <span style={{ fontWeight: '800' }}>IT Access:</span>
+                    <span>Highest breach (73%)</span>
+                    <span>IT blockages, not coordination</span>
+                  </div>
+
+                  <div style={{ position: 'absolute', top: 5, left: '43%', background: '#E6F1FB', border: '1px solid #C4DFF6', borderRadius: '4px', padding: '4px 8px', fontSize: '9px', width: '145px', color: '#1B609E', display: 'flex', flexDirection: 'column' }}>
+                    <span style={{ fontWeight: '800' }}>Internal Handoff:</span>
+                    <span>Lowest satisfaction (3.98)</span>
+                    <span>Highest escalations (3.2)</span>
+                    <span>Ops rescue it manually</span>
+                  </div>
+                </div>
+
+                {/* Bottom Callout Boxes */}
+                <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '20px', marginTop: '16px' }}>
+                  
+                  {/* Left Callout */}
+                  <div style={{ borderLeft: '3px solid var(--clr-critical)', padding: '12px 16px', background: 'var(--surface2)', borderRadius: '0 var(--radius) var(--radius) 0', fontSize: '11.5px', color: 'var(--text2)', lineHeight: '1.5' }}>
+                    <strong>IT Access = highest breach (73%) but easy to diagnose</strong> — access is visibly blocked.<br/>
+                    <em>Fix:</em> automated provisioning, pre-provisioning during contracting stage.
+                  </div>
+
+                  {/* Right Callout */}
+                  <div style={{ borderLeft: '3px solid #378ADD', padding: '12px 16px', background: 'var(--surface2)', borderRadius: '0 var(--radius) var(--radius) 0', fontSize: '11.5px', color: 'var(--text2)', lineHeight: '1.5' }}>
+                    <strong>Internal Handoff = lowest satisfaction (3.98) and highest escalations (3.2)</strong> — but ops teams prevent the breach every time. The cost is hidden. It shows in satisfaction and post-launch engagement, not in breach numbers.<br/>
+                    <em>Fix:</em> named DRI at each phase transition + automated handoff status notifications.
+                  </div>
+
+                </div>
+              </div>
+
+            </div>
+          </CollapsibleChartCard>
+
+        </div>
+      )}
+
+
+            {/* Persistent Minimized Charts Shelf at the bottom of the page */}
       {Object.values(minimizedCharts).some(val => val) && (
         <div style={{ 
           marginTop: '40px', 
