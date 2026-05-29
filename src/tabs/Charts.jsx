@@ -20,7 +20,9 @@ import {
   Target,
   CheckCircle2,
   User,
-  Zap
+  Zap,
+  Eye,
+  EyeOff
 } from 'lucide-react';
 import {
   ResponsiveContainer,
@@ -492,6 +494,51 @@ const CustomLollipopBar = (props) => {
   );
 };
 
+// Reusable Helper Component to allow hiding/unhiding of charts across all tabs
+const CollapsibleChartCard = ({ id, title, children, minimizedCharts, onToggle, className = "chart-card-premium", style = {} }) => {
+  const isHidden = minimizedCharts[id];
+  if (isHidden) {
+    return (
+      <div 
+        className={className} 
+        style={{ 
+          ...style, 
+          height: '56px', 
+          display: 'flex', 
+          flexDirection: 'row', 
+          alignItems: 'center', 
+          justifyContent: 'space-between', 
+          padding: '12px 20px', 
+          background: 'var(--surface)', 
+          border: '1px dashed var(--border)',
+          cursor: 'pointer',
+          borderRadius: 'var(--radius)'
+        }}
+        onClick={() => onToggle(id)}
+      >
+        <span style={{ fontSize: '12px', fontWeight: '600', color: 'var(--text2)', display: 'flex', alignItems: 'center', gap: '8px', fontFamily: 'var(--font-sans)' }}>
+          <EyeOff size={14} color="var(--accent)" />
+          {title} has been minimized
+        </span>
+        <span 
+          style={{ 
+            fontSize: '11px', 
+            fontWeight: '700', 
+            color: 'var(--accent)', 
+            fontFamily: 'var(--font-sans)',
+            display: 'flex',
+            alignItems: 'center',
+            gap: '4px'
+          }}
+        >
+          <Eye size={12} /> Show Chart
+        </span>
+      </div>
+    );
+  }
+  return children;
+};
+
 export default function Charts() {
   const { activeState, activeQuarter, dashboardData, providers, allProvidersInQuarter } = useDashboard();
   const { kpis } = dashboardData;
@@ -500,6 +547,10 @@ export default function Charts() {
   const [selectedCoreInsight, setSelectedCoreInsight] = useState(1);
   const [insight1BView, setInsight1BView] = useState('grid'); // 'grid' | 'scatter'
   const [insight2AView, setInsight2AView] = useState('lollipop'); // 'lollipop' | 'scatter'
+  const [minimizedCharts, setMinimizedCharts] = useState({});
+  const toggleChart = (chartId) => {
+    setMinimizedCharts(prev => ({ ...prev, [chartId]: !prev[chartId] }));
+  };
   // Interactive View Toggles
   const [trendViewMode, setTrendViewMode] = useState('provider'); // 'provider' | 'market'
 
@@ -811,12 +862,22 @@ export default function Charts() {
         ];
 
         return (
-          <div className="chart-card-premium" style={{ gap: '20px' }}>
+          <CollapsibleChartCard id="chart-1" title="Slow Tickets ≠ Cause of Breach — Both Are Symptoms of the Same Upstream Failure" minimizedCharts={minimizedCharts} onToggle={toggleChart}>
+  <div className="chart-card-premium" style={{ gap: '20px' }}>
             <div>
-              <h3 style={{ fontSize: '15px', fontWeight: '700', color: 'var(--text)', display: 'flex', alignItems: 'center', gap: '6px' }}>
+              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', width: '100%' }}>
+  <h3 style={{ fontSize: '15px', fontWeight: '700', color: 'var(--text)', display: 'flex', alignItems: 'center', gap: '6px' }}>
                 <Activity size={16} color="var(--clr-critical)" />
                 Slow Tickets ≠ Cause of Breach — Both Are Symptoms of the Same Upstream Failure
               </h3>
+  <button 
+    onClick={() => toggleChart('chart-1')}
+    title="Minimize Chart"
+    style={{ border: 'none', background: 'transparent', cursor: 'pointer', padding: '4px', color: 'var(--text3)', display: 'flex', alignItems: 'center', justifyContent: 'center', borderRadius: '4px', marginLeft: '8px', transition: 'all 0.2s' }}
+  >
+    <EyeOff size={13} />
+  </button>
+</div>
               <p style={{ color: 'var(--text3)', fontSize: '11.5px', marginTop: '4px' }}>
                 A scientific control comparison: the r=0.49 correlation disappears when the IT Access upstream variable is controlled.
               </p>
@@ -888,16 +949,27 @@ export default function Charts() {
               </div>
             </div>
           </div>
+</CollapsibleChartCard>
         );
 
       case 2:
         return (
-          <div className="chart-card-premium" style={{ gap: '20px' }}>
+          <CollapsibleChartCard id="chart-2" title="TX\'s 60% Breach Rate Is Entirely Explained by Delay Reason Concentration" minimizedCharts={minimizedCharts} onToggle={toggleChart}>
+  <div className="chart-card-premium" style={{ gap: '20px' }}>
             <div>
-              <h3 style={{ fontSize: '15px', fontWeight: '700', color: 'var(--text)', display: 'flex', alignItems: 'center', gap: '6px' }}>
+              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', width: '100%' }}>
+  <h3 style={{ fontSize: '15px', fontWeight: '700', color: 'var(--text)', display: 'flex', alignItems: 'center', gap: '6px' }}>
                 <MapPin size={16} color="var(--clr-critical)" />
                 TX's 60% Breach Rate Is Entirely Explained by Delay Reason Concentration
               </h3>
+  <button 
+    onClick={() => toggleChart('chart-2')}
+    title="Minimize Chart"
+    style={{ border: 'none', background: 'transparent', cursor: 'pointer', padding: '4px', color: 'var(--text3)', display: 'flex', alignItems: 'center', justifyContent: 'center', borderRadius: '4px', marginLeft: '8px', transition: 'all 0.2s' }}
+  >
+    <EyeOff size={13} />
+  </button>
+</div>
               <p style={{ color: 'var(--text3)', fontSize: '11.5px', marginTop: '4px' }}>
                 TX Internal Handoff providers: 0% breach. Same market, different delay = different outcome.
               </p>
@@ -958,16 +1030,27 @@ export default function Charts() {
               </div>
             </div>
           </div>
+</CollapsibleChartCard>
         );
 
       case 3:
         return (
-          <div className="chart-card-premium" style={{ gap: '20px' }}>
+          <CollapsibleChartCard id="chart-3" title="Training Days Drives Total Duration More Than Any Other Phase" minimizedCharts={minimizedCharts} onToggle={toggleChart}>
+  <div className="chart-card-premium" style={{ gap: '20px' }}>
             <div>
-              <h3 style={{ fontSize: '15px', fontWeight: '700', color: 'var(--text)', display: 'flex', alignItems: 'center', gap: '6px' }}>
+              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', width: '100%' }}>
+  <h3 style={{ fontSize: '15px', fontWeight: '700', color: 'var(--text)', display: 'flex', alignItems: 'center', gap: '6px' }}>
                 <Layers size={16} color="var(--accent)" />
                 Training Days Drives Total Duration More Than Any Other Phase
               </h3>
+  <button 
+    onClick={() => toggleChart('chart-3')}
+    title="Minimize Chart"
+    style={{ border: 'none', background: 'transparent', cursor: 'pointer', padding: '4px', color: 'var(--text3)', display: 'flex', alignItems: 'center', justifyContent: 'center', borderRadius: '4px', marginLeft: '8px', transition: 'all 0.2s' }}
+  >
+    <EyeOff size={13} />
+  </button>
+</div>
               <p style={{ color: 'var(--text3)', fontSize: '11.5px', marginTop: '4px' }}>
                 r=0.640 — stronger than IT provisioning (0.551), stronger than compliance (0.398) (dots colored red for Breached, grey for On Track)
               </p>
@@ -1071,16 +1154,27 @@ export default function Charts() {
               </div>
             </div>
           </div>
+</CollapsibleChartCard>
         );
 
       case 4:
         return (
-          <div className="chart-card-premium" style={{ gap: '20px' }}>
+          <CollapsibleChartCard id="chart-4" title="Task Completion Rate Is the Wrong Dashboard Metric" minimizedCharts={minimizedCharts} onToggle={toggleChart}>
+  <div className="chart-card-premium" style={{ gap: '20px' }}>
             <div>
-              <h3 style={{ fontSize: '15px', fontWeight: '700', color: 'var(--text)', display: 'flex', alignItems: 'center', gap: '6px' }}>
+              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', width: '100%' }}>
+  <h3 style={{ fontSize: '15px', fontWeight: '700', color: 'var(--text)', display: 'flex', alignItems: 'center', gap: '6px' }}>
                 <Smile size={16} color="var(--clr-good)" />
                 Task Completion Rate Is the Wrong Dashboard Metric
               </h3>
+  <button 
+    onClick={() => toggleChart('chart-4')}
+    title="Minimize Chart"
+    style={{ border: 'none', background: 'transparent', cursor: 'pointer', padding: '4px', color: 'var(--text3)', display: 'flex', alignItems: 'center', justifyContent: 'center', borderRadius: '4px', marginLeft: '8px', transition: 'all 0.2s' }}
+  >
+    <EyeOff size={13} />
+  </button>
+</div>
               <p style={{ color: 'var(--text3)', fontSize: '11.5px', marginTop: '4px' }}>
                 Providers forgive late tasks. They don't forgive being dragged into escalations.
               </p>
@@ -1136,16 +1230,27 @@ export default function Charts() {
               </div>
             </div>
           </div>
+</CollapsibleChartCard>
         );
 
       case 5:
         return (
-          <div className="chart-card-premium" style={{ gap: '20px' }}>
+          <CollapsibleChartCard id="chart-5" title="Operations Escalations Are 3x More Likely to Cause SLA Breach Than IT Escalations" minimizedCharts={minimizedCharts} onToggle={toggleChart}>
+  <div className="chart-card-premium" style={{ gap: '20px' }}>
             <div>
-              <h3 style={{ fontSize: '15px', fontWeight: '700', color: 'var(--text)', display: 'flex', alignItems: 'center', gap: '6px' }}>
+              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', width: '100%' }}>
+  <h3 style={{ fontSize: '15px', fontWeight: '700', color: 'var(--text)', display: 'flex', alignItems: 'center', gap: '6px' }}>
                 <AlertTriangle size={16} color="var(--clr-critical)" />
                 Operations Escalations Are 3x More Likely to Cause SLA Breach Than IT Escalations
               </h3>
+  <button 
+    onClick={() => toggleChart('chart-5')}
+    title="Minimize Chart"
+    style={{ border: 'none', background: 'transparent', cursor: 'pointer', padding: '4px', color: 'var(--text3)', display: 'flex', alignItems: 'center', justifyContent: 'center', borderRadius: '4px', marginLeft: '8px', transition: 'all 0.2s' }}
+  >
+    <EyeOff size={13} />
+  </button>
+</div>
               <p style={{ color: 'var(--text3)', fontSize: '11.5px', marginTop: '4px' }}>
                 The fix is coordination architecture, not help desk hiring.
               </p>
@@ -1212,16 +1317,27 @@ export default function Charts() {
               </div>
             </div>
           </div>
+</CollapsibleChartCard>
         );
 
       case 6:
         return (
-          <div className="chart-card-premium" style={{ gap: '20px' }}>
+          <CollapsibleChartCard id="chart-6" title="IT Provisioning Is the Phase That Grows Most When Onboarding Fails" minimizedCharts={minimizedCharts} onToggle={toggleChart}>
+  <div className="chart-card-premium" style={{ gap: '20px' }}>
             <div>
-              <h3 style={{ fontSize: '15px', fontWeight: '700', color: 'var(--text)', display: 'flex', alignItems: 'center', gap: '6px' }}>
+              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', width: '100%' }}>
+  <h3 style={{ fontSize: '15px', fontWeight: '700', color: 'var(--text)', display: 'flex', alignItems: 'center', gap: '6px' }}>
                 <Clock size={16} color="var(--accent)" />
                 IT Provisioning Is the Phase That Grows Most When Onboarding Fails
               </h3>
+  <button 
+    onClick={() => toggleChart('chart-6')}
+    title="Minimize Chart"
+    style={{ border: 'none', background: 'transparent', cursor: 'pointer', padding: '4px', color: 'var(--text3)', display: 'flex', alignItems: 'center', justifyContent: 'center', borderRadius: '4px', marginLeft: '8px', transition: 'all 0.2s' }}
+  >
+    <EyeOff size={13} />
+  </button>
+</div>
               <p style={{ color: 'var(--text3)', fontSize: '11.5px', marginTop: '4px' }}>
                 100% stacked horizontal bar representation showing duration share % across phases
               </p>
@@ -1274,16 +1390,27 @@ export default function Charts() {
               ✏️ <strong>IT Provisioning increases by +2.7 percentage points (30% longer in absolute days) in breached providers.</strong> In Q1 2025, manual EHR credentialing, SSO setup, and role mapping should take hours, not 7.8 days. This is automatable process debt.
             </div>
           </div>
+</CollapsibleChartCard>
         );
 
       case 7:
         return (
-          <div className="chart-card-premium" style={{ gap: '20px' }}>
+          <CollapsibleChartCard id="chart-7" title="A 5-Factor Risk Score Flags 88% of SLA Breaches Early Enough to Intervene" minimizedCharts={minimizedCharts} onToggle={toggleChart}>
+  <div className="chart-card-premium" style={{ gap: '20px' }}>
             <div>
-              <h3 style={{ fontSize: '15px', fontWeight: '700', color: 'var(--text)', display: 'flex', alignItems: 'center', gap: '6px' }}>
+              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', width: '100%' }}>
+  <h3 style={{ fontSize: '15px', fontWeight: '700', color: 'var(--text)', display: 'flex', alignItems: 'center', gap: '6px' }}>
                 <Shield size={16} color="var(--clr-good)" />
                 A 5-Factor Risk Score Flags 88% of SLA Breaches Early Enough to Intervene
               </h3>
+  <button 
+    onClick={() => toggleChart('chart-7')}
+    title="Minimize Chart"
+    style={{ border: 'none', background: 'transparent', cursor: 'pointer', padding: '4px', color: 'var(--text3)', display: 'flex', alignItems: 'center', justifyContent: 'center', borderRadius: '4px', marginLeft: '8px', transition: 'all 0.2s' }}
+  >
+    <EyeOff size={13} />
+  </button>
+</div>
               <p style={{ color: 'var(--text3)', fontSize: '11.5px', marginTop: '4px' }}>
                 All score inputs are fully known by Day 8–10 of onboarding — 15+ days before the breach window.
               </p>
@@ -1373,16 +1500,27 @@ export default function Charts() {
               <div>Delay = IT/Docs: <strong>+2 pts</strong></div>
             </div>
           </div>
+</CollapsibleChartCard>
         );
 
       case 8:
         return (
-          <div className="chart-card-premium" style={{ gap: '20px' }}>
+          <CollapsibleChartCard id="chart-8" title="The Satisfaction Survey Has a 1.1-Point Range — It Cannot Detect Real Dissatisfaction" minimizedCharts={minimizedCharts} onToggle={toggleChart}>
+  <div className="chart-card-premium" style={{ gap: '20px' }}>
             <div>
-              <h3 style={{ fontSize: '15px', fontWeight: '700', color: 'var(--text)', display: 'flex', alignItems: 'center', gap: '6px' }}>
+              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', width: '100%' }}>
+  <h3 style={{ fontSize: '15px', fontWeight: '700', color: 'var(--text)', display: 'flex', alignItems: 'center', gap: '6px' }}>
                 <ThumbsUp size={16} color="var(--clr-warn)" />
                 The Satisfaction Survey Has a 1.1-Point Range — It Cannot Detect Real Dissatisfaction
               </h3>
+  <button 
+    onClick={() => toggleChart('chart-8')}
+    title="Minimize Chart"
+    style={{ border: 'none', background: 'transparent', cursor: 'pointer', padding: '4px', color: 'var(--text3)', display: 'flex', alignItems: 'center', justifyContent: 'center', borderRadius: '4px', marginLeft: '8px', transition: 'all 0.2s' }}
+  >
+    <EyeOff size={13} />
+  </button>
+</div>
               <p style={{ color: 'var(--text3)', fontSize: '11.5px', marginTop: '4px' }}>
                 Healthcare B2B administrators show strong social desirability bias in CSAT rating surveys (spanning only 1.1 points total).
               </p>
@@ -1439,16 +1577,27 @@ export default function Charts() {
               </div>
             </div>
           </div>
+</CollapsibleChartCard>
         );
 
       case 9:
         return (
-          <div className="chart-card-premium" style={{ gap: '20px' }}>
+          <CollapsibleChartCard id="chart-9" title="Vendor SLA Delays Have the Lowest Breach Rate — Because Teams Plan Around External Failures" minimizedCharts={minimizedCharts} onToggle={toggleChart}>
+  <div className="chart-card-premium" style={{ gap: '20px' }}>
             <div>
-              <h3 style={{ fontSize: '15px', fontWeight: '700', color: 'var(--text)', display: 'flex', alignItems: 'center', gap: '6px' }}>
+              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', width: '100%' }}>
+  <h3 style={{ fontSize: '15px', fontWeight: '700', color: 'var(--text)', display: 'flex', alignItems: 'center', gap: '6px' }}>
                 <Zap size={16} color="var(--clr-warn)" />
                 Vendor SLA Delays Have the Lowest Breach Rate — Because Teams Plan Around External Failures
               </h3>
+  <button 
+    onClick={() => toggleChart('chart-9')}
+    title="Minimize Chart"
+    style={{ border: 'none', background: 'transparent', cursor: 'pointer', padding: '4px', color: 'var(--text3)', display: 'flex', alignItems: 'center', justifyContent: 'center', borderRadius: '4px', marginLeft: '8px', transition: 'all 0.2s' }}
+  >
+    <EyeOff size={13} />
+  </button>
+</div>
               <p style={{ color: 'var(--text3)', fontSize: '11.5px', marginTop: '4px' }}>
                 Internal delays lack the same proactive buffer. That asymmetry is the real problem.
               </p>
@@ -1513,16 +1662,27 @@ export default function Charts() {
               </div>
             </div>
           </div>
+</CollapsibleChartCard>
         );
 
       case 10:
         return (
-          <div className="chart-card-premium" style={{ gap: '20px' }}>
+          <CollapsibleChartCard id="chart-10" title="When Compliance + IT Exceeds 13 Days, Providers Go Live Without Clinical Access" minimizedCharts={minimizedCharts} onToggle={toggleChart}>
+  <div className="chart-card-premium" style={{ gap: '20px' }}>
             <div>
-              <h3 style={{ fontSize: '15px', fontWeight: '700', color: 'var(--text)', display: 'flex', alignItems: 'center', gap: '6px' }}>
+              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', width: '100%' }}>
+  <h3 style={{ fontSize: '15px', fontWeight: '700', color: 'var(--text)', display: 'flex', alignItems: 'center', gap: '6px' }}>
                 <Target size={16} color="var(--accent)" />
                 When Compliance + IT Exceeds 13 Days, Providers Go Live Without Clinical Access
               </h3>
+  <button 
+    onClick={() => toggleChart('chart-10')}
+    title="Minimize Chart"
+    style={{ border: 'none', background: 'transparent', cursor: 'pointer', padding: '4px', color: 'var(--text3)', display: 'flex', alignItems: 'center', justifyContent: 'center', borderRadius: '4px', marginLeft: '8px', transition: 'all 0.2s' }}
+  >
+    <EyeOff size={13} />
+  </button>
+</div>
               <p style={{ color: 'var(--text3)', fontSize: '11.5px', marginTop: '4px' }}>
                 Regulatory Activation Time = Compliance Days + IT Provisioning Days (Target limit: &lt;13 days combined)
               </p>
@@ -1567,16 +1727,27 @@ export default function Charts() {
               </div>
             </div>
           </div>
+</CollapsibleChartCard>
         );
 
       case 11:
         return (
-          <div className="chart-card-premium" style={{ gap: '20px' }}>
+          <CollapsibleChartCard id="chart-11" title="Internal Handoff Has the Lowest Satisfaction of Any Category — and It Doesn\'t Show Up as a Breach" minimizedCharts={minimizedCharts} onToggle={toggleChart}>
+  <div className="chart-card-premium" style={{ gap: '20px' }}>
             <div>
-              <h3 style={{ fontSize: '15px', fontWeight: '700', color: 'var(--text)', display: 'flex', alignItems: 'center', gap: '6px' }}>
+              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', width: '100%' }}>
+  <h3 style={{ fontSize: '15px', fontWeight: '700', color: 'var(--text)', display: 'flex', alignItems: 'center', gap: '6px' }}>
                 <User size={16} color="var(--clr-warn)" />
                 Internal Handoff Has the Lowest Satisfaction of Any Category — and It Doesn't Show Up as a Breach
               </h3>
+  <button 
+    onClick={() => toggleChart('chart-11')}
+    title="Minimize Chart"
+    style={{ border: 'none', background: 'transparent', cursor: 'pointer', padding: '4px', color: 'var(--text3)', display: 'flex', alignItems: 'center', justifyContent: 'center', borderRadius: '4px', marginLeft: '8px', transition: 'all 0.2s' }}
+  >
+    <EyeOff size={13} />
+  </button>
+</div>
               <p style={{ color: 'var(--text3)', fontSize: '11.5px', marginTop: '4px' }}>
                 Operations dashboards miss this because handoff delay has a low breach rate but high silent post-go-live churn risk.
               </p>
@@ -1632,16 +1803,27 @@ export default function Charts() {
               </div>
             </div>
           </div>
+</CollapsibleChartCard>
         );
 
       case 12:
         return (
-          <div className="chart-card-premium" style={{ gap: '20px' }}>
+          <CollapsibleChartCard id="chart-12" title="Every Provider Who Started Onboarding on a Friday Breached SLA" minimizedCharts={minimizedCharts} onToggle={toggleChart}>
+  <div className="chart-card-premium" style={{ gap: '20px' }}>
             <div>
-              <h3 style={{ fontSize: '15px', fontWeight: '700', color: 'var(--text)', display: 'flex', alignItems: 'center', gap: '6px' }}>
+              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', width: '100%' }}>
+  <h3 style={{ fontSize: '15px', fontWeight: '700', color: 'var(--text)', display: 'flex', alignItems: 'center', gap: '6px' }}>
                 <Calendar size={16} color="var(--clr-critical)" />
                 Every Provider Who Started Onboarding on a Friday Breached SLA
               </h3>
+  <button 
+    onClick={() => toggleChart('chart-12')}
+    title="Minimize Chart"
+    style={{ border: 'none', background: 'transparent', cursor: 'pointer', padding: '4px', color: 'var(--text3)', display: 'flex', alignItems: 'center', justifyContent: 'center', borderRadius: '4px', marginLeft: '8px', transition: 'all 0.2s' }}
+  >
+    <EyeOff size={13} />
+  </button>
+</div>
               <p style={{ color: 'var(--text3)', fontSize: '11.5px', marginTop: '4px' }}>
                 A single scheduling rule could eliminate this entirely (Zero-cost operational intervention).
               </p>
@@ -1683,16 +1865,27 @@ export default function Charts() {
               </div>
             </div>
           </div>
+</CollapsibleChartCard>
         );
 
       case 13:
         return (
-          <div className="chart-card-premium" style={{ gap: '20px' }}>
+          <CollapsibleChartCard id="chart-13" title="P014 and P003 Prove 15–16 Day Onboarding Is Achievable Today" minimizedCharts={minimizedCharts} onToggle={toggleChart}>
+  <div className="chart-card-premium" style={{ gap: '20px' }}>
             <div>
-              <h3 style={{ fontSize: '15px', fontWeight: '700', color: 'var(--text)', display: 'flex', alignItems: 'center', gap: '6px' }}>
+              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', width: '100%' }}>
+  <h3 style={{ fontSize: '15px', fontWeight: '700', color: 'var(--text)', display: 'flex', alignItems: 'center', gap: '6px' }}>
                 <Sparkles size={16} color="var(--accent)" />
                 P014 and P003 Prove 15–16 Day Onboarding Is Achievable Today
               </h3>
+  <button 
+    onClick={() => toggleChart('chart-13')}
+    title="Minimize Chart"
+    style={{ border: 'none', background: 'transparent', cursor: 'pointer', padding: '4px', color: 'var(--text3)', display: 'flex', alignItems: 'center', justifyContent: 'center', borderRadius: '4px', marginLeft: '8px', transition: 'all 0.2s' }}
+  >
+    <EyeOff size={13} />
+  </button>
+</div>
               <p style={{ color: 'var(--text3)', fontSize: '11.5px', marginTop: '4px' }}>
                 The gap between 15 days and 23.5 days is entirely process automation and structural design, not complexity.
               </p>
@@ -1741,16 +1934,27 @@ export default function Charts() {
               </div>
             </div>
           </div>
+</CollapsibleChartCard>
         );
 
       case 14:
         return (
-          <div className="chart-card-premium" style={{ gap: '20px' }}>
+          <CollapsibleChartCard id="chart-14" title="Three Provider Profiles — Each Requiring a Different Operational Intervention" minimizedCharts={minimizedCharts} onToggle={toggleChart}>
+  <div className="chart-card-premium" style={{ gap: '20px' }}>
             <div>
-              <h3 style={{ fontSize: '15px', fontWeight: '700', color: 'var(--text)', display: 'flex', alignItems: 'center', gap: '6px' }}>
+              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', width: '100%' }}>
+  <h3 style={{ fontSize: '15px', fontWeight: '700', color: 'var(--text)', display: 'flex', alignItems: 'center', gap: '6px' }}>
                 <ClipboardList size={16} color="var(--accent)" />
                 Three Provider Profiles — Each Requiring a Different Operational Intervention
               </h3>
+  <button 
+    onClick={() => toggleChart('chart-14')}
+    title="Minimize Chart"
+    style={{ border: 'none', background: 'transparent', cursor: 'pointer', padding: '4px', color: 'var(--text3)', display: 'flex', alignItems: 'center', justifyContent: 'center', borderRadius: '4px', marginLeft: '8px', transition: 'all 0.2s' }}
+  >
+    <EyeOff size={13} />
+  </button>
+</div>
               <p style={{ color: 'var(--text3)', fontSize: '11.5px', marginTop: '4px' }}>
                 One-size-fits-all onboarding is why Standard providers get delayed waiting for IT-Stressed ones.
               </p>
@@ -1826,16 +2030,27 @@ export default function Charts() {
               </div>
             </div>
           </div>
+</CollapsibleChartCard>
         );
 
       case 15:
         return (
-          <div className="chart-card-premium" style={{ gap: '20px' }}>
+          <CollapsibleChartCard id="chart-15" title="February\'s 38% Breach Rate Looks Like Improvement — But May Be a Cohort Artifact" minimizedCharts={minimizedCharts} onToggle={toggleChart}>
+  <div className="chart-card-premium" style={{ gap: '20px' }}>
             <div>
-              <h3 style={{ fontSize: '15px', fontWeight: '700', color: 'var(--text)', display: 'flex', alignItems: 'center', gap: '6px' }}>
+              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', width: '100%' }}>
+  <h3 style={{ fontSize: '15px', fontWeight: '700', color: 'var(--text)', display: 'flex', alignItems: 'center', gap: '6px' }}>
                 <FileText size={16} color="var(--accent)" />
                 February's 38% Breach Rate Looks Like Improvement — But May Be a Cohort Artifact
               </h3>
+  <button 
+    onClick={() => toggleChart('chart-15')}
+    title="Minimize Chart"
+    style={{ border: 'none', background: 'transparent', cursor: 'pointer', padding: '4px', color: 'var(--text3)', display: 'flex', alignItems: 'center', justifyContent: 'center', borderRadius: '4px', marginLeft: '8px', transition: 'all 0.2s' }}
+  >
+    <EyeOff size={13} />
+  </button>
+</div>
               <p style={{ color: 'var(--text3)', fontSize: '11.5px', marginTop: '4px' }}>
                 Duration is barely moving. Ticket resolution is worsening. Experience quality is quietly declining.
               </p>
@@ -1883,6 +2098,7 @@ export default function Charts() {
               </div>
             </div>
           </div>
+</CollapsibleChartCard>
         );
 
       default:
@@ -1900,8 +2116,31 @@ export default function Charts() {
         <p style={{ fontSize: '13px', color: 'var(--text3)', marginTop: '2px', fontFamily: 'var(--font-sans)' }}>
           Interactive BI Workspace · Replication of Google Sheet Analytical Visualizations
         </p>
-        <div className="meta" style={{ fontFamily: 'var(--font-mono)', fontSize: '10px', marginTop: '6px', color: 'var(--accent)' }}>
-          CURRENT DATASET COHORT: {kpis.total_providers} PROVIDERS · {activeQuarter} 2025 · FILTER: {activeState.toUpperCase()}
+        <div className="meta" style={{ fontFamily: 'var(--font-mono)', fontSize: '10px', marginTop: '6px', color: 'var(--accent)', display: 'flex', alignItems: 'center', flexWrap: 'wrap', gap: '10px' }}>
+          <span>CURRENT DATASET COHORT: {kpis.total_providers} PROVIDERS · {activeQuarter} 2025 · FILTER: {activeState.toUpperCase()}</span>
+          {Object.values(minimizedCharts).some(val => val) && (
+            <button 
+              onClick={() => setMinimizedCharts({})} 
+              style={{
+                fontSize: '9px',
+                fontWeight: '700',
+                color: '#E24B4A',
+                border: '1px solid #F7C1C1',
+                background: '#FCEBEB',
+                borderRadius: '4px',
+                padding: '2px 8px',
+                cursor: 'pointer',
+                fontFamily: 'var(--font-sans)',
+                display: 'inline-flex',
+                alignItems: 'center',
+                gap: '4px',
+                marginLeft: '10px',
+                textTransform: 'uppercase'
+              }}
+            >
+              <Eye size={10} /> Reset Minimized Charts ({Object.values(minimizedCharts).filter(val => val).length})
+            </button>
+          )}
         </div>
       </div>
 
@@ -2047,11 +2286,21 @@ export default function Charts() {
               </div>
 
               {/* Panel 1: Correlation horizontal diverging chart */}
-              <div className="chart-card-premium" style={{ border: '0.5px solid var(--border)', background: '#ffffff', borderRadius: 'var(--radius)', padding: '20px' }}>
+              <CollapsibleChartCard id="chart-16" title="Panel 1 — Chart A — Correlation with satisfaction score" minimizedCharts={minimizedCharts} onToggle={toggleChart}>
+  <div className="chart-card-premium" style={{ border: '0.5px solid var(--border)', background: '#ffffff', borderRadius: 'var(--radius)', padding: '20px' }}>
                 <div style={{ marginBottom: '16px' }}>
-                  <h3 style={{ fontSize: '13px', fontWeight: '600', color: '#111111', fontFamily: 'var(--font-sans)', margin: '0 0 2px 0' }}>
+                  <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', width: '100%' }}>
+  <h3 style={{ fontSize: '13px', fontWeight: '600', color: '#111111', fontFamily: 'var(--font-sans)', margin: '0 0 2px 0' }}>
                     Panel 1 — Chart A — Correlation with satisfaction score
                   </h3>
+  <button 
+    onClick={() => toggleChart('chart-16')}
+    title="Minimize Chart"
+    style={{ border: 'none', background: 'transparent', cursor: 'pointer', padding: '4px', color: 'var(--text3)', display: 'flex', alignItems: 'center', justifyContent: 'center', borderRadius: '4px', marginLeft: '8px', transition: 'all 0.2s' }}
+  >
+    <EyeOff size={13} />
+  </button>
+</div>
                   <small style={{ color: 'var(--text3)', fontSize: '11px', fontFamily: 'var(--font-sans)' }}>
                     Task completion is statistical noise — escalations are the real signal (Pearson r correlation with CSAT)
                   </small>
@@ -2118,17 +2367,28 @@ export default function Charts() {
                   </p>
                 </div>
               </div>
+</CollapsibleChartCard>
 
               {/* Panels 2 and 3: side-by-side */}
               <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '20px' }}>
                 
                 {/* Left Panel: Chart B - Paradox Grid or Scatter */}
-                <div className="chart-card-premium" style={{ border: '0.5px solid var(--border)', background: '#ffffff', borderRadius: 'var(--radius)', padding: '20px' }}>
+                <CollapsibleChartCard id="chart-17" title="Panel 2 — Chart B — The paradox scatter" minimizedCharts={minimizedCharts} onToggle={toggleChart}>
+  <div className="chart-card-premium" style={{ border: '0.5px solid var(--border)', background: '#ffffff', borderRadius: 'var(--radius)', padding: '20px' }}>
                   <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '16px' }}>
                     <div>
-                      <h3 style={{ fontSize: '13px', fontWeight: '600', color: '#111111', fontFamily: 'var(--font-sans)', margin: '0 0 2px 0' }}>
+                      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', width: '100%' }}>
+  <h3 style={{ fontSize: '13px', fontWeight: '600', color: '#111111', fontFamily: 'var(--font-sans)', margin: '0 0 2px 0' }}>
                         Panel 2 — Chart B — The paradox scatter
                       </h3>
+  <button 
+    onClick={() => toggleChart('chart-17')}
+    title="Minimize Chart"
+    style={{ border: 'none', background: 'transparent', cursor: 'pointer', padding: '4px', color: 'var(--text3)', display: 'flex', alignItems: 'center', justifyContent: 'center', borderRadius: '4px', marginLeft: '8px', transition: 'all 0.2s' }}
+  >
+    <EyeOff size={13} />
+  </button>
+</div>
                       <small style={{ color: 'var(--text3)', fontSize: '11px', fontFamily: 'var(--font-sans)' }}>
                         Low task completion can coexist with high satisfaction — and vice versa
                       </small>
@@ -2269,13 +2529,24 @@ export default function Charts() {
                     </p>
                   </div>
                 </div>
+</CollapsibleChartCard>
 
                 {/* Right Panel: Chart C - Escalation Decay Bar chart */}
-                <div className="chart-card-premium" style={{ border: '0.5px solid var(--border)', background: '#ffffff', borderRadius: 'var(--radius)', padding: '20px' }}>
+                <CollapsibleChartCard id="chart-18" title="Panel 3 — Chart C — Escalation count &rarr; satisfaction decay" minimizedCharts={minimizedCharts} onToggle={toggleChart}>
+  <div className="chart-card-premium" style={{ border: '0.5px solid var(--border)', background: '#ffffff', borderRadius: 'var(--radius)', padding: '20px' }}>
                   <div style={{ marginBottom: '16px' }}>
-                    <h3 style={{ fontSize: '13px', fontWeight: '600', color: '#111111', fontFamily: 'var(--font-sans)', margin: '0 0 2px 0' }}>
+                    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', width: '100%' }}>
+  <h3 style={{ fontSize: '13px', fontWeight: '600', color: '#111111', fontFamily: 'var(--font-sans)', margin: '0 0 2px 0' }}>
                       Panel 3 — Chart C — Escalation count &rarr; satisfaction decay
                     </h3>
+  <button 
+    onClick={() => toggleChart('chart-18')}
+    title="Minimize Chart"
+    style={{ border: 'none', background: 'transparent', cursor: 'pointer', padding: '4px', color: 'var(--text3)', display: 'flex', alignItems: 'center', justifyContent: 'center', borderRadius: '4px', marginLeft: '8px', transition: 'all 0.2s' }}
+  >
+    <EyeOff size={13} />
+  </button>
+</div>
                     <small style={{ color: 'var(--text3)', fontSize: '11px', fontFamily: 'var(--font-sans)' }}>
                       Each additional escalation costs ~0.12 satisfaction points
                     </small>
@@ -2328,6 +2599,7 @@ export default function Charts() {
                     </p>
                   </div>
                 </div>
+</CollapsibleChartCard>
 
               </div>
             </div>
@@ -2380,12 +2652,22 @@ export default function Charts() {
               <div style={{ display: 'grid', gridTemplateColumns: '1.2fr 1fr', gap: '20px' }}>
                 
                 {/* Left Panel: Chart A - Lollipop or Scatter */}
-                <div className="chart-card-premium" style={{ border: '0.5px solid var(--border)', background: '#ffffff', borderRadius: 'var(--radius)', padding: '20px' }}>
+                <CollapsibleChartCard id="chart-19" title="Panel 1 — Chart A — Training days vs total onboarding duration" minimizedCharts={minimizedCharts} onToggle={toggleChart}>
+  <div className="chart-card-premium" style={{ border: '0.5px solid var(--border)', background: '#ffffff', borderRadius: 'var(--radius)', padding: '20px' }}>
                   <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '16px' }}>
                     <div>
-                      <h3 style={{ fontSize: '13px', fontWeight: '600', color: '#111111', fontFamily: 'var(--font-sans)', margin: '0 0 2px 0' }}>
+                      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', width: '100%' }}>
+  <h3 style={{ fontSize: '13px', fontWeight: '600', color: '#111111', fontFamily: 'var(--font-sans)', margin: '0 0 2px 0' }}>
                         Panel 1 — Chart A — Training days vs total onboarding duration
                       </h3>
+  <button 
+    onClick={() => toggleChart('chart-19')}
+    title="Minimize Chart"
+    style={{ border: 'none', background: 'transparent', cursor: 'pointer', padding: '4px', color: 'var(--text3)', display: 'flex', alignItems: 'center', justifyContent: 'center', borderRadius: '4px', marginLeft: '8px', transition: 'all 0.2s' }}
+  >
+    <EyeOff size={13} />
+  </button>
+</div>
                       <small style={{ color: 'var(--text3)', fontSize: '11px', fontFamily: 'var(--font-sans)' }}>
                         Training is the dominant phase — r = 0.640, stronger than IT provisioning (0.551)
                       </small>
@@ -2578,13 +2860,24 @@ export default function Charts() {
                     </p>
                   </div>
                 </div>
+</CollapsibleChartCard>
 
                 {/* Right Panel: Chart B - Correlation grouped vertical bar chart */}
-                <div className="chart-card-premium" style={{ border: '0.5px solid var(--border)', background: '#ffffff', borderRadius: 'var(--radius)', padding: '20px' }}>
+                <CollapsibleChartCard id="chart-20" title="Panel 2 — Chart B — Phase correlation comparison: duration vs breach" minimizedCharts={minimizedCharts} onToggle={toggleChart}>
+  <div className="chart-card-premium" style={{ border: '0.5px solid var(--border)', background: '#ffffff', borderRadius: 'var(--radius)', padding: '20px' }}>
                   <div style={{ marginBottom: '16px' }}>
-                    <h3 style={{ fontSize: '13px', fontWeight: '600', color: '#111111', fontFamily: 'var(--font-sans)', margin: '0 0 2px 0' }}>
+                    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', width: '100%' }}>
+  <h3 style={{ fontSize: '13px', fontWeight: '600', color: '#111111', fontFamily: 'var(--font-sans)', margin: '0 0 2px 0' }}>
                       Panel 2 — Chart B — Phase correlation comparison: duration vs breach
                     </h3>
+  <button 
+    onClick={() => toggleChart('chart-20')}
+    title="Minimize Chart"
+    style={{ border: 'none', background: 'transparent', cursor: 'pointer', padding: '4px', color: 'var(--text3)', display: 'flex', alignItems: 'center', justifyContent: 'center', borderRadius: '4px', marginLeft: '8px', transition: 'all 0.2s' }}
+  >
+    <EyeOff size={13} />
+  </button>
+</div>
                     <small style={{ color: 'var(--text3)', fontSize: '11px', fontFamily: 'var(--font-sans)' }}>
                       Training drives duration (r=0.640) but not breach (r=0.026) — the gap that hides it
                     </small>
@@ -2632,15 +2925,26 @@ export default function Charts() {
                     </p>
                   </div>
                 </div>
+</CollapsibleChartCard>
 
               </div>
 
               {/* Bottom Panel: Chart C - Training days distribution combo chart */}
-              <div className="chart-card-premium" style={{ border: '0.5px solid var(--border)', background: '#ffffff', borderRadius: 'var(--radius)', padding: '20px' }}>
+              <CollapsibleChartCard id="chart-21" title="Panel 3 — Chart C — Training days distribution with breach rate overlay" minimizedCharts={minimizedCharts} onToggle={toggleChart}>
+  <div className="chart-card-premium" style={{ border: '0.5px solid var(--border)', background: '#ffffff', borderRadius: 'var(--radius)', padding: '20px' }}>
                 <div style={{ marginBottom: '16px' }}>
-                  <h3 style={{ fontSize: '13px', fontWeight: '600', color: '#111111', fontFamily: 'var(--font-sans)', margin: '0 0 2px 0' }}>
+                  <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', width: '100%' }}>
+  <h3 style={{ fontSize: '13px', fontWeight: '600', color: '#111111', fontFamily: 'var(--font-sans)', margin: '0 0 2px 0' }}>
                     Panel 3 — Chart C — Training days distribution with breach rate overlay
                   </h3>
+  <button 
+    onClick={() => toggleChart('chart-21')}
+    title="Minimize Chart"
+    style={{ border: 'none', background: 'transparent', cursor: 'pointer', padding: '4px', color: 'var(--text3)', display: 'flex', alignItems: 'center', justifyContent: 'center', borderRadius: '4px', marginLeft: '8px', transition: 'all 0.2s' }}
+  >
+    <EyeOff size={13} />
+  </button>
+</div>
                   <small style={{ color: 'var(--text3)', fontSize: '11px', fontFamily: 'var(--font-sans)' }}>
                     Breach rate jumps at the 8-day training threshold
                   </small>
@@ -2729,6 +3033,7 @@ export default function Charts() {
                   </p>
                 </div>
               </div>
+</CollapsibleChartCard>
 
             </div>
           )}
@@ -2786,11 +3091,21 @@ export default function Charts() {
               <div style={{ display: 'grid', gridTemplateColumns: '1fr 1.2fr', gap: '20px' }}>
                 
                 {/* Left Panel: Chart A - Horizontal bar chart */}
-                <div className="chart-card-premium" style={{ border: '0.5px solid var(--border)', background: '#ffffff', borderRadius: 'var(--radius)', padding: '20px' }}>
+                <CollapsibleChartCard id="chart-22" title="Panel 1 — Chart A — Breach rate by escalation type" minimizedCharts={minimizedCharts} onToggle={toggleChart}>
+  <div className="chart-card-premium" style={{ border: '0.5px solid var(--border)', background: '#ffffff', borderRadius: 'var(--radius)', padding: '20px' }}>
                   <div style={{ marginBottom: '16px' }}>
-                    <h3 style={{ fontSize: '13px', fontWeight: '600', color: '#111111', fontFamily: 'var(--font-sans)', margin: '0 0 2px 0' }}>
+                    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', width: '100%' }}>
+  <h3 style={{ fontSize: '13px', fontWeight: '600', color: '#111111', fontFamily: 'var(--font-sans)', margin: '0 0 2px 0' }}>
                       Panel 1 — Chart A — Breach rate by escalation type
                     </h3>
+  <button 
+    onClick={() => toggleChart('chart-22')}
+    title="Minimize Chart"
+    style={{ border: 'none', background: 'transparent', cursor: 'pointer', padding: '4px', color: 'var(--text3)', display: 'flex', alignItems: 'center', justifyContent: 'center', borderRadius: '4px', marginLeft: '8px', transition: 'all 0.2s' }}
+  >
+    <EyeOff size={13} />
+  </button>
+</div>
                     <small style={{ color: 'var(--text3)', fontSize: '11px', fontFamily: 'var(--font-sans)' }}>
                       IT escalations are the LEAST predictive of breach
                     </small>
@@ -2851,13 +3166,24 @@ export default function Charts() {
                     </p>
                   </div>
                 </div>
+</CollapsibleChartCard>
 
                 {/* Right Panel: Chart B - Hidden Churn Risk grouped vertical bar chart */}
-                <div className="chart-card-premium" style={{ border: '0.5px solid var(--border)', background: '#ffffff', borderRadius: 'var(--radius)', padding: '20px' }}>
+                <CollapsibleChartCard id="chart-23" title="Panel 2 — Chart B — Internal Handoff: hidden churn risk disguised as low breach" minimizedCharts={minimizedCharts} onToggle={toggleChart}>
+  <div className="chart-card-premium" style={{ border: '0.5px solid var(--border)', background: '#ffffff', borderRadius: 'var(--radius)', padding: '20px' }}>
                   <div style={{ marginBottom: '16px' }}>
-                    <h3 style={{ fontSize: '13px', fontWeight: '600', color: '#111111', fontFamily: 'var(--font-sans)', margin: '0 0 2px 0' }}>
+                    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', width: '100%' }}>
+  <h3 style={{ fontSize: '13px', fontWeight: '600', color: '#111111', fontFamily: 'var(--font-sans)', margin: '0 0 2px 0' }}>
                       Panel 2 — Chart B — Internal Handoff: hidden churn risk disguised as low breach
                     </h3>
+  <button 
+    onClick={() => toggleChart('chart-23')}
+    title="Minimize Chart"
+    style={{ border: 'none', background: 'transparent', cursor: 'pointer', padding: '4px', color: 'var(--text3)', display: 'flex', alignItems: 'center', justifyContent: 'center', borderRadius: '4px', marginLeft: '8px', transition: 'all 0.2s' }}
+  >
+    <EyeOff size={13} />
+  </button>
+</div>
                     <small style={{ color: 'var(--text3)', fontSize: '11px', fontFamily: 'var(--font-sans)' }}>
                       Internal Handoff has worst satisfaction AND highest escalations — yet only 20% breach rate
                     </small>
@@ -2918,15 +3244,26 @@ export default function Charts() {
                     </p>
                   </div>
                 </div>
+</CollapsibleChartCard>
 
               </div>
 
               {/* Bottom Panel: Chart C - Where coordination fails (Process flow + bubble lollipop) */}
-              <div className="chart-card-premium" style={{ border: '0.5px solid var(--border)', background: '#ffffff', borderRadius: 'var(--radius)', padding: '20px' }}>
+              <CollapsibleChartCard id="chart-24" title="Bottom Panel — Chart C — Where coordination fails: the four unmanaged handoff gaps" minimizedCharts={minimizedCharts} onToggle={toggleChart}>
+  <div className="chart-card-premium" style={{ border: '0.5px solid var(--border)', background: '#ffffff', borderRadius: 'var(--radius)', padding: '20px' }}>
                 <div style={{ marginBottom: '16px' }}>
-                  <h3 style={{ fontSize: '13px', fontWeight: '600', color: '#111111', fontFamily: 'var(--font-sans)', margin: '0 0 2px 0' }}>
+                  <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', width: '100%' }}>
+  <h3 style={{ fontSize: '13px', fontWeight: '600', color: '#111111', fontFamily: 'var(--font-sans)', margin: '0 0 2px 0' }}>
                     Bottom Panel — Chart C — Where coordination fails: the four unmanaged handoff gaps
                   </h3>
+  <button 
+    onClick={() => toggleChart('chart-24')}
+    title="Minimize Chart"
+    style={{ border: 'none', background: 'transparent', cursor: 'pointer', padding: '4px', color: 'var(--text3)', display: 'flex', alignItems: 'center', justifyContent: 'center', borderRadius: '4px', marginLeft: '8px', transition: 'all 0.2s' }}
+  >
+    <EyeOff size={13} />
+  </button>
+</div>
                   <small style={{ color: 'var(--text3)', fontSize: '11px', fontFamily: 'var(--font-sans)' }}>
                     Process flow gaps track coordination breakdown, while the bubble matrix isolates silent risk
                   </small>
@@ -3073,6 +3410,7 @@ export default function Charts() {
                   </p>
                 </div>
               </div>
+</CollapsibleChartCard>
 
             </div>
           )}
@@ -3126,10 +3464,20 @@ export default function Charts() {
             </div>
 
             {/* Right Chart: SLA Breach Rate bar chart */}
-            <div className="chart-card-premium" style={{ height: '100%', justifyContent: 'center' }}>
+            <CollapsibleChartCard id="chart-25" title="IT Access Delay & Ticket Speed Compounding Impact" minimizedCharts={minimizedCharts} onToggle={toggleChart}>
+  <div className="chart-card-premium" style={{ height: '100%', justifyContent: 'center' }}>
               <div className="card-header" style={{ marginBottom: '16px', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
                 <div>
-                  <h3 style={{ fontSize: '13px', fontWeight: '600', color: 'var(--text)' }}>IT Access Delay & Ticket Speed Compounding Impact</h3>
+                  <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', width: '100%' }}>
+  <h3 style={{ fontSize: '13px', fontWeight: '600', color: 'var(--text)' }}>IT Access Delay & Ticket Speed Compounding Impact</h3>
+  <button 
+    onClick={() => toggleChart('chart-25')}
+    title="Minimize Chart"
+    style={{ border: 'none', background: 'transparent', cursor: 'pointer', padding: '4px', color: 'var(--text3)', display: 'flex', alignItems: 'center', justifyContent: 'center', borderRadius: '4px', marginLeft: '8px', transition: 'all 0.2s' }}
+  >
+    <EyeOff size={13} />
+  </button>
+</div>
                   <small style={{ color: 'var(--text3)', fontSize: '11px' }}>SLA breach rate by IT Access flag + ticket resolution speed (&gt;22h = slow)</small>
                 </div>
                 <span className="card-tag" style={{ background: 'var(--clr-critical-bg)', color: 'var(--clr-critical)', border: '1px solid var(--clr-critical-border)' }}>CRITICAL PATH</span>
@@ -3151,6 +3499,7 @@ export default function Charts() {
                 </ResponsiveContainer>
               </div>
             </div>
+</CollapsibleChartCard>
           </div>
 
           {/* ROW 2: TEXAS MARKET PROCESS HANDOFF BOTTLENECK */}
@@ -3193,10 +3542,20 @@ export default function Charts() {
             </div>
 
             {/* Right Chart: Texas stacked stages bar chart */}
-            <div className="chart-card-premium" style={{ height: '100%', justifyContent: 'center' }}>
+            <CollapsibleChartCard id="chart-26" title="Texas Onboarding Duration & Stage Bottleneck" minimizedCharts={minimizedCharts} onToggle={toggleChart}>
+  <div className="chart-card-premium" style={{ height: '100%', justifyContent: 'center' }}>
               <div className="card-header" style={{ marginBottom: '16px', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
                 <div>
-                  <h3 style={{ fontSize: '13px', fontWeight: '600', color: 'var(--text)' }}>Texas Onboarding Duration & Stage Bottleneck</h3>
+                  <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', width: '100%' }}>
+  <h3 style={{ fontSize: '13px', fontWeight: '600', color: 'var(--text)' }}>Texas Onboarding Duration & Stage Bottleneck</h3>
+  <button 
+    onClick={() => toggleChart('chart-26')}
+    title="Minimize Chart"
+    style={{ border: 'none', background: 'transparent', cursor: 'pointer', padding: '4px', color: 'var(--text3)', display: 'flex', alignItems: 'center', justifyContent: 'center', borderRadius: '4px', marginLeft: '8px', transition: 'all 0.2s' }}
+  >
+    <EyeOff size={13} />
+  </button>
+</div>
                   <small style={{ color: 'var(--text3)', fontSize: '11px' }}>Stacked stage days for TX providers (⚠️ = Breached, ✓ = On Track)</small>
                 </div>
                 <span className="card-tag">TX PORTFOLIO</span>
@@ -3217,6 +3576,7 @@ export default function Charts() {
                 </ResponsiveContainer>
               </div>
             </div>
+</CollapsibleChartCard>
           </div>
 
           {/* ROW 3: LOW TASK COMPLETION & HIGH ESCALATION IMPACT ON SATISFACTION */}
@@ -3259,10 +3619,20 @@ export default function Charts() {
             </div>
 
             {/* Right Chart: Satisfaction & Breach bar chart */}
-            <div className="chart-card-premium" style={{ height: '100%', justifyContent: 'center' }}>
+            <CollapsibleChartCard id="chart-27" title="Task Completion & Escalation Satisfaction Collapse" minimizedCharts={minimizedCharts} onToggle={toggleChart}>
+  <div className="chart-card-premium" style={{ height: '100%', justifyContent: 'center' }}>
               <div className="card-header" style={{ marginBottom: '16px', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
                 <div>
-                  <h3 style={{ fontSize: '13px', fontWeight: '600', color: 'var(--text)' }}>Task Completion & Escalation Satisfaction Collapse</h3>
+                  <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', width: '100%' }}>
+  <h3 style={{ fontSize: '13px', fontWeight: '600', color: 'var(--text)' }}>Task Completion & Escalation Satisfaction Collapse</h3>
+  <button 
+    onClick={() => toggleChart('chart-27')}
+    title="Minimize Chart"
+    style={{ border: 'none', background: 'transparent', cursor: 'pointer', padding: '4px', color: 'var(--text3)', display: 'flex', alignItems: 'center', justifyContent: 'center', borderRadius: '4px', marginLeft: '8px', transition: 'all 0.2s' }}
+  >
+    <EyeOff size={13} />
+  </button>
+</div>
                   <small style={{ color: 'var(--text3)', fontSize: '11px' }}>Average satisfaction & breach rate by condition (low completion &lt;80% + high escalations 3+)</small>
                 </div>
                 <span className="card-tag" style={{ background: 'var(--clr-good-bg)', color: 'var(--clr-good)', border: '1px solid var(--clr-good-border)' }}>SATISFACTION</span>
@@ -3281,6 +3651,7 @@ export default function Charts() {
                 </ResponsiveContainer>
               </div>
             </div>
+</CollapsibleChartCard>
           </div>
 
         </div>
@@ -3294,9 +3665,19 @@ export default function Charts() {
           <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(360px, 1fr))', gap: '20px' }}>
             
             {/* Chart 4: Average Onboarding Duration by Market */}
-            <div className="chart-card-premium">
+            <CollapsibleChartCard id="chart-28" title="Average Onboarding Duration by Market" minimizedCharts={minimizedCharts} onToggle={toggleChart}>
+  <div className="chart-card-premium">
               <div style={{ marginBottom: '12px' }}>
-                <h3 style={{ fontSize: '13px', fontWeight: '600', color: 'var(--text)' }}>Average Onboarding Duration by Market</h3>
+                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', width: '100%' }}>
+  <h3 style={{ fontSize: '13px', fontWeight: '600', color: 'var(--text)' }}>Average Onboarding Duration by Market</h3>
+  <button 
+    onClick={() => toggleChart('chart-28')}
+    title="Minimize Chart"
+    style={{ border: 'none', background: 'transparent', cursor: 'pointer', padding: '4px', color: 'var(--text3)', display: 'flex', alignItems: 'center', justifyContent: 'center', borderRadius: '4px', marginLeft: '8px', transition: 'all 0.2s' }}
+  >
+    <EyeOff size={13} />
+  </button>
+</div>
                 <small style={{ color: 'var(--text3)', fontSize: '11px' }}>Average onboarding speed in days</small>
               </div>
               <div style={{ width: '100%', height: 180 }}>
@@ -3316,11 +3697,22 @@ export default function Charts() {
                 </ResponsiveContainer>
               </div>
             </div>
+</CollapsibleChartCard>
 
             {/* Chart 5: Average Satisfaction Score by Market */}
-            <div className="chart-card-premium">
+            <CollapsibleChartCard id="chart-29" title="Average Satisfaction Score by Market" minimizedCharts={minimizedCharts} onToggle={toggleChart}>
+  <div className="chart-card-premium">
               <div style={{ marginBottom: '12px' }}>
-                <h3 style={{ fontSize: '13px', fontWeight: '600', color: 'var(--text)' }}>Average Satisfaction Score by Market</h3>
+                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', width: '100%' }}>
+  <h3 style={{ fontSize: '13px', fontWeight: '600', color: 'var(--text)' }}>Average Satisfaction Score by Market</h3>
+  <button 
+    onClick={() => toggleChart('chart-29')}
+    title="Minimize Chart"
+    style={{ border: 'none', background: 'transparent', cursor: 'pointer', padding: '4px', color: 'var(--text3)', display: 'flex', alignItems: 'center', justifyContent: 'center', borderRadius: '4px', marginLeft: '8px', transition: 'all 0.2s' }}
+  >
+    <EyeOff size={13} />
+  </button>
+</div>
                 <small style={{ color: 'var(--text3)', fontSize: '11px' }}>Satisfaction scale (1-5)</small>
               </div>
               <div style={{ width: '100%', height: 180 }}>
@@ -3340,11 +3732,22 @@ export default function Charts() {
                 </ResponsiveContainer>
               </div>
             </div>
+</CollapsibleChartCard>
 
             {/* Chart 6: Average Ticket Resolution Time by Market */}
-            <div className="chart-card-premium">
+            <CollapsibleChartCard id="chart-30" title="Average Ticket Resolution Time by Market" minimizedCharts={minimizedCharts} onToggle={toggleChart}>
+  <div className="chart-card-premium">
               <div style={{ marginBottom: '12px' }}>
-                <h3 style={{ fontSize: '13px', fontWeight: '600', color: 'var(--text)' }}>Average Ticket Resolution Time by Market</h3>
+                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', width: '100%' }}>
+  <h3 style={{ fontSize: '13px', fontWeight: '600', color: 'var(--text)' }}>Average Ticket Resolution Time by Market</h3>
+  <button 
+    onClick={() => toggleChart('chart-30')}
+    title="Minimize Chart"
+    style={{ border: 'none', background: 'transparent', cursor: 'pointer', padding: '4px', color: 'var(--text3)', display: 'flex', alignItems: 'center', justifyContent: 'center', borderRadius: '4px', marginLeft: '8px', transition: 'all 0.2s' }}
+  >
+    <EyeOff size={13} />
+  </button>
+</div>
                 <small style={{ color: 'var(--text3)', fontSize: '11px' }}>Support resolution speed in hours</small>
               </div>
               <div style={{ width: '100%', height: 180 }}>
@@ -3364,11 +3767,22 @@ export default function Charts() {
                 </ResponsiveContainer>
               </div>
             </div>
+</CollapsibleChartCard>
 
             {/* Chart 7: Market vs Task Completion Rate */}
-            <div className="chart-card-premium">
+            <CollapsibleChartCard id="chart-31" title="Market vs Task Completion Rate" minimizedCharts={minimizedCharts} onToggle={toggleChart}>
+  <div className="chart-card-premium">
               <div style={{ marginBottom: '12px' }}>
-                <h3 style={{ fontSize: '13px', fontWeight: '600', color: 'var(--text)' }}>Market vs Task Completion Rate</h3>
+                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', width: '100%' }}>
+  <h3 style={{ fontSize: '13px', fontWeight: '600', color: 'var(--text)' }}>Market vs Task Completion Rate</h3>
+  <button 
+    onClick={() => toggleChart('chart-31')}
+    title="Minimize Chart"
+    style={{ border: 'none', background: 'transparent', cursor: 'pointer', padding: '4px', color: 'var(--text3)', display: 'flex', alignItems: 'center', justifyContent: 'center', borderRadius: '4px', marginLeft: '8px', transition: 'all 0.2s' }}
+  >
+    <EyeOff size={13} />
+  </button>
+</div>
                 <small style={{ color: 'var(--text3)', fontSize: '11px' }}>Average percent of tasks completed on-time</small>
               </div>
               <div style={{ width: '100%', height: 180 }}>
@@ -3388,11 +3802,22 @@ export default function Charts() {
                 </ResponsiveContainer>
               </div>
             </div>
+</CollapsibleChartCard>
 
             {/* Chart 8: Total Escalations by Market */}
-            <div className="chart-card-premium">
+            <CollapsibleChartCard id="chart-32" title="Total Escalations by Market" minimizedCharts={minimizedCharts} onToggle={toggleChart}>
+  <div className="chart-card-premium">
               <div style={{ marginBottom: '12px' }}>
-                <h3 style={{ fontSize: '13px', fontWeight: '600', color: 'var(--text)' }}>Total Escalations by Market</h3>
+                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', width: '100%' }}>
+  <h3 style={{ fontSize: '13px', fontWeight: '600', color: 'var(--text)' }}>Total Escalations by Market</h3>
+  <button 
+    onClick={() => toggleChart('chart-32')}
+    title="Minimize Chart"
+    style={{ border: 'none', background: 'transparent', cursor: 'pointer', padding: '4px', color: 'var(--text3)', display: 'flex', alignItems: 'center', justifyContent: 'center', borderRadius: '4px', marginLeft: '8px', transition: 'all 0.2s' }}
+  >
+    <EyeOff size={13} />
+  </button>
+</div>
                 <small style={{ color: 'var(--text3)', fontSize: '11px' }}>Sum of escalations across markets</small>
               </div>
               <div style={{ width: '100%', height: 180 }}>
@@ -3412,11 +3837,22 @@ export default function Charts() {
                 </ResponsiveContainer>
               </div>
             </div>
+</CollapsibleChartCard>
 
             {/* Chart 9: SLA Breach Counts by Market */}
-            <div className="chart-card-premium">
+            <CollapsibleChartCard id="chart-33" title="SLA Breach by Market" minimizedCharts={minimizedCharts} onToggle={toggleChart}>
+  <div className="chart-card-premium">
               <div style={{ marginBottom: '12px' }}>
-                <h3 style={{ fontSize: '13px', fontWeight: '600', color: 'var(--text)' }}>SLA Breach by Market</h3>
+                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', width: '100%' }}>
+  <h3 style={{ fontSize: '13px', fontWeight: '600', color: 'var(--text)' }}>SLA Breach by Market</h3>
+  <button 
+    onClick={() => toggleChart('chart-33')}
+    title="Minimize Chart"
+    style={{ border: 'none', background: 'transparent', cursor: 'pointer', padding: '4px', color: 'var(--text3)', display: 'flex', alignItems: 'center', justifyContent: 'center', borderRadius: '4px', marginLeft: '8px', transition: 'all 0.2s' }}
+  >
+    <EyeOff size={13} />
+  </button>
+</div>
                 <small style={{ color: 'var(--text3)', fontSize: '11px' }}>SLA breach count (Breached vs On Track) by Market</small>
               </div>
               <div style={{ width: '100%', height: 180 }}>
@@ -3433,11 +3869,22 @@ export default function Charts() {
                 </ResponsiveContainer>
               </div>
             </div>
+</CollapsibleChartCard>
 
             {/* Chart 10: Onboarding Stages by Market */}
-            <div className="chart-card-premium" style={{ gridColumn: '1 / -1' }}>
+            <CollapsibleChartCard id="chart-34" title="Onboarding Stages by Market" minimizedCharts={minimizedCharts} onToggle={toggleChart}>
+  <div className="chart-card-premium" style={{ gridColumn: '1 / -1' }}>
               <div style={{ marginBottom: '12px' }}>
-                <h3 style={{ fontSize: '13px', fontWeight: '600', color: 'var(--text)' }}>Onboarding Stages by Market</h3>
+                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', width: '100%' }}>
+  <h3 style={{ fontSize: '13px', fontWeight: '600', color: 'var(--text)' }}>Onboarding Stages by Market</h3>
+  <button 
+    onClick={() => toggleChart('chart-34')}
+    title="Minimize Chart"
+    style={{ border: 'none', background: 'transparent', cursor: 'pointer', padding: '4px', color: 'var(--text3)', display: 'flex', alignItems: 'center', justifyContent: 'center', borderRadius: '4px', marginLeft: '8px', transition: 'all 0.2s' }}
+  >
+    <EyeOff size={13} />
+  </button>
+</div>
                 <small style={{ color: 'var(--text3)', fontSize: '11px' }}>Average duration in days across stages for CA, FL, TX</small>
               </div>
               <div style={{ width: '100%', height: 220 }}>
@@ -3456,6 +3903,7 @@ export default function Charts() {
                 </ResponsiveContainer>
               </div>
             </div>
+</CollapsibleChartCard>
 
           </div>
         </div>
@@ -3469,9 +3917,19 @@ export default function Charts() {
           <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(360px, 1fr))', gap: '20px' }}>
             
             {/* Chart 11: Primary Delay Reasons */}
-            <div className="chart-card-premium">
+            <CollapsibleChartCard id="chart-35" title="Primary Delay Reasons" minimizedCharts={minimizedCharts} onToggle={toggleChart}>
+  <div className="chart-card-premium">
               <div style={{ marginBottom: '12px' }}>
-                <h3 style={{ fontSize: '13px', fontWeight: '600', color: 'var(--text)' }}>Primary Delay Reasons</h3>
+                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', width: '100%' }}>
+  <h3 style={{ fontSize: '13px', fontWeight: '600', color: 'var(--text)' }}>Primary Delay Reasons</h3>
+  <button 
+    onClick={() => toggleChart('chart-35')}
+    title="Minimize Chart"
+    style={{ border: 'none', background: 'transparent', cursor: 'pointer', padding: '4px', color: 'var(--text3)', display: 'flex', alignItems: 'center', justifyContent: 'center', borderRadius: '4px', marginLeft: '8px', transition: 'all 0.2s' }}
+  >
+    <EyeOff size={13} />
+  </button>
+</div>
                 <small style={{ color: 'var(--text3)', fontSize: '11px' }}>Volume of onboarding delay reasons</small>
               </div>
               <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', height: 180 }}>
@@ -3505,11 +3963,22 @@ export default function Charts() {
                 </div>
               </div>
             </div>
+</CollapsibleChartCard>
 
             {/* Chart 12: Distribution of Escalation Types */}
-            <div className="chart-card-premium">
+            <CollapsibleChartCard id="chart-36" title="Distribution of Escalation Types" minimizedCharts={minimizedCharts} onToggle={toggleChart}>
+  <div className="chart-card-premium">
               <div style={{ marginBottom: '12px' }}>
-                <h3 style={{ fontSize: '13px', fontWeight: '600', color: 'var(--text)' }}>Distribution of Escalation Types</h3>
+                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', width: '100%' }}>
+  <h3 style={{ fontSize: '13px', fontWeight: '600', color: 'var(--text)' }}>Distribution of Escalation Types</h3>
+  <button 
+    onClick={() => toggleChart('chart-36')}
+    title="Minimize Chart"
+    style={{ border: 'none', background: 'transparent', cursor: 'pointer', padding: '4px', color: 'var(--text3)', display: 'flex', alignItems: 'center', justifyContent: 'center', borderRadius: '4px', marginLeft: '8px', transition: 'all 0.2s' }}
+  >
+    <EyeOff size={13} />
+  </button>
+</div>
                 <small style={{ color: 'var(--text3)', fontSize: '11px' }}>Operational escalations by department</small>
               </div>
               <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', height: 180 }}>
@@ -3543,11 +4012,22 @@ export default function Charts() {
                 </div>
               </div>
             </div>
+</CollapsibleChartCard>
 
             {/* Chart 13: Primary Delay Reason vs Market */}
-            <div className="chart-card-premium">
+            <CollapsibleChartCard id="chart-37" title="Primary Delay Reason vs Market" minimizedCharts={minimizedCharts} onToggle={toggleChart}>
+  <div className="chart-card-premium">
               <div style={{ marginBottom: '12px' }}>
-                <h3 style={{ fontSize: '13px', fontWeight: '600', color: 'var(--text)' }}>Primary Delay Reason vs Market</h3>
+                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', width: '100%' }}>
+  <h3 style={{ fontSize: '13px', fontWeight: '600', color: 'var(--text)' }}>Primary Delay Reason vs Market</h3>
+  <button 
+    onClick={() => toggleChart('chart-37')}
+    title="Minimize Chart"
+    style={{ border: 'none', background: 'transparent', cursor: 'pointer', padding: '4px', color: 'var(--text3)', display: 'flex', alignItems: 'center', justifyContent: 'center', borderRadius: '4px', marginLeft: '8px', transition: 'all 0.2s' }}
+  >
+    <EyeOff size={13} />
+  </button>
+</div>
                 <small style={{ color: 'var(--text3)', fontSize: '11px' }}>Handoff bottleneck distribution across CA, FL, TX</small>
               </div>
               <div style={{ width: '100%', height: 180 }}>
@@ -3565,11 +4045,22 @@ export default function Charts() {
                 </ResponsiveContainer>
               </div>
             </div>
+</CollapsibleChartCard>
 
             {/* Chart 14: SLA Breach vs Average Ticket Resolution Time */}
-            <div className="chart-card-premium">
+            <CollapsibleChartCard id="chart-38" title="SLA Breach vs Avg Ticket Resolution Time" minimizedCharts={minimizedCharts} onToggle={toggleChart}>
+  <div className="chart-card-premium">
               <div style={{ marginBottom: '12px' }}>
-                <h3 style={{ fontSize: '13px', fontWeight: '600', color: 'var(--text)' }}>SLA Breach vs Avg Ticket Resolution Time</h3>
+                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', width: '100%' }}>
+  <h3 style={{ fontSize: '13px', fontWeight: '600', color: 'var(--text)' }}>SLA Breach vs Avg Ticket Resolution Time</h3>
+  <button 
+    onClick={() => toggleChart('chart-38')}
+    title="Minimize Chart"
+    style={{ border: 'none', background: 'transparent', cursor: 'pointer', padding: '4px', color: 'var(--text3)', display: 'flex', alignItems: 'center', justifyContent: 'center', borderRadius: '4px', marginLeft: '8px', transition: 'all 0.2s' }}
+  >
+    <EyeOff size={13} />
+  </button>
+</div>
                 <small style={{ color: 'var(--text3)', fontSize: '11px' }}>Support resolution speeds for Breached vs On Track cohorts</small>
               </div>
               <div style={{ width: '100%', height: 180 }}>
@@ -3589,11 +4080,22 @@ export default function Charts() {
                 </ResponsiveContainer>
               </div>
             </div>
+</CollapsibleChartCard>
 
             {/* Chart 15: Market vs SLA Breach vs Onboarding Days */}
-            <div className="chart-card-premium">
+            <CollapsibleChartCard id="chart-39" title="Market vs SLA Breach vs Onboarding Days" minimizedCharts={minimizedCharts} onToggle={toggleChart}>
+  <div className="chart-card-premium">
               <div style={{ marginBottom: '12px' }}>
-                <h3 style={{ fontSize: '13px', fontWeight: '600', color: 'var(--text)' }}>Market vs SLA Breach vs Onboarding Days</h3>
+                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', width: '100%' }}>
+  <h3 style={{ fontSize: '13px', fontWeight: '600', color: 'var(--text)' }}>Market vs SLA Breach vs Onboarding Days</h3>
+  <button 
+    onClick={() => toggleChart('chart-39')}
+    title="Minimize Chart"
+    style={{ border: 'none', background: 'transparent', cursor: 'pointer', padding: '4px', color: 'var(--text3)', display: 'flex', alignItems: 'center', justifyContent: 'center', borderRadius: '4px', marginLeft: '8px', transition: 'all 0.2s' }}
+  >
+    <EyeOff size={13} />
+  </button>
+</div>
                 <small style={{ color: 'var(--text3)', fontSize: '11px' }}>Average onboarding days by cohort across markets</small>
               </div>
               <div style={{ width: '100%', height: 180 }}>
@@ -3610,11 +4112,22 @@ export default function Charts() {
                 </ResponsiveContainer>
               </div>
             </div>
+</CollapsibleChartCard>
 
             {/* Chart 16: Primary Delay Reason vs SLA Breach Rate */}
-            <div className="chart-card-premium">
+            <CollapsibleChartCard id="chart-40" title="Delay Reason vs SLA Breach Rate" minimizedCharts={minimizedCharts} onToggle={toggleChart}>
+  <div className="chart-card-premium">
               <div style={{ marginBottom: '12px' }}>
-                <h3 style={{ fontSize: '13px', fontWeight: '600', color: 'var(--text)' }}>Delay Reason vs SLA Breach Rate</h3>
+                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', width: '100%' }}>
+  <h3 style={{ fontSize: '13px', fontWeight: '600', color: 'var(--text)' }}>Delay Reason vs SLA Breach Rate</h3>
+  <button 
+    onClick={() => toggleChart('chart-40')}
+    title="Minimize Chart"
+    style={{ border: 'none', background: 'transparent', cursor: 'pointer', padding: '4px', color: 'var(--text3)', display: 'flex', alignItems: 'center', justifyContent: 'center', borderRadius: '4px', marginLeft: '8px', transition: 'all 0.2s' }}
+  >
+    <EyeOff size={13} />
+  </button>
+</div>
                 <small style={{ color: 'var(--text3)', fontSize: '11px' }}>The actual SLA failure rate associated with each specific delay type</small>
               </div>
               <div style={{ width: '100%', height: 180 }}>
@@ -3634,6 +4147,7 @@ export default function Charts() {
                 </ResponsiveContainer>
               </div>
             </div>
+</CollapsibleChartCard>
 
           </div>
         </div>
@@ -3646,13 +4160,23 @@ export default function Charts() {
         <div style={{ display: 'flex', flexDirection: 'column', gap: '20px', animation: 'fadeIn 0.2s ease-out' }}>
           
           {/* Main Toggle Chart: Provider-Wise vs Market-Wise */}
-          <div className="chart-card-premium">
+          <CollapsibleChartCard id="chart-41" title="Chronological Onboarding Speed & Trend Diagnostics" minimizedCharts={minimizedCharts} onToggle={toggleChart}>
+  <div className="chart-card-premium">
             <div style={{ marginBottom: '16px', display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: '12px' }}>
               <div>
-                <h3 style={{ fontSize: '14px', fontWeight: '600', color: 'var(--text)', display: 'flex', alignItems: 'center', gap: '6px' }}>
+                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', width: '100%' }}>
+  <h3 style={{ fontSize: '14px', fontWeight: '600', color: 'var(--text)', display: 'flex', alignItems: 'center', gap: '6px' }}>
                   <ClipboardList size={16} color="var(--accent)" />
                   Chronological Onboarding Speed & Trend Diagnostics
                 </h3>
+  <button 
+    onClick={() => toggleChart('chart-41')}
+    title="Minimize Chart"
+    style={{ border: 'none', background: 'transparent', cursor: 'pointer', padding: '4px', color: 'var(--text3)', display: 'flex', alignItems: 'center', justifyContent: 'center', borderRadius: '4px', marginLeft: '8px', transition: 'all 0.2s' }}
+  >
+    <EyeOff size={13} />
+  </button>
+</div>
                 <small style={{ color: 'var(--text3)', fontSize: '11px' }}>
                   {trendViewMode === 'provider' ? 'Individual timeline tracking every provider chronologically' : 'Multi-market chronological monthly trend tracking averages'}
                 </small>
@@ -3729,14 +4253,25 @@ export default function Charts() {
               )}
             </div>
           </div>
+</CollapsibleChartCard>
 
           {/* Bottom Grid for monthly KPI trends */}
           <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(360px, 1fr))', gap: '20px' }}>
             
             {/* Chart 21: SLA Breach Rate Trend by Month */}
-            <div className="chart-card-premium">
+            <CollapsibleChartCard id="chart-42" title="SLA Breach Rate Trend by Month" minimizedCharts={minimizedCharts} onToggle={toggleChart}>
+  <div className="chart-card-premium">
               <div style={{ marginBottom: '12px' }}>
-                <h3 style={{ fontSize: '13px', fontWeight: '600', color: 'var(--text)' }}>SLA Breach Rate Trend by Month</h3>
+                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', width: '100%' }}>
+  <h3 style={{ fontSize: '13px', fontWeight: '600', color: 'var(--text)' }}>SLA Breach Rate Trend by Month</h3>
+  <button 
+    onClick={() => toggleChart('chart-42')}
+    title="Minimize Chart"
+    style={{ border: 'none', background: 'transparent', cursor: 'pointer', padding: '4px', color: 'var(--text3)', display: 'flex', alignItems: 'center', justifyContent: 'center', borderRadius: '4px', marginLeft: '8px', transition: 'all 0.2s' }}
+  >
+    <EyeOff size={13} />
+  </button>
+</div>
                 <small style={{ color: 'var(--text3)', fontSize: '11px' }}>Intake cohort failures over time</small>
               </div>
               <div style={{ width: '100%', height: 180 }}>
@@ -3751,11 +4286,22 @@ export default function Charts() {
                 </ResponsiveContainer>
               </div>
             </div>
+</CollapsibleChartCard>
 
             {/* Chart 23: Overall Onboarding Duration Monthly Average */}
-            <div className="chart-card-premium">
+            <CollapsibleChartCard id="chart-43" title="Overall Onboarding Speed Trend" minimizedCharts={minimizedCharts} onToggle={toggleChart}>
+  <div className="chart-card-premium">
               <div style={{ marginBottom: '12px' }}>
-                <h3 style={{ fontSize: '13px', fontWeight: '600', color: 'var(--text)' }}>Overall Onboarding Speed Trend</h3>
+                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', width: '100%' }}>
+  <h3 style={{ fontSize: '13px', fontWeight: '600', color: 'var(--text)' }}>Overall Onboarding Speed Trend</h3>
+  <button 
+    onClick={() => toggleChart('chart-43')}
+    title="Minimize Chart"
+    style={{ border: 'none', background: 'transparent', cursor: 'pointer', padding: '4px', color: 'var(--text3)', display: 'flex', alignItems: 'center', justifyContent: 'center', borderRadius: '4px', marginLeft: '8px', transition: 'all 0.2s' }}
+  >
+    <EyeOff size={13} />
+  </button>
+</div>
                 <small style={{ color: 'var(--text3)', fontSize: '11px' }}>Average onboarding days tracked over time</small>
               </div>
               <div style={{ width: '100%', height: 180 }}>
@@ -3770,6 +4316,7 @@ export default function Charts() {
                 </ResponsiveContainer>
               </div>
             </div>
+</CollapsibleChartCard>
 
           </div>
         </div>
